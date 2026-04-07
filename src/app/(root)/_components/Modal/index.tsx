@@ -22,7 +22,9 @@ interface ModalProps {
     isSubmit?: boolean;
 }
 
-export function Modal({ children, className, title, description, trigger, isSubmit = false }: {ModalProps}) {
+// correction to props  making it readonly
+
+export function Modal({ children, className, title, description, trigger, isSubmit = false }: Readonly<ModalProps>) {
     const [open, setOpen] = useState(false);
 
     return (
