@@ -22,7 +22,7 @@ interface ModalProps {
     isSubmit?: boolean;
 }
 
-export function Modal({ children, className, title, description, trigger, isSubmit = false }: Readonly<ModalProps>) {
+export function Modal({ children, className, title, description, trigger, isSubmit = false }: {ModalProps}) {
     const [open, setOpen] = useState(false);
 
     return (
@@ -46,11 +46,7 @@ export function Modal({ children, className, title, description, trigger, isSubm
                     <AlertDialogDescription className="text-sm text-slate-500 dark:text-slate-300">
                         {description}
                     </AlertDialogDescription>
-                </AlertDialogHeader>
-
-                {children}
-
-                <AlertDialogFooter className="mt-2">
+                </AlertDialogHeader>{children}<AlertDialogFooter className="mt-2">
                     {isSubmit && <AlertDialogAction className="h-12 w-full cursor-pointer text-base font-semibold transition active:scale-[0.99] active:opacity-90">
                         Submit
                     </AlertDialogAction>}
