@@ -1,5 +1,7 @@
 ﻿"use client";
 
+
+
 import React from "react";
 import { ChartNoAxesCombined, Share2, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
