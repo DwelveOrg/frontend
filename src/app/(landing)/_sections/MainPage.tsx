@@ -17,7 +17,7 @@ function MainPage() {
           <p className="max-w-[90%] text-center text-[#0F2854] opacity-70 max-[520px]:max-w-full max-[520px]:text-sm dark:text-[white]">
             {t("landing.main.subtitle")}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-5">
             <Link href="/dashboard" className="cursor-pointer rounded-lg bg-[#0046FF] px-4 py-2 font-medium text-white transition-all duration-600 hover:bg-[#0033CC]">
               {t("landing.main.teacherCta")}
             </Link>
