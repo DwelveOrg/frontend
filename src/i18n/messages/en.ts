@@ -8,7 +8,7 @@ translation: {
         uz: "Uzbek",
       },
       root: {
-        navbarTitle: "GradeFlow",
+        navbarTitle: "Dwelve",
         empty: {
           title: "Nothing here yet",
           description: "Start with one action.",
@@ -147,12 +147,12 @@ translation: {
           documentation: {
             page: {
               title: "Documentation",
-              description: "A brief overview of GradeFlow and how it helps teachers and students.",
+              description: "A brief overview of Dwelve and how it helps teachers and students.",
               paragraphs: [
-                "GradeFlow is a web platform for creating, delivering, and grading school assessments in one place. Teachers can build quizzes and exams quickly, publish them to students, and review results in real time from any device.",
+                "Dwelve is a web platform for creating, delivering, and grading school assessments in one place. Teachers can build quizzes and exams quickly, publish them to students, and review results in real time from any device.",
                 "The dashboard keeps classes, homework, and exams organized with clear status tabs, deadlines, and quick actions. Students can access tests in seconds, submit work online, and receive feedback as soon as grades are released.",
                 "Core features include time-controlled exams, instant grading, reusable question banks, performance insights, and a focused notification center that highlights what needs attention first.",
-                "GradeFlow is designed for speed, clarity, and accessibility. Light and dark themes, responsive layouts, and focused workflows help reduce manual grading effort while keeping both teachers and students aligned.",
+                "Dwelve is designed for speed, clarity, and accessibility. Light and dark themes, responsive layouts, and focused workflows help reduce manual grading effort while keeping both teachers and students aligned.",
               ],
             },
           },
@@ -230,7 +230,7 @@ translation: {
               },
               school: {
                 label: "School",
-                placeholder: "GradeFlow Academy",
+                placeholder: "Dwelve Academy",
               },
               location: {
                 label: "Location",
@@ -352,8 +352,8 @@ translation: {
       landing: {
         nav: {
           features: "Features",
-          howItWorks: "How it works",
-          accordion: "FAQ",
+          howItWorks: "Pricing",
+          accordion: "About",
           login: "Login",
           signup: "Sign up",
         },
@@ -390,10 +390,10 @@ translation: {
         accordion: {
           label: "FAQ",
           title: "Everything you need to know before you start",
-          subtitle: "Quick answers for teachers and students using GradeFlow.",
+          subtitle: "Quick answers for teachers and students using Dwelve.",
           item1: {
             question: "Do students need to install an app?",
-            answer: "No. GradeFlow works directly in the browser on phones, tablets, and laptops.",
+            answer: "No. Dwelve works directly in the browser on phones, tablets, and laptops.",
           },
           item2: {
             question: "Can I set a timer for tests?",
@@ -431,9 +431,9 @@ translation: {
           backToLanding: "Back to landing",
         },
         login: {
-          access: "GradeFlow Access",
+          access: "Dwelve Access",
           title: "Welcome back",
-          subtitle: "Join GradeFlow to create or take tests online.",
+          subtitle: "Join Dwelve to create or take tests online.",
           loginLabel: "Login",
           loginPlaceholder: "Enter username or email address",
           passwordLabel: "Password",
@@ -448,7 +448,7 @@ translation: {
           signup: "Sign up",
         },
         signup: {
-          access: "GradeFlow Access",
+          access: "Dwelve Access",
           title: "Create your account",
           subtitle: "Multi-step signup for teachers and students. Quick to start, easier to finish.",
           step: "Step {{current}} of {{total}}",

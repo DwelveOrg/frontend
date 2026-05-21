@@ -237,7 +237,7 @@ export default function SideBar() {
           <div className={`mb-4 ${collapsed ? "flex justify-center" : "flex items-start justify-between"}`}>
             {!collapsed ? (
               <div className="min-w-0 pl-[10px]">
-                <p className="truncate font-[var(--font-montserrat)] text-2xl font-semibold leading-none">GradeFlow</p>
+                <p className="truncate font-[var(--font-montserrat)] text-2xl font-semibold leading-none">Dwelve</p>
                 <p className="truncate mt-1 text-xs text-slate-500 dark:text-white/55">{t("sidebar.brandSub")}</p>
               </div>
             ) : null}
