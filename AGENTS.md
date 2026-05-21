@@ -13,6 +13,10 @@ This is a Next.js App Router frontend. Application routes live in `src/app`, wit
 
 Use `npm install` to restore dependencies from `package-lock.json`.
 
+## Branch Workflow
+
+Always work on the `staging` branch for repository changes.
+
 ## Coding Style & Naming Conventions
 
 Write TypeScript and React components with strict typing enabled. Prefer path aliases such as `@/components/ui/Button` over deep relative imports when crossing folders. Components and files that export components generally use PascalCase, for example `ThemeSwitch.tsx`; route files follow Next.js conventions such as `page.tsx` and `layout.tsx`. Keep route-local constants, types, utils, and components in underscored folders like `_types`, `_constants`, `_utils`, and `_components`. Use Tailwind classes for styling and `cn` from `src/lib/utils.ts` for conditional class composition. Run `npm run lint` before submitting changes.

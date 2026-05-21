@@ -22,9 +22,9 @@ export default function Footer() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 md:grid-cols-2 lg:grid-cols-4">
         <div>
           <div className="flex items-center gap-2">
-            <Image src={LogoBlack} alt="GradeFlow Logo" width={30} height={30} className="dark:hidden" />
-            <Image src={LogoWhite} alt="GradeFlow Logo" width={30} height={30} className="hidden dark:block" />
-            <p className="text-xl font-bold text-[#0F2854] dark:text-white">GradeFlow</p>
+            <Image src={LogoBlack} alt="Dwelve Logo" width={30} height={30} className="dark:hidden" />
+            <Image src={LogoWhite} alt="Dwelve Logo" width={30} height={30} className="hidden dark:block" />
+            <p className="text-xl font-bold text-[#0F2854] dark:text-white">Dwelve</p>
           </div>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-[#27416f] dark:text-slate-300">
             {t("landing.footer.description")}
@@ -90,7 +90,7 @@ export default function Footer() {
 
       <div className="border-t border-black/10 dark:border-white/10">
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-3 px-4 py-5 text-sm text-[#355181] dark:text-slate-400 md:flex-row">
-          <p>{`© ${year} GradeFlow. ${t("landing.footer.rights")}`}</p>
+          <p>{`© ${year} Dwelve. ${t("landing.footer.rights")}`}</p>
           <div className="flex items-center gap-4">
             <Link href="/" className="hover:text-[#0046FF] dark:hover:text-white">{t("landing.footer.privacy")}</Link>
             <Link href="/" className="hover:text-[#0046FF] dark:hover:text-white">{t("landing.footer.terms")}</Link>

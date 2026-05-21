@@ -8,7 +8,7 @@ translation: {
         uz: "O'zbekcha",
       },
       root: {
-        navbarTitle: "GradeFlow",
+        navbarTitle: "Dwelve",
         empty: {
           title: "Hozircha bo'sh",
           description: "Bitta amal bilan boshlang.",
@@ -147,12 +147,12 @@ translation: {
           documentation: {
             page: {
               title: "Hujjatlar",
-              description: "GradeFlow haqida qisqa ma'lumot va uning foydasi.",
+              description: "Dwelve haqida qisqa ma'lumot va uning foydasi.",
               paragraphs: [
-                "GradeFlow — maktab baholashlarini yaratish, o‘tkazish va tekshirish uchun yagona platforma. O‘qituvchilar test va imtihonlarni tez tuzadi, ularni o‘quvchilarga yuboradi va natijalarni real vaqtda ko‘radi.",
+                "Dwelve — maktab baholashlarini yaratish, o‘tkazish va tekshirish uchun yagona platforma. O‘qituvchilar test va imtihonlarni tez tuzadi, ularni o‘quvchilarga yuboradi va natijalarni real vaqtda ko‘radi.",
                 "Boshqaruv paneli sinflar, uy vazifalari va imtihonlarni aniq statuslar, muddatlar va tezkor amallar bilan tartiblaydi. O‘quvchilar testlarga tez kiradi, topshiriqlarni onlayn topshiradi va baholar e’lon qilingach darhol fikr-mulohaza oladi.",
                 "Asosiy imkoniyatlar: vaqt bilan boshqariladigan imtihonlar, tezkor baholash, qayta ishlatiladigan savollar banki, natijalar tahlili va muhim xabarlarni ajratib ko‘rsatadigan bildirishnomalar markazi.",
-                "GradeFlow tezlik, aniqlik va qulaylik uchun yaratilgan. Yorug‘ va qorong‘i mavzular, moslashuvchan dizayn va aniq ish jarayonlari qo‘lda tekshirish ishini kamaytiradi va o‘qituvchi hamda o‘quvchini bir yo‘nalishda ushlab turadi.",
+                "Dwelve tezlik, aniqlik va qulaylik uchun yaratilgan. Yorug‘ va qorong‘i mavzular, moslashuvchan dizayn va aniq ish jarayonlari qo‘lda tekshirish ishini kamaytiradi va o‘qituvchi hamda o‘quvchini bir yo‘nalishda ushlab turadi.",
               ],
             },
           },
@@ -230,7 +230,7 @@ translation: {
               },
               school: {
                 label: "Maktab",
-                placeholder: "GradeFlow Academy",
+                placeholder: "Dwelve Academy",
               },
               location: {
                 label: "Manzil",
@@ -351,9 +351,9 @@ translation: {
       },
       landing: {
         nav: {
-          features: "Imkoniyatlar",
-          howItWorks: "Qanday ishlaydi",
-          accordion: "FAQ",
+          features: "Features",
+          howItWorks: "Pricing",
+          accordion: "About",
           login: "Kirish",
           signup: "Boshlash",
         },
@@ -390,10 +390,10 @@ translation: {
         accordion: {
           label: "FAQ",
           title: "Boshlashdan oldin bilishingiz kerak bo'lgan hamma narsa",
-          subtitle: "GradeFlow'dan foydalanayotgan o'qituvchi va o'quvchilar uchun qisqa javoblar.",
+          subtitle: "Dwelve'dan foydalanayotgan o'qituvchi va o'quvchilar uchun qisqa javoblar.",
           item1: {
             question: "O'quvchilar ilova o'rnatishi kerakmi?",
-            answer: "Yo'q. GradeFlow brauzerning o'zida telefon, planshet va noutbukda ishlaydi.",
+            answer: "Yo'q. Dwelve brauzerning o'zida telefon, planshet va noutbukda ishlaydi.",
           },
           item2: {
             question: "Testga vaqt cheklovi qo'yish mumkinmi?",
@@ -431,9 +431,9 @@ translation: {
           backToLanding: "Landing sahifaga qaytish",
         },
         login: {
-          access: "GradeFlow kirishi",
+          access: "Dwelve kirishi",
           title: "Xush kelibsiz",
-          subtitle: "Onlayn test yaratish yoki topshirish uchun GradeFlow'ga qo'shiling.",
+          subtitle: "Onlayn test yaratish yoki topshirish uchun Dwelve'ga qo'shiling.",
           loginLabel: "Login",
           loginPlaceholder: "Foydalanuvchi nomi yoki email kiriting",
           passwordLabel: "Parol",
@@ -448,7 +448,7 @@ translation: {
           signup: "Boshlash",
         },
         signup: {
-          access: "GradeFlow kirishi",
+          access: "Dwelve kirishi",
           title: "Hisob yarating",
           subtitle: "O'qituvchi va o'quvchilar uchun ko'p bosqichli ro'yxatdan o'tish.",
           step: "{{total}} dan {{current}}-bosqich",
