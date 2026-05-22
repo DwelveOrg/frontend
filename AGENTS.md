@@ -1,5 +1,17 @@
 # Repository Guidelines
 
+## Design System
+
+- **Primary:** Indigo `#4F46E5`
+- **Background:** `#f4f5f7` (app pages), `#ffffff` (landing/auth)
+- **Cards:** White, `border-radius: 12px`, `box-shadow: 0 1px 3px rgba(0,0,0,0.04)`
+- **Inputs:** `border-radius: 8px`, `border: 1px solid #e8e8ec`, `height: 42px`
+- **Typography:** Inter (import from Google Fonts)
+- **Text colors:** `#1a1a2e` (headings), `#64748b` (body), `#94a3b8` (muted)
+- **Sidebar:** 240px fixed, white background, indigo active state `#f0f0ff`
+- **Status colors:** Green `#22c55e`, Amber `#f59e0b`, Red `#ef4444`
+- **Subject avatar colors:** Math=indigo, Physics=amber, Biology=green, English=pink, History=indigo, Chemistry=orange
+
 ## Project Structure & Module Organization
 
 This is a Next.js App Router frontend. Application routes live in `src/app`, with route groups such as `(landing)`, `(authentication)`, and `(root)` separating public, auth, and dashboard areas. Shared UI primitives are in `src/components/ui`, custom reusable components are in `src/components/Custom`, and layout-specific pieces sit beside their routes in `_components` folders. Common helpers are in `src/lib`, hooks in `src/hooks`, and translations in `src/i18n`. Static assets, including logos, belong in `public/images`.
