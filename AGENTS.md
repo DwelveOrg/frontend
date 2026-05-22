@@ -12,6 +12,32 @@
 - **Status colors:** Green `#22c55e`, Amber `#f59e0b`, Red `#ef4444`
 - **Subject avatar colors:** Math=indigo, Physics=amber, Biology=green, English=pink, History=indigo, Chemistry=orange
 
+### Typography
+
+Two fonts, both imported from Google Fonts. Add both to `src/app/layout.tsx` via `next/font/google`.
+
+- **DM Serif Display** — headings only: landing page `h1`/`h2`, marketing section titles, report card student names and scores, and the Dwelve logo wordmark. Regular weight (400) only.
+- **DM Sans** — everything else: all UI text, labels, badges, table content, navigation items, buttons, inputs, and body copy. Weights 400 (regular), 500 (medium), and 600 (semibold).
+
+```ts
+// src/app/layout.tsx
+import { DM_Sans, DM_Serif_Display } from 'next/font/google'
+ 
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-sans',
+})
+
+const dmSerif = DM_Serif_Display({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-serif',
+})
+```
+
+Apply `font-sans` (DM Sans) as the base font on `<body>`. Apply `font-serif` (DM Serif Display) only on heading elements that need editorial weight — landing page heroes, report card titles, and the logo. Never use DM Serif Display inside dashboard UI components like tables, stat cards, or sidebar items.
+
 ## Project Structure & Module Organization
 
 This is a Next.js App Router frontend. Application routes live in `src/app`, with route groups such as `(landing)`, `(authentication)`, and `(root)` separating public, auth, and dashboard areas. Shared UI primitives are in `src/components/ui`, custom reusable components are in `src/components/Custom`, and layout-specific pieces sit beside their routes in `_components` folders. Common helpers are in `src/lib`, hooks in `src/hooks`, and translations in `src/i18n`. Static assets, including logos, belong in `public/images`.
