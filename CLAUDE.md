@@ -4,6 +4,7 @@ Guidance for Claude Code when working in this repository. See `AGENTS.md` for th
 
 ## Project
 
+
 **Dwelve** (package name `gf-frontend`) is a Next.js App Router frontend for a digital academic testing and performance-management platform for schools and learning centers — test creation, submission, automated grading, and analytics.
 
 Stack: **Next.js 16** (App Router, RSC) · **React 19** · **TypeScript** (strict) · **Tailwind CSS v4** · **shadcn/ui** (`radix-nova` style, Radix primitives) · **i18next** · **next-themes** · **react-hook-form + zod** · **jose** (JWT sessions) · **motion** · **three**.
