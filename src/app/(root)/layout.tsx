@@ -2,6 +2,8 @@ import SideBar from "@/app/(root)/_components/Sidebar";
 import Navbar from "@/app/(root)/_components/Navbar";
 import { getUser } from "@/app/(root)/_utils/getUser";
 
+export const dynamic = "force-dynamic";
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const user = await getUser();
 
