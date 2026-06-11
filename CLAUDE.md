@@ -1,93 +1,170 @@
 # CLAUDE.md
 
-Guidance for Claude Code when working in this repository. See `AGENTS.md` for the full design-system spec; this file is the working summary plus codebase-specific notes verified against the source.
+Guidance for Claude Code when working in this repository.
+
+Read `AGENTS.md` first for general repository rules.
+Read `docs/design-system.md` for design-system decisions.
+Read `docs/product-requirements.md` for product scope and priorities.
+
+This file is intentionally root-level because Claude Code uses root project guidance. Do not move it into `docs/`.
+
+---
 
 ## Project
 
+Dwelve, package name `gf-frontend`, is a Next.js App Router frontend for a digital academic testing and performance-management platform for schools and private learning centers.
+
+Primary product areas:
+
+- test creation
+- test submission
+- automated grading
+- student/class analytics
+- authentication
+- trilingual UI
+
+Stack noted in the existing project documentation:
 
 **Dwelve** (package name `gf-frontend`) is a Next.js App Router frontend for a digital academic testing and performance-management platform for schools and learning centers — test creation, submission, automated grading, and analytics.
 
-Stack: **Next.js 16** (App Router, RSC) · **React 19** · **TypeScript** (strict) · **Tailwind CSS v4** · **shadcn/ui** (`radix-nova` style, Radix primitives) · **i18next** · **next-themes** · **react-hook-form + zod** · **jose** (JWT sessions) · **motion** · **three**.
+- Next.js App Router
+- React
+- TypeScript strict mode
+- Tailwind CSS v4
+- shadcn/ui with Radix primitives
+- i18next / react-i18next
+- next-themes
+- react-hook-form + zod
+- jose for JWT sessions
+- motion
+- three
+
+Verify package versions in `package.json` before making dependency-specific changes.
+
+---
 
 ## Commands
 
-- `npm run dev` — local dev server (http://localhost:3000)
-- `npm run build` — production build; also validates output (run before submitting)
-- `npm run start` — serve the production build
-- `npm run lint` — ESLint via `eslint.config.mjs` (run before submitting)
-- `npm install` — restore deps from `package-lock.json`
+- `npm install` — restore dependencies from `package-lock.json`
+- `npm run dev` — local dev server
+- `npm run build` — production build and output validation
+- `npm run start` — serve production build
+- `npm run lint` — ESLint through `eslint.config.mjs`
 
-There is **no test framework or `npm test`** configured. Validate changes with `npm run lint`, `npm run build`, and by manually exercising the affected route in `npm run dev`. If you add tests, colocate as `*.test.ts(x)` and add a package script.
+There is no configured `npm test` script in the uploaded guidance. Validate changes with `npm run lint`, `npm run build`, and manual route testing.
 
-## Branch Workflow
+---
 
-Always work on the **`staging`** branch for repository changes.
+## Branch workflow
 
-## Project Structure
+Use the `staging` branch for repository changes unless the maintainer explicitly says otherwise.
 
-Next.js App Router. Routes live in `src/app`, organized by **route groups**:
+---
 
-- `src/app/(landing)` — public marketing site. Sections in `_sections/`, cards in `_components/cards/`.
-- `src/app/(authentication)` — login / signup / password-reset. Pages under `(pages)/`.
-- `src/app/(root)` — authenticated dashboard. Pages under `(pages)/`, with a nested `(small-container)` group for narrow-width pages (profile, settings, notifications).
+## Project structure
+
+Routes live in `src/app`.
+
+Known route groups:
+
+- `src/app/(landing)` — public marketing site
+- `src/app/(authentication)` — login, signup, password reset
+- `src/app/(root)` — authenticated dashboard
+- `src/app/(root)/(pages)` — dashboard pages
+- `src/app/(root)/(pages)/(small-container)` — narrow-width pages such as profile, settings, notifications
 
 Shared code:
 
-- `src/components/ui` — shadcn/ui primitives (Button, Input, select, dropdown-menu, accordion, etc.)
+- `src/components/ui` — shadcn/ui primitives
 - `src/components/Custom` — custom reusable components
-- `src/lib` — helpers (`utils.ts` exports `cn`, `localStorage.ts`)
-- `src/hooks` — hooks (e.g. `useMobile.ts`)
+- `src/lib` — helpers; `utils.ts` exports `cn`
+- `src/hooks` — hooks
 - `src/i18n` — translations and i18next setup
-- `public/images` — static assets (logos)
+- `public/images` — static assets
 
-Route-local code goes in **underscored folders** beside the route: `_components`, `_constants`, `_types`, `_utils`, `_lib`, `_sections`, and `_types/_schemas`.
+Route-local code goes in underscored folders such as `_components`, `_constants`, `_types`, `_utils`, `_lib`, `_sections`, and `_types/_schemas`.
 
-## Coding Conventions
+---
 
-- **TypeScript strict** mode. Type everything.
-- **Path alias `@/*`** maps to `./src/*` (and repo root). Prefer `@/components/ui/Button` over deep relative imports across folders.
-- **Naming:** component files are PascalCase (`ThemeSwitch.tsx`); Next.js files follow convention (`page.tsx`, `layout.tsx`). Client-component splits use suffixes like `page-client.tsx` / `profile.client.tsx`.
-- **Styling:** Tailwind classes; compose conditionally with `cn` from `@/lib/utils`. Dark mode via the `class` strategy (`next-themes`).
-- **Forms:** `react-hook-form` + `zod` schemas (in `_types/_schemas`) wired with `@hookform/resolvers`.
-- **Toasts:** `react-toastify` (`<Toaster />` mounted in the root layout).
-- **Icons:** `lucide-react`.
+## Coding conventions
 
-## Auth & Sessions
+- Type everything.
+- Prefer `@/*` path aliases over deep relative imports when crossing folders.
+- Use PascalCase for component files.
+- Use Next.js route file names such as `page.tsx` and `layout.tsx`.
+- Use client-component suffixes such as `page-client.tsx` or `profile.client.tsx` when the existing codebase follows that pattern.
+- Use Tailwind classes and `cn` from `@/lib/utils`.
+- Dark mode uses the class strategy through `next-themes`.
+- Forms use `react-hook-form` and `zod` schemas, commonly under `_types/_schemas`.
+- Icons use `lucide-react`.
 
-- Session is a JWT in an httpOnly cookie named `session`, signed/verified with **jose** (HS256). Code in `src/app/(authentication)/_lib/session.ts`. Secret comes from `process.env.SESSION_SECRET` (falls back to a default — set this in real environments).
-- Server actions for login/logout are in `src/app/(authentication)/_lib/actions.ts` (`"use server"`).
-- Server-side current user: `getUser()` in `src/app/(root)/_utils/getUser.ts`. The `(root)` layout is `force-dynamic` and reads the user there.
-- Auth currently uses **hard-coded `testUsers`** in `src/app/(authentication)/_constants/index.ts` (roles: `student`, `teacher`) — there is no real backend yet. `protectedRoutes` / `publicRoutes` are also defined there, but no `middleware.ts` exists.
-- **Review auth/session changes carefully** — they gate login and protected routes.
+---
+
+## Auth and sessions
+
+Existing guidance says:
+
+- Session is a JWT in an httpOnly cookie named `session`.
+- JWT signing/verification uses `jose` with HS256.
+- Session code lives in `src/app/(authentication)/_lib/session.ts`.
+- `SESSION_SECRET` should come from the environment.
+- Login/logout server actions live in `src/app/(authentication)/_lib/actions.ts`.
+- Server-side current user is read through `getUser()` in `src/app/(root)/_utils/getUser.ts`.
+- Auth currently uses hard-coded `testUsers` in `src/app/(authentication)/_constants/index.ts`.
+- No real backend is connected yet.
+- `protectedRoutes` and `publicRoutes` exist there, but no `middleware.ts` exists in the uploaded guidance.
+
+Treat auth/session changes as high-risk. Verify the current code before editing.
+
+---
 
 ## Internationalization
 
-- `i18next` + `react-i18next`, initialized **client-side** in `src/i18n/index.ts`.
-- Supported languages: `en`, `ru`, `uz` (default `en`), defined in `src/i18n/resources.ts`. Message catalogs live in `src/i18n/messages/{en,ru,uz}.ts`.
-- UI strings are **dotted translation keys** (e.g. `root.notifications.items.newMessage.title`) resolved via `t(...)`, not literal text. Add new copy to all three catalogs.
-- Selected language persists to `localStorage` under `gf-language` (handled in `src/app/providers.tsx`); `<html lang>` is kept in sync.
+Existing guidance says:
 
-## Design System
+- i18n uses `i18next` and `react-i18next`.
+- Supported languages are `en`, `ru`, and `uz`.
+- Default language is `en`.
+- Message catalogs live in `src/i18n/messages/{en,ru,uz}.ts`.
+- UI copy should use dotted translation keys through `t(...)`, not literal strings.
+- Selected language persists to `localStorage` under `gf-language`.
+- `<html lang>` is kept in sync by app providers.
 
-Source of truth is `AGENTS.md`. Key tokens:
+When adding UI copy, update all three catalogs.
 
-- **Primary:** Indigo `#4F46E5`
-- **Background:** `#f4f5f7` (app pages), `#ffffff` (landing/auth)
-- **Cards:** white, `border-radius: 12px`, `box-shadow: 0 1px 3px rgba(0,0,0,0.04)`
-- **Inputs:** `border-radius: 8px`, `1px solid #e8e8ec`, `height: 42px`
-- **Text:** `#1a1a2e` headings, `#64748b` body, `#94a3b8` muted
-- **Sidebar:** 240px fixed, white, indigo active `#f0f0ff`
-- **Status:** green `#22c55e`, amber `#f59e0b`, red `#ef4444`
+---
 
-**Typography note:** `AGENTS.md` specifies **DM Serif Display** (headings only) + **DM Sans** (everything else) as the intended system. The current `src/app/layout.tsx` actually loads **Geist** (`--font-sans`), **Montserrat**, and **Inter** instead. When touching fonts, confirm the intended direction rather than assuming the doc and code agree.
+## Design system
 
-## Commits & PRs
+Do not treat `AGENTS.md` as the design-system source of truth.
 
-- Short, imperative commit messages describing the user-visible or technical change (e.g. `Update MainPage.tsx`). Keep commits focused.
-- PRs: concise summary, testing notes, linked issues when applicable, and screenshots/recordings for UI changes. Call out affected routes, language resources, or auth/session behavior so reviewers know where to look.
+Use:
 
-## Security & Config
+- `docs/design-system.md` for design decisions
+- `src/app/globals.css`, `src/app/layout.tsx`, and Tailwind theme setup for implementation values
 
-- Never commit secrets or local env files. Set `SESSION_SECRET` via environment, not in code.
+The important correction from the old docs is that there should not be three competing font directions. Do not mix Inter, Geist, Montserrat, DM Sans, and DM Serif without updating the design system.
+
+---
+
+## Commits and PRs
+
+Use short imperative commit messages and keep commits focused.
+
+PR notes should include:
+
+- what changed
+- how it was tested
+- affected routes
+- screenshots or recordings for UI changes
+- affected translations
+- auth/session impact, if any
+
+---
+
+## Security and config
+
+- Never commit secrets or local env files.
 - Keep `.next` and `node_modules` out of version control.
-- `src/app/providers.tsx` globally disables the right-click context menu.
+- Set `SESSION_SECRET` in real environments.
+- Review global providers carefully. Existing guidance says `src/app/providers.tsx` disables the right-click context menu globally; verify whether this behavior is intentional before preserving or expanding it.

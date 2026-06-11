@@ -1,228 +1,321 @@
+
+---
+
+## `docs/product-requirements.md`
+
+```md
 # Product Requirements Document — Dwelve
 
 | | |
 |---|---|
 | **Product** | Dwelve |
-| **Tagline** | An online platform for managing students and running tests & exams — exam and test automation for schools and learning centers. |
-| **Document status** | Draft v0.2 (concept stage) |
-| **Date** | 10 June 2026 |
-| **Author** | Abdulaziz Yusupaliev |
+| **Tagline** | Exam and test automation for schools and private learning centers. |
+| **Document status** | Draft v0.3 (concept stage) |
+| **Last updated** | 11 June 2026 |
+| **Author / owner** | Abdulaziz Yusupaliev |
 | **Market** | Uzbekistan |
+| **Primary initial segment** | Private learning centers |
 
 ---
 
 ## 1. Overview
 
-Dwelve is a web platform that lets schools and private learning centers create, deliver, and grade tests, exams, and homework fully online. Students complete assessments directly in the browser; teachers get automatic results plus dashboards showing each student's progress, score history, and performance graphs. It works like Google Classroom for assignments, but with deeper assessment and analytics, and more flexibility for the teacher.
+Dwelve is a web platform for creating, delivering, grading, and analyzing tests, exams, and homework online. Students complete assessments in the browser. Teachers receive automatic results, progress dashboards, score history, and per-student analytics.
 
-The core promise is **automation and paper reduction**: replace printed tests, manual marking, and scattered paper records with one system that grades instantly and keeps a permanent, analyzable record of every student's performance.
+The core promise is **assessment automation and paper reduction**: replace printed tests, manual marking, and scattered paper records with one system that grades objective questions instantly and stores analyzable performance history.
 
-Dwelve also uses AI in two ways that set it apart:
+Dwelve’s differentiators are:
 
-- **For students:** after a test, a student can ask the AI to explain any specific question in clear language.
-- **For teachers:** a teacher can upload a PDF of an existing test, and the AI turns it into a ready-to-use digital test inside Dwelve.
+- **PDF-to-test generation for teachers:** a teacher uploads an existing PDF test, and Dwelve converts it into an editable digital test.
+- **Progress analytics:** teachers and admins can track student and class performance over time.
+- **Student learning support:** after a test, students can review answers; AI per-question explanations are planned as a paid or usage-limited capability.
 
 ---
 
 ## 2. Problem statement
 
-Schools and learning centers in Uzbekistan still run most assessment on paper. This creates four recurring pains:
+Schools and learning centers in Uzbekistan still run much assessment work on paper or fragmented tools. This creates recurring pains:
 
-- **Cost and waste** — printing exams, homework, and quizzes for every student, every cycle.
-- **Teacher time lost to grading** — manual marking is slow and error-prone, delaying feedback to students.
-- **No usable history** — paper results are hard to aggregate, so teachers and centers can't see trends in a student's progress or compare groups.
-- **Fragmented tools** — those who go digital stitch together Google Forms, spreadsheets, and chat apps that were never built for structured assessment.
+- **Cost and waste:** printing exams, homework, and quizzes for every student.
+- **Teacher time lost to grading:** manual marking is slow and error-prone.
+- **Delayed feedback:** students often see results too late to correct mistakes.
+- **Weak historical tracking:** paper results are hard to aggregate into progress trends.
+- **Fragmented workflows:** Google Forms, spreadsheets, chat apps, and paper records are not one structured assessment system.
 
-Dwelve consolidates this into a single automated workflow: build a test from a question bank, assign it, let students take it online, and get graded results plus analytics with no manual marking.
+Dwelve consolidates the workflow: build a test from a question bank or PDF, assign it, let students take it online, grade it, and show analytics.
 
 ---
 
 ## 3. Goals and objectives
 
-**Product goals**
-- Let a teacher create and assign a graded online test in under 10 minutes — or in seconds by uploading an existing PDF test.
-- Auto-grade objective questions instantly and surface clear per-student and per-class analytics.
-- Cut a center's assessment-related paper use substantially within the first term of use.
+### Product goals
 
-**Business goals**
-- Validate willingness to pay among private learning centers via the freemium model.
-- Reach a first cohort of paying centers in Tashkent, then expand regionally.
+- Let a teacher create and assign a graded online test in under 10 minutes.
+- Let a teacher create a draft digital test from an existing PDF in seconds, then review and edit it before publishing.
+- Auto-grade objective questions instantly.
+- Support manual review for open-ended answers.
+- Show per-student and per-class progress analytics.
+- Reduce paper usage for centers that adopt Dwelve.
+
+### Business goals
+
+- Validate willingness to pay among private learning centers.
+- Pilot with a small group of Tashkent learning centers.
+- Convert early active centers from free to paid usage.
+- Expand regionally after retention and pricing are validated.
 
 ---
 
 ## 4. Target users
 
 | Role | Login | What they do in Dwelve | Primary need |
-|---|---|---|---|
-| **Teacher / tutor** | Yes | Build tests (manually or from PDF), assign HW, view results, graphs, per-student progress | Save grading time; see who's struggling |
-| **Student** | Yes | Take tests/exams online, submit homework, review answers, ask AI to explain questions | Clear tasks, instant feedback, understanding |
-| **School / center admin** | Yes | Manage teachers, classes, students; oversee usage and reporting | Oversight and value-for-money |
-| Parent | *Out of scope (v1)* | — | (Deliberately excluded for now) |
+|---|---:|---|---|
+| **Teacher / tutor** | Yes | Build tests, upload PDF tests, assign homework, view results, track progress | Save grading time and understand who is struggling |
+| **Student** | Yes | Take tests, submit homework, review answers, ask for explanations when enabled | Clear tasks, feedback, and understanding |
+| **School / center admin** | Yes | Manage teachers, classes, students, reports, and subscription | Oversight and value-for-money |
+| **Parent** | No, out of scope for v1 | — | Deliberately excluded for now |
 
 ---
 
-## 5. Market context (Uzbekistan)
+## 5. Market context and assumptions
 
-This shapes both the strategy and the risks below, so it's worth stating plainly.
+Dwelve should start with **private learning centers**, not state schools.
 
-**State schools are largely served by an existing official platform.** eMaktab, built by Kundalik, is the unified digital education platform of the Ministry of Preschool and School Education of Uzbekistan, and it has been rolled out across all regions of the country. It already covers schedules, grades, homework, and creative assignments, and its monitoring tools include tests, statistics, and reports. Importantly for pricing: the platform is funded by Kundalik itself, not the state budget — so state schools get a comparable, government-backed tool for free.
+Reasoning:
 
-**The private learning-center segment is a different story** — fragmented, fast-growing, and largely outside that official platform. The sector is formalizing (an Association of Learning Centers is being established in Uzbekistan), and individual centers run at real scale (one Tashkent center reports over 4,500 monthly learners). These centers — IELTS/SAT, language, IT, and exam-prep — buy their own tools and care intensely about measurable student outcomes.
+- State schools may already have official or subsidized digital education platforms.
+- Private learning centers are more fragmented and more likely to buy tools directly.
+- IELTS/SAT, language, IT, and exam-prep centers care strongly about measurable student outcomes.
+- Smaller teams should avoid targeting state schools and private centers equally at the beginning.
 
-**What this means for Dwelve:** private learning centers are the strongest place to start; state schools are already covered by a free, official tool. This directly affects the "target both equally" decision (see Risks).
+> Market claims in this section should be treated as assumptions until they are backed by sources, interviews, or pilot data. Do not use this section as investor-facing evidence without validation.
 
 ---
 
 ## 6. Scope
 
-**In scope (MVP)**
-- Online test/exam builder with multiple question types (multiple choice, true/false, short answer)
-- Reusable question banks
-- **AI: upload a PDF test → get a ready, editable digital test**
-- Online test-taking for students in the browser
-- Automatic grading for objective questions; manual grading flow for open answers
-- **Post-test answer review for students**
-- **AI: per-question explanations for students (usage-limited on the free plan)**
-- Homework assignment and submission (Google-Classroom-style, more flexible)
-- Teacher dashboard: results, score history, progress graphs, per-student detail
-- Class/student management; admin oversight
-- Trilingual interface: Uzbek (Latin), Russian, English
+### In scope for MVP
 
-**Out of scope (v1)**
-- Parent accounts/portal
-- Native mobile apps (web-first, responsive)
-- Integration with Kundalik/eMaktab or government systems
-- Live video lessons
+- Online test/exam builder.
+- Question types: multiple choice, true/false, short answer.
+- Reusable question banks.
+- PDF-to-test generation with required teacher review before publishing.
+- Online test-taking in the browser.
+- Autosave during test sessions.
+- Automatic grading for objective questions.
+- Manual grading flow for open-ended answers.
+- Post-test answer review for students.
+- Basic teacher dashboard: results, score history, progress graphs, per-student detail.
+- Class/student management.
+- Basic admin oversight.
+- Trilingual interface: Uzbek Latin, Russian, English.
+- Basic exam integrity controls: time limits, question shuffling, answer autosave, one active attempt/session where possible.
 
-**A note on focus:** the platform is meant to serve both schools and learning centers, but the *first* customers should be private learning centers. Trying to win both segments at once spreads a small team too thin — and the school segment is the harder one, because a free official platform already covers it. Win the learning-center segment first, then expand.
+### Post-MVP / Phase 2
+
+- AI per-question explanations for students.
+- Higher AI usage limits for paid plans.
+- Advanced analytics.
+- Advanced exam integrity tools, such as tab-switch logging, stronger session monitoring, randomized question banks, and suspicious activity reports.
+- Local payment integration.
+- More complete homework workflows.
+
+### Out of scope for v1
+
+- Parent accounts/portal.
+- Native mobile apps.
+- Kundalik/eMaktab/government-system integrations.
+- Live video lessons.
+- Fully automated publishing of AI-parsed tests without teacher review.
 
 ---
 
 ## 7. Core features and priority
 
-| # | Feature | Priority | Notes |
-|---|---|---|---|
-| 1 | Reusable question banks | P0 | Tag by subject, topic, difficulty; reuse across tests |
-| 2 | Student progress analytics & graphs | P0 | Per-student and per-class trends over time |
-| 3 | Auto-grading & instant results | P0 | Objective Qs instant; open Qs flagged for review |
-| 4 | Online exam delivery | P0 | Timed sessions, question shuffling, autosave |
-| 5 | **AI PDF-to-test generation** | **P0** | Teacher uploads a PDF → AI produces an editable, ready test. Major onboarding win and fills question banks fast |
-| 6 | **Post-test answer review** | **P0** | Student sees correct answers after submission |
-| 7 | **"Ask AI" question explanations** | **P1** | Per-question AI explanation. Free plan limited by quota/time window; premium unlocks more |
-| 8 | Homework assign/submit | P1 | More flexible than Google Classroom (file types, deadlines, re-submission rules) |
-| 9 | Exam integrity / anti-cheating | P0 | For online exams this matters more than it first appears — see Risks |
-| 10 | Roles & class management | P0 | Teacher / student / admin |
-| 11 | Trilingual UI (uz-Latin/ru/en) | P0 | Table-stakes for this market |
-| 12 | Local payments & freemium gating | P1 | Uzcard/Humo via Payme/Click for the premium tier |
+| # | Feature | Priority | Phase | Notes |
+|---:|---|---|---|---|
+| 1 | Reusable question banks | P0 | MVP | Tag by subject, topic, difficulty; reuse across tests |
+| 2 | Student progress analytics and graphs | P0 | MVP | Per-student and per-class trends over time |
+| 3 | Auto-grading and instant results | P0 | MVP | Objective questions instant; open questions flagged for review |
+| 4 | Online exam delivery | P0 | MVP | Timed sessions, shuffling, autosave |
+| 5 | PDF-to-test generation | P0 | MVP | Teacher uploads PDF; AI creates an editable draft |
+| 6 | Required teacher review for AI-generated tests | P0 | MVP | AI output must never auto-publish |
+| 7 | Post-test answer review | P0 | MVP | Student sees correct answers after submission, based on teacher settings |
+| 8 | Basic exam integrity controls | P0 | MVP | Time limits, shuffling, attempt/session rules |
+| 9 | Roles and class management | P0 | MVP | Teacher / student / admin |
+| 10 | Trilingual UI | P0 | MVP | Uzbek Latin, Russian, English |
+| 11 | Homework assign/submit | P1 | Phase 2 | File types, deadlines, resubmission rules |
+| 12 | Ask AI explanations | P1 | Phase 2 | Usage-limited on free plan; expanded in paid plan |
+| 13 | Advanced exam integrity | P1 | Phase 2 | Tab-switch logging, randomized banks, suspicious activity report |
+| 14 | Local payments and freemium gating | P1 | Phase 2 | Payme/Click, Uzcard/Humo; exact provider to validate |
 
 ---
 
 ## 8. What makes Dwelve different
 
-This is the honest answer to "why would a center choose Dwelve over Google Forms, Quizizz, or the free official platform?"
-
-- **Upload a PDF, get a ready test.** Teachers don't rebuild their existing paper tests from scratch — they import them in seconds. This removes the biggest reason people abandon new tools (setup effort) and quickly fills the question banks.
-- **AI explanations turn a test into a learning moment.** A student doesn't just see a wrong answer — they can ask why, in their own language. That's something the lightweight free tools don't do.
-- **Depth of analytics.** Per-student progress over time, not just a score on one quiz — exactly what outcome-focused exam-prep centers care about.
-- **Built for the local market.** Trilingual (Uzbek-Latin, Russian, English) and local payment methods from day one.
-
-These advantages are stronger than generic feature lists because the AI-PDF and AI-explanation pieces are harder to copy and locally useful. The main caution: they depend on the AI working well in Uzbek and on PDF parsing being accurate (see Risks).
+- **Upload a PDF, get an editable test draft.** Teachers do not rebuild existing paper tests from scratch.
+- **Structured assessment workflow.** Dwelve is built for question banks, attempts, grading, results, and history rather than generic forms.
+- **Progress analytics over time.** Centers can measure improvement, not only one-off scores.
+- **Local fit.** Uzbek Latin, Russian, and English UI from the start, with local payment support planned.
+- **AI as a workflow accelerator.** AI speeds up test creation first, then supports student explanations after core assessment workflows are stable.
 
 ---
 
 ## 9. Key user flows
 
-**Test creation → result (manual)**
-1. Teacher creates a test, pulling questions from the bank or adding new ones.
-2. Teacher sets rules (time limit, shuffle, attempts) and assigns to a class.
-3. Students log in, take the test in-browser; answers autosave.
-4. Objective questions grade instantly; open questions queue for the teacher.
-5. Results publish to students; the teacher's dashboard updates progress graphs and per-student history.
+### Manual test creation → result
 
-**Test creation from PDF (AI)**
+1. Teacher creates a test from the question bank or new questions.
+2. Teacher sets rules: time limit, shuffle, attempts, review visibility.
+3. Teacher assigns the test to a class.
+4. Students take the test in-browser.
+5. Answers autosave.
+6. Objective questions grade instantly.
+7. Open-ended answers enter a teacher review queue.
+8. Results publish based on teacher settings.
+9. Dashboard updates class and student analytics.
+
+### PDF-to-test generation
+
 1. Teacher uploads a PDF of an existing test.
-2. AI parses it into questions, options, and answers.
-3. Teacher reviews and edits the generated test (required step — never auto-published).
-4. Teacher publishes; the test behaves like any other Dwelve test.
+2. AI parses questions, answer options, and answer keys where possible.
+3. Dwelve creates an editable draft test.
+4. Teacher reviews, edits, and confirms the generated content.
+5. Teacher publishes the test.
+6. The test behaves like any other Dwelve assessment.
 
-**Student review + Ask AI**
-1. After submitting, the student sees their score and the correct answers.
-2. On any question, the student taps "Ask AI" for a clear explanation.
-3. Free users have a limited number of explanations (or a limited time window); premium users get more.
+### Student review
+
+1. Student submits the test.
+2. Student sees score and correct answers if the teacher allows review.
+3. Student can view explanations when the feature is enabled and usage limits allow it.
 
 ---
 
 ## 10. Monetization
 
-Freemium. A free tier drives adoption and trust; a paid premium tier unlocks scale and advanced capability.
+Freemium. The free tier should make adoption easy; the paid tier should unlock scale, analytics, AI usage, and operational controls.
 
-- **Free:** core test creation, limited question-bank size or student count, basic results, post-test answer review, and a **capped number of "Ask AI" explanations** (per week/month).
-- **Premium (paid):** large/shared question banks, advanced analytics, exam integrity tools, higher limits, admin reporting, and **expanded or unlimited "Ask AI"** explanations.
-- **Billing:** monthly/annual per center or per active student, via local rails (Payme/Click, Uzcard/Humo). To be validated.
+### Free tier
 
-The "Ask AI" cap does double duty: it's a clear, visible reason to upgrade, *and* it controls the real per-use cost of AI calls.
+- Core test creation with limits.
+- Limited student count, class count, or question-bank size.
+- Basic results.
+- Post-test answer review.
+- Limited PDF-to-test usage, if AI cost allows.
+
+### Paid tier
+
+- Larger/shared question banks.
+- Advanced analytics.
+- Higher PDF-to-test limits.
+- Ask AI explanations.
+- Advanced exam integrity controls.
+- Admin reporting.
+- Local payment support.
+
+### Billing assumptions to validate
+
+- Per center per month.
+- Per active student per month.
+- Hybrid: base center subscription plus usage limits.
 
 ---
 
 ## 11. Non-functional requirements
 
-- **Localization:** full Uzbek (Latin), Russian, English; Uzbek-Cyrillic optional later.
-- **Performance:** must hold up when a full class takes an exam simultaneously; autosave to prevent lost answers on weak connections.
-- **Reliability/integrity:** exam sessions must survive brief disconnects; results must be tamper-resistant.
+- **Localization:** full Uzbek Latin, Russian, English. Uzbek Cyrillic can be evaluated later.
+- **Script support:** UI fonts and user-generated-content components must render Uzbek Latin, Russian Cyrillic, and English correctly.
+- **Performance:** must support a full class taking an exam simultaneously.
+- **Reliability:** autosave must protect students from brief disconnects.
+- **Integrity:** attempts, submissions, grades, and result history must be tamper-resistant.
 - **Accessibility:** usable on low-to-mid-range devices and average local bandwidth.
+- **Security:** no secrets in frontend code; auth/session logic must be reviewed carefully.
 
-**AI-specific requirements**
-- AI explanations and PDF parsing must work across Uzbek, Russian, and English. Explanation quality in **Uzbek especially** should be tested, since AI model quality varies by language.
-- PDF-to-test must always include a **teacher review-and-edit step** before publishing — never auto-publish a parsed test blind, especially with math, images, or Uzbek/Cyrillic text where parsing can slip.
-- AI calls have a real per-use cost, so free-tier limits are both a sales lever and a cost-control measure. Set clear per-user limits.
+### AI-specific requirements
+
+- PDF-to-test output must always require teacher review before publishing.
+- AI parsing quality must be tested with Uzbek, Russian, English, mixed scripts, math, tables, and scanned/low-quality PDFs.
+- AI explanation quality must be tested especially in Uzbek.
+- Free-tier AI usage must have clear limits because AI calls have real cost.
 
 ---
 
 ## 12. Success metrics
 
-- Centers onboarded; free → paid conversion rate.
-- Weekly active teachers and tests created per teacher.
-- Share of tests created via PDF upload (measures whether that onboarding lever works).
-- "Ask AI" usage and its effect on free → paid conversion.
-- Exams delivered online (and estimated paper displaced).
-- Grading time saved per teacher.
-- Retention at 1 and 3 months.
+- Centers onboarded.
+- Free-to-paid conversion rate.
+- Weekly active teachers.
+- Tests created per teacher.
+- Share of tests created through PDF upload.
+- Tests delivered online.
+- Estimated paper displaced.
+- Average grading time saved.
+- Student review usage.
+- Ask AI usage after Phase 2 launch.
+- Retention after 1 and 3 months.
 
 ---
 
 ## 13. Risks and open questions
 
-- **Focus risk (highest):** going after state schools and learning centers "equally" splits a small team's effort across a free, official incumbent (eMaktab/Kundalik) and a winnable private market. Recommendation: lead with private learning centers; treat state schools as a later, secondary move.
-- **Anti-cheating deserves more weight than it was first given.** Exams are fully online, and exam-prep centers sell credibility — results nobody trusts have little value. Recommendation: include basic integrity controls (tab-switch detection, question shuffling, randomized banks, time limits) in the MVP.
-- **AI quality and PDF parsing.** The two AI features are now core differentiators, so they have to work. Risks: weaker AI output in Uzbek, and imperfect PDF parsing (math, images, mixed scripts). The mandatory teacher review step is the safety net.
-- **Question-bank cold start — largely solved.** Empty banks were a real worry; PDF-to-test plus seeded banks for popular subjects/exams mostly removes it.
-- **Free global competitors** (Google Classroom/Forms, Quizizz, Kahoot) cover the light use case. Differentiation must lean on the AI features, analytics depth, and local fit.
-- **Open questions:** Pricing unit (per student vs per center)? Which subjects/exams to seed first? Uzbek-Cyrillic at launch or later? How many free "Ask AI" uses strikes the right balance between value and cost?
+### Highest risks
+
+- **Focus risk:** targeting state schools and private centers equally would split effort. Start with private centers.
+- **AI parsing risk:** PDF parsing may fail on math, images, scans, or mixed scripts.
+- **Language quality risk:** Uzbek AI output and font/script handling must be proven, not assumed.
+- **Exam trust risk:** online exam results need basic integrity controls from the MVP.
+- **Pricing risk:** the best unit — per center, per active student, or hybrid — is not validated.
+
+### Open questions
+
+- Which center segment should be piloted first: IELTS/SAT, language, IT, or general tutoring?
+- Which subjects/exams should be seeded first?
+- What is the right free AI limit?
+- Should Uzbek Cyrillic be supported at launch or after validation?
+- Which local payment provider should be integrated first?
+- What minimum integrity controls are enough for early pilots?
 
 ---
 
 ## 14. Suggested roadmap
 
-- **Phase 1 (MVP):** question bank, test builder, **AI PDF-to-test**, online delivery, auto-grading, **post-test answer review**, basic analytics, trilingual UI, pilot with 3–5 Tashkent learning centers.
-- **Phase 2:** **"Ask AI" explanations**, exam integrity tools, premium tier + local payments, richer analytics, homework workflows.
-- **Phase 3:** regional expansion, deeper admin reporting, evaluate the state-school move and parent visibility.
+### Phase 1 — MVP / pilot
+
+- Question bank.
+- Test builder.
+- PDF-to-test generation.
+- Required teacher review for generated tests.
+- Online test delivery.
+- Autosave.
+- Auto-grading for objective questions.
+- Manual grading queue.
+- Post-test answer review.
+- Basic analytics.
+- Basic exam integrity.
+- Trilingual UI.
+- Pilot with 3–5 Tashkent learning centers.
+
+### Phase 2 — paid tier and retention
+
+- Ask AI explanations.
+- Premium AI usage limits.
+- Advanced exam integrity.
+- Local payments.
+- Richer analytics.
+- Homework workflows.
+- Admin reporting.
+
+### Phase 3 — expansion
+
+- Regional expansion.
+- Deeper reporting.
+- Additional integrations.
+- Evaluate state-school strategy.
+- Evaluate parent visibility.
 
 ---
 
-## 15. Uzbekistan market rating
+## 15. Notes
 
-> Note: this section is a light business case, not part of the core PRD. It's included because it's useful for early decisions.
-
-**Overall: 7 / 10** — a real, timely opportunity with a clear winnable segment and now-stronger, harder-to-copy AI features. Held back mainly by the unfocused targeting choice and execution risk on the AI.
-
-| Dimension | Score | Reasoning |
-|---|---|---|
-| Market need / pain | **8/10** | Paper-based testing and manual grading are genuine, widespread pains; digitization is already underway nationally. |
-| Timing | **8/10** | Government push on digital education + a growing, formalizing private-center sector make this the right moment. |
-| Winnable segment (learning centers) | **7.5/10** | Underserved by the official platform, willing to pay, outcome-focused — a strong place to start. |
-| What makes it different | **6.5/10** | AI PDF-to-test and AI explanations are harder to copy and locally valuable — up from before, but they must work in practice. |
-| Current targeting choice ("both equally") | **5/10** | Splitting effort into the state-school segment — covered by a free, official platform — dilutes a small team's focus. |
-| Monetization fit | **7/10** | Freemium suits try-first local behavior, and "Ask AI" is a clean upgrade hook; still needs local payment rails and a validated price. |
-| Execution risk | **6/10** | Online exams at scale + integrity + trilingual AI quality + PDF parsing is a meaningful build for an early team. |
-
-**Bottom line for Uzbekistan:** The concept is sound, well-timed, and now more distinctive thanks to the AI features. To push toward an 8/10: **focus on private learning centers first**, make sure **exam integrity** is in the MVP despite its low initial ranking, and **prove the AI works well in Uzbek** (both explanations and PDF parsing). Do those and the rating rises; chase state schools head-on against a free official platform and it falls back toward 5.
+The earlier “market rating” section is useful as internal business thinking, but it is not a core PRD requirement. Keep it in a separate research/business note if needed, not in the main PRD.
