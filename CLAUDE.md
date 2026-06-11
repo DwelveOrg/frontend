@@ -25,6 +25,8 @@ Primary product areas:
 
 Stack noted in the existing project documentation:
 
+**Dwelve** (package name `gf-frontend`) is a Next.js App Router frontend for a digital academic testing and performance-management platform for schools and learning centers — test creation, submission, automated grading, and analytics.
+
 - Next.js App Router
 - React
 - TypeScript strict mode
