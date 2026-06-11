@@ -1,106 +1,112 @@
-﻿"use client";
-
-
+"use client";
 
 import React from "react";
-import { ChartNoAxesCombined, Share2, ShieldCheck } from "lucide-react";
+import { ChartNoAxesCombined, Share2, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
 
-import LiquidCard from "../_components/cards/LiquidCard";
+type Step = {
+  step: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+};
 
 export default function HowItWorks() {
   const { t } = useTranslation();
   const shouldReduceMotion = useReducedMotion();
 
-  const sectionVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
+  const steps: Step[] = [
+    {
+      step: "01",
+      title: t("landing.howItWorks.createTitle"),
+      description: t("landing.howItWorks.createDesc"),
+      icon: ShieldCheck,
     },
+    {
+      step: "02",
+      title: t("landing.howItWorks.shareTitle"),
+      description: t("landing.howItWorks.shareDesc"),
+      icon: Share2,
+    },
+    {
+      step: "03",
+      title: t("landing.howItWorks.resultsTitle"),
+      description: t("landing.howItWorks.resultsDesc"),
+      icon: ChartNoAxesCombined,
+    },
+  ];
+
+  const header = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 18 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
   };
 
-  const cardsContainerVariants = {
+  const container = {
     hidden: {},
     visible: {
-      transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.14,
-        delayChildren: 0.12,
-      },
+      transition: { staggerChildren: shouldReduceMotion ? 0 : 0.12, delayChildren: 0.05 },
     },
   };
 
-  const cardVariants = {
-    hidden: {
-      opacity: 0,
-      y: shouldReduceMotion ? 0 : 22,
-      scale: shouldReduceMotion ? 1 : 0.98,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: { duration: 0.5 },
-    },
+  const card = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 22 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
   return (
-    <section id="how-it-works" className="my-[20px] w-full scroll-mt-24">
-      <motion.div
-        className="container mx-auto flex flex-col items-center"
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        <h1 className="text-4xl font-bold capitalize text-[#0F2854] dark:text-[white]">
-          {t("landing.howItWorks.title")}
-        </h1>
-        <p className="mt-6 text-[#0F2854] opacity-70 dark:text-[white]">
-          {t("landing.howItWorks.subtitle")}
-        </p>
+    <section
+      id="how-it-works"
+      className="w-full scroll-mt-24 bg-slate-50/70 py-20 md:py-28 dark:bg-white/[0.02]"
+    >
+      <div className="mx-auto w-full max-w-6xl px-4">
         <motion.div
-          className="mt-10 grid max-w-[90%] gap-6 md:grid-cols-3"
-          variants={cardsContainerVariants}
+          className="mx-auto max-w-2xl text-center"
+          variants={header}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.25 }}
+          viewport={{ once: true, amount: 0.4 }}
         >
-          <motion.div variants={cardVariants}>
-            <LiquidCard>
-            <div className="flex h-[100px] w-full flex-col items-center justify-center">
-              <h2 className="mt-2 flex items-center gap-[7px] text-[30px] font-bold text-[#0F2854] max-[1020px]:text-[25px] dark:text-white">
-                {t("landing.howItWorks.createTitle")} <ShieldCheck />
-              </h2>
-              <p className="mt-3 text-center text-sm text-slate-700 max-[1030px]:text-[12px] dark:text-slate-200">{t("landing.howItWorks.createDesc")}</p>
-            </div>
-            </LiquidCard>
-          </motion.div>
-          <motion.div variants={cardVariants}>
-            <LiquidCard>
-            <div className="flex h-[100px] w-full flex-col items-center justify-center">
-              <h2 className="mt-2 flex items-center gap-[7px] text-[30px] font-bold text-[#0F2854] max-[1020px]:text-[25px] dark:text-white">
-                {t("landing.howItWorks.shareTitle")} <Share2 />
-              </h2>
-              <p className="mt-3 text-center text-sm text-slate-700 max-[1030px]:text-[12px] dark:text-slate-200">{t("landing.howItWorks.shareDesc")}</p>
-            </div>
-            </LiquidCard>
-          </motion.div>
-          <motion.div variants={cardVariants}>
-            <LiquidCard>
-            <div className="flex h-[100px] w-full flex-col items-center justify-center">
-              <h2 className="mt-2 flex items-center gap-[7px] text-[30px] font-bold text-[#0F2854] max-[1030px]:text-[25px] dark:text-white">
-                {t("landing.howItWorks.resultsTitle")} <ChartNoAxesCombined />
-              </h2>
-              <p className="mt-3 text-center text-sm text-slate-700 max-[1030px]:text-[12px] dark:text-slate-200">{t("landing.howItWorks.resultsDesc")}</p>
-            </div>
-            </LiquidCard>
-          </motion.div>
+          <h2 className="text-3xl font-bold tracking-tight text-[#1a1a2e] sm:text-4xl dark:text-white">
+            {t("landing.howItWorks.title")}
+          </h2>
+          <p className="mt-4 text-base text-[#64748b] dark:text-slate-300">
+            {t("landing.howItWorks.subtitle")}
+          </p>
         </motion.div>
-      </motion.div>
+
+        <motion.div
+          className="mt-14 grid gap-5 md:grid-cols-3"
+          variants={container}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          {steps.map((item) => {
+            const Icon = item.icon;
+            return (
+              <motion.article
+                key={item.step}
+                variants={card}
+                className="relative rounded-2xl border border-slate-200/70 bg-white p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-[#111726]"
+              >
+                <span className="absolute right-6 top-6 text-3xl font-bold text-slate-100 dark:text-white/10">
+                  {item.step}
+                </span>
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-[#4F46E5] dark:bg-indigo-500/15 dark:text-indigo-300">
+                  <Icon className="h-6 w-6" />
+                </div>
+                <h3 className="mt-5 text-lg font-bold text-[#1a1a2e] dark:text-white">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#64748b] dark:text-slate-300">
+                  {item.description}
+                </p>
+              </motion.article>
+            );
+          })}
+        </motion.div>
+      </div>
     </section>
   );
 }
-
