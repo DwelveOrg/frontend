@@ -362,6 +362,18 @@ translation: {
           subtitle: "Qog'ozsiz. Darhol baholash. O'qituvchi va o'quvchi uchun sodda.",
           teacherCta: "O'qituvchi sifatida boshlash",
           studentCta: "boshlash",
+          badge: "500+ maktab ishonadi",
+          primaryCta: "Bepul boshlash",
+          secondaryCta: "Kirish",
+          socialProof: "o'qituvchi va o'quvchi",
+          trustedBy: "Dunyo bo'ylab muassasalar ishonadi",
+          mockup: {
+            title: "Boshqaruv paneli",
+            welcome: "Xush kelibsiz",
+            courses: "Kurslar",
+            grade: "Baho",
+            tasks: "Vazifalar",
+          },
         },
         howItWorks: {
           title: "Qanday ishlaydi",
@@ -376,6 +388,7 @@ translation: {
         features: {
           label: "Asosiy imkoniyatlar",
           title: "Zamonaviy sinflar uchun: tez va tushunarli.",
+          subtitle: "Zamonaviy ta'lim uchun kuchli vositalar — sodda interfeysda.",
           instantGradingTitle: "Darhol baholash",
           instantGradingDesc: "Avtomatik baholash qo'lda tekshirish vaqtini tejaydi.",
           timedExamsTitle: "Vaqtli imtihonlar",
@@ -408,8 +421,16 @@ translation: {
             answer: "Ha. Savollarni bankka saqlab, uy vazifasi, quiz yoki imtihonlarda qayta qo'llashingiz mumkin.",
           },
         },
+        cta: {
+          title: "Bugun Dwelve'dan foydalanishni boshlang",
+          subtitle: "O'z sinflarini o'zgartirayotgan minglab o'qituvchilarga qo'shiling. Boshlash bepul — karta shart emas.",
+          primary: "Bepul ro'yxatdan o'tish",
+          secondary: "Batafsil",
+        },
         footer: {
           description: "Maktab testlarini bir necha daqiqada onlayn yarating, ulashing va baholang.",
+          about: "Biz haqimizda",
+          contact: "Aloqa",
           quickLinks: "Tezkor havolalar",
           home: "Bosh sahifa",
           howItWorks: "Qanday ishlaydi",

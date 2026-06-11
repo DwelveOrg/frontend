@@ -1,35 +1,149 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import React from "react";
+import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { motion, useReducedMotion } from "motion/react";
+
+const AVATAR_COLORS = ["bg-indigo-300", "bg-emerald-300", "bg-amber-300", "bg-rose-300"];
+
+const CHART_BARS = [
+  { height: "42%", color: "bg-indigo-200 dark:bg-indigo-400/40" },
+  { height: "60%", color: "bg-indigo-300 dark:bg-indigo-400/60" },
+  { height: "34%", color: "bg-indigo-200 dark:bg-indigo-400/40" },
+  { height: "78%", color: "bg-indigo-400 dark:bg-indigo-400/80" },
+  { height: "52%", color: "bg-indigo-300 dark:bg-indigo-400/60" },
+  { height: "94%", color: "bg-[#4F46E5]" },
+];
+
+const INSTITUTIONS = ["Stanford", "MIT", "Harvard", "Oxford", "Yale"];
 
 function MainPage() {
   const { t } = useTranslation();
+  const shouldReduceMotion = useReducedMotion();
+
+  const fade = (delay = 0) => ({
+    initial: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.5, delay: shouldReduceMotion ? 0 : delay },
+  });
 
   return (
-    <section className="my-[20px] flex min-h-[60vh] w-full flex-col items-center justify-center" id="feature">
-      <div className="container mx-auto">
-        <div className="flex flex-col items-center gap-6">
-          <h1 className="text-center text-5xl font-bold text-[#0F2854] max-[615px]:text-4xl dark:text-[white] max-w-[80%]">
+    <section id="home" className="w-full scroll-mt-24 px-4 pb-12 pt-14 md:pt-20">
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2">
+        {/* Left: copy */}
+        <motion.div className="flex flex-col items-start text-left" {...fade(0)}>
+          <span className="inline-flex items-center rounded-full bg-indigo-50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#4F46E5] dark:bg-indigo-500/15 dark:text-indigo-300">
+            {t("landing.main.badge")}
+          </span>
+
+          <h1 className="mt-6 max-w-xl text-4xl font-bold leading-[1.08] tracking-tight text-[#1a1a2e] sm:text-5xl lg:text-[3.4rem] dark:text-white">
             {t("landing.main.title")}
           </h1>
-          <p className="max-w-[90%] text-center text-[#0F2854] opacity-70 max-[520px]:max-w-full max-[520px]:text-sm dark:text-[white]">
+
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-[#64748b] sm:text-lg dark:text-slate-300">
             {t("landing.main.subtitle")}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-5">
-            <Link href="/dashboard" className="cursor-pointer rounded-lg bg-[#0046FF] px-4 py-2 font-medium text-white transition-all duration-600 hover:bg-[#0033CC]">
-              {t("landing.main.teacherCta")}
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link
+              href="/signup"
+              className="inline-flex h-12 items-center justify-center rounded-xl bg-[#4F46E5] px-6 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(79,70,229,0.25)] transition-all duration-200 hover:bg-[#4338ca] hover:shadow-[0_14px_30px_rgba(79,70,229,0.32)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#4F46E5]/20"
+            >
+              {t("landing.main.primaryCta")}
             </Link>
-            <Link href="/dashboard" className="flex h-[40px] w-[157.4px] items-center justify-center gap-2 rounded-lg border border-black/10 text-sm font-medium text-[#355181] transition hover:bg-[#f4f8ff] dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10">
-              {t("landing.main.studentCta")}
+            <Link
+              href="/login"
+              className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 text-sm font-semibold text-[#1a1a2e] transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+            >
+              {t("landing.main.secondaryCta")}
+              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
           </div>
+
+          <div className="mt-9 flex items-center gap-3">
+            <div className="flex -space-x-2.5">
+              {AVATAR_COLORS.map((color, i) => (
+                <span
+                  key={i}
+                  className={`h-8 w-8 rounded-full ring-2 ring-white dark:ring-[#0b0f1a] ${color}`}
+                />
+              ))}
+            </div>
+            <p className="text-sm text-[#64748b] dark:text-slate-400">
+              <span className="font-semibold text-[#1a1a2e] dark:text-white">2,400+</span>{" "}
+              {t("landing.main.socialProof")}
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Right: dashboard preview */}
+        <motion.div className="relative" {...fade(0.15)}>
+          <div className="rounded-[28px] bg-slate-100/70 p-3 sm:p-5 dark:bg-white/5">
+            <div className="rounded-2xl bg-white p-5 shadow-[0_24px_60px_rgba(15,23,42,0.12)] dark:bg-[#111726] dark:shadow-[0_24px_60px_rgba(0,0,0,0.5)]">
+              <div className="flex items-center justify-between">
+                <p className="text-base font-bold text-[#1a1a2e] dark:text-white">
+                  {t("landing.main.mockup.title")}
+                </p>
+                <p className="text-xs text-[#94a3b8] dark:text-slate-400">
+                  {t("landing.main.mockup.welcome")}, Sarah
+                </p>
+              </div>
+
+              <div className="mt-5 grid grid-cols-3 gap-3">
+                <StatCard label={t("landing.main.mockup.courses")} value="6" />
+                <StatCard label={t("landing.main.mockup.grade")} value="A-" />
+                <StatCard label={t("landing.main.mockup.tasks")} value="4" accent />
+              </div>
+
+              <div className="mt-3 flex h-36 items-end justify-between gap-2.5 rounded-xl bg-indigo-50/70 p-4 dark:bg-indigo-500/10">
+                {CHART_BARS.map((bar, i) => (
+                  <div
+                    key={i}
+                    className={`w-full rounded-md ${bar.color}`}
+                    style={{ height: bar.height }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Trusted-by institutions */}
+      <div className="mx-auto mt-20 w-full max-w-5xl px-4 text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#94a3b8] dark:text-slate-500">
+          {t("landing.main.trustedBy")}
+        </p>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
+          {INSTITUTIONS.map((name) => (
+            <span
+              key={name}
+              className="text-lg font-bold text-slate-300 transition-colors hover:text-slate-400 dark:text-slate-600 dark:hover:text-slate-500"
+            >
+              {name}
+            </span>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-export default MainPage;
+function StatCard({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className="rounded-xl bg-slate-50 px-3 py-3 dark:bg-white/5">
+      <p className="text-[11px] font-medium text-[#94a3b8] dark:text-slate-400">{label}</p>
+      <p
+        className={`mt-1 text-xl font-bold ${
+          accent ? "text-[#4F46E5] dark:text-indigo-300" : "text-[#1a1a2e] dark:text-white"
+        }`}
+      >
+        {value}
+      </p>
+    </div>
+  );
+}
 
+export default MainPage;

@@ -362,6 +362,18 @@ translation: {
           subtitle: "No printing. Instant grading. Simple for teachers and students.",
           teacherCta: "Start as Teacher",
           studentCta: "Log in",
+          badge: "Trusted by 500+ schools",
+          primaryCta: "Get started free",
+          secondaryCta: "Log in",
+          socialProof: "educators and students",
+          trustedBy: "Trusted by institutions worldwide",
+          mockup: {
+            title: "Dashboard",
+            welcome: "Welcome back",
+            courses: "Courses",
+            grade: "Grade",
+            tasks: "Tasks",
+          },
         },
         howItWorks: {
           title: "How it works",
@@ -376,6 +388,7 @@ translation: {
         features: {
           label: "Core Features",
           title: "Built for modern classrooms, designed for speed and clarity.",
+          subtitle: "Powerful tools designed for modern education, wrapped in a simple interface.",
           instantGradingTitle: "Instant Grading",
           instantGradingDesc: "Automatic scoring saves hours of manual checking.",
           timedExamsTitle: "Time-Controlled Exams",
@@ -408,8 +421,16 @@ translation: {
             answer: "Yes. Save questions to your bank and reuse them for homework, quizzes, or exams.",
           },
         },
+        cta: {
+          title: "Start using Dwelve today",
+          subtitle: "Join thousands of educators transforming their classrooms. Free to get started — no credit card required.",
+          primary: "Sign up for free",
+          secondary: "Learn more",
+        },
         footer: {
           description: "Create, share, and grade school tests online in minutes with instant analytics.",
+          about: "About",
+          contact: "Contact",
           quickLinks: "Quick Links",
           home: "Home",
           howItWorks: "How It Works",
