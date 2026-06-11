@@ -278,3 +278,23 @@ html {
     @apply font-sans;
   }
 }
+
+@theme inline {
+  --font-sans: var(--font-dwelve-sans);
+  --font-serif: var(--font-dwelve-serif);
+
+  --color-brand-primary: #4F46E5;
+
+  --color-app-background: #f4f5f7;
+  --color-surface: #ffffff;
+
+  --color-text-heading: #1a1a2e;
+  --color-text-body: #64748b;
+  --color-text-muted: #94a3b8;
+
+  --color-status-success: #22c55e;
+  --color-status-warning: #f59e0b;
+  --color-status-error: #ef4444;
+
+  --color-sidebar-active: #f0f0ff;
+}
