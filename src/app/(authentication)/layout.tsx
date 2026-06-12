@@ -3,8 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
+import type { AuthLayoutProps } from "./_types";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: AuthLayoutProps) => {
   const { t } = useTranslation();
 
   return (
