@@ -6,16 +6,15 @@ import { SignupFormField, signupSchema } from "@/app/(authentication)/_types/_sc
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
 import NeonField from "../../_components/NeonField";
 import NeonOtp from "../../_components/NeonOtp";
+import { defaultSignupValues, demoVerificationCode } from "../../_constants";
 
 const roleOptions = [
   { value: "student", icon: GraduationCap, labelKey: "auth.signup.student" },
   { value: "teacher", icon: Presentation, labelKey: "auth.signup.teacher" },
 ] as const;
-
-const DEMO_VERIFICATION_CODE = "123456";
 
 function SectionRule({ n }: { n: string }) {
   return (
@@ -37,29 +36,19 @@ export default function SignupPage() {
     control,
     register,
     handleSubmit,
-    watch,
     setValue,
     setError,
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<SignupFormField>({
     resolver: zodResolver(signupSchema),
-    defaultValues: {
-      role: "student",
-      fullName: "",
-      email: "",
-      verificationCode: "",
-      username: "",
-      password: "",
-      confirmPassword: "",
-      termsAccepted: false,
-    },
+    defaultValues: defaultSignupValues,
   });
 
-  const role = watch("role");
+  const role = useWatch({ control, name: "role" });
 
   const onSubmit: SubmitHandler<SignupFormField> = async (data) => {
-    if (data.verificationCode.trim() !== DEMO_VERIFICATION_CODE) {
+    if (data.verificationCode.trim() !== demoVerificationCode) {
       setError("verificationCode", { message: t("auth.signup.verificationIncorrect") });
       return;
     }
@@ -117,7 +106,7 @@ export default function SignupPage() {
             {t("auth.signup.verificationLabel")}
           </label>
           <p className="mb-3 text-xs text-slate-500">
-            {t("auth.signup.demoCode")}: <span className="font-semibold text-indigo-300">{DEMO_VERIFICATION_CODE}</span>
+            {t("auth.signup.demoCode")}: <span className="font-semibold text-indigo-300">{demoVerificationCode}</span>
           </p>
           <Controller
             control={control}

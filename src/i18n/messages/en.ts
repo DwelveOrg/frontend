@@ -451,6 +451,7 @@ translation: {
       auth: {
         common: {
           backToLanding: "Back to landing",
+          backToLogin: "Back to login",
         },
         login: {
           access: "Dwelve Access",

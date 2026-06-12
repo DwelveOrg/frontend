@@ -2,10 +2,11 @@
 
 import React from "react";
 import { motion, useReducedMotion, type Transition } from "motion/react";
+import type { AuthLayoutProps } from "./_types";
 
 const drift: Transition = { duration: 16, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" };
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: AuthLayoutProps) => {
   const reduce = useReducedMotion();
 
   return (

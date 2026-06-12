@@ -9,12 +9,9 @@ import { toast } from "react-toastify";
 import { loginSchema, LoginFormField } from "@/app/(authentication)/_types/_schemas/index";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
+import type { LoginPageClientProps } from "@/app/(authentication)/_types";
 import { login, type LoginActionState } from "../../_lib/actions";
 import NeonField from "../../_components/NeonField";
-
-type LoginPageClientProps = {
-  logout?: string;
-};
 
 export default function LoginPageClient({ logout }: Readonly<LoginPageClientProps>) {
   const { t } = useTranslation();
