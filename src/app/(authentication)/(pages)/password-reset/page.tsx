@@ -9,26 +9,23 @@ const PasswordReset = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="w-full">
-      <div className="relative mx-auto w-full max-w-md rounded-2xl border border-slate-200/80 bg-white p-7 shadow-[0_18px_50px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#111726] dark:shadow-[0_18px_50px_rgba(0,0,0,0.5)]">
+    <div className="w-full max-w-md rounded-[28px] border border-white/15 bg-white/[0.08] p-8 shadow-[0_30px_90px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
+      <div className="flex items-center justify-between">
+        <Link href="/" className="font-serif text-2xl leading-none text-white">
+          Dwelve
+        </Link>
         <Link
           href="/login"
           aria-label={t("auth.common.backToLanding")}
-          className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-[#64748b] transition hover:border-slate-300 hover:bg-slate-50 hover:text-[#1a1a2e] dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/80 transition hover:bg-white/20 hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
         </Link>
-
-        <Link href="/" className="inline-flex items-center">
-          <span className="font-serif text-[22px] leading-none text-[#1a1a2e] dark:text-white">
-            Dwelve
-          </span>
-        </Link>
-        <h2 className="mt-6 text-2xl font-bold tracking-tight text-[#1a1a2e] dark:text-white">
-          {t("auth.passwordReset.title")}
-        </h2>
       </div>
-    </section>
+      <h1 className="mt-8 text-3xl font-bold tracking-tight text-white">
+        {t("auth.passwordReset.title")}
+      </h1>
+    </div>
   );
 };
 
