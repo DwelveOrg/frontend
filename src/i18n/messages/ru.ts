@@ -450,6 +450,7 @@ translation: {
       auth: {
         common: {
           backToLanding: "Назад на лендинг",
+          backToLogin: "Назад ко входу",
         },
         login: {
           access: "Доступ Dwelve",

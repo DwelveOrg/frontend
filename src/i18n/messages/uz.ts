@@ -450,6 +450,7 @@ translation: {
       auth: {
         common: {
           backToLanding: "Landing sahifaga qaytish",
+          backToLogin: "Kirishga qaytish",
         },
         login: {
           access: "Dwelve kirishi",

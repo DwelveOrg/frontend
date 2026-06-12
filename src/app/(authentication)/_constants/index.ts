@@ -1,3 +1,6 @@
+import type { SignupFormField } from "../_types/_schemas";
+import type { AuthRoleOption } from "../_types";
+
 export const protectedRoutes = [
   "/dashboard",
   "/profile",
@@ -10,6 +13,31 @@ export const protectedRoutes = [
 ];
 
 export const publicRoutes = ["/login", "/signup"];
+
+export const signupStepFields: Array<Array<keyof SignupFormField>> = [
+  ["role", "fullName", "email"],
+  ["verificationCode"],
+  ["username", "password", "confirmPassword", "termsAccepted"],
+];
+
+export const defaultSignupValues: SignupFormField = {
+  role: "student",
+  fullName: "",
+  email: "",
+  verificationCode: "",
+  username: "",
+  password: "",
+  confirmPassword: "",
+  termsAccepted: false,
+};
+
+export const authRoleOptions: AuthRoleOption[] = [
+  { value: "student", labelKey: "auth.signup.student" },
+  { value: "teacher", labelKey: "auth.signup.teacher" },
+];
+
+export const demoVerificationCode = "123456";
+export const signupStepCount = 3;
 
 export const testUsers = [
   {
