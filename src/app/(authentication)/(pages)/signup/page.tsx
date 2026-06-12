@@ -6,23 +6,16 @@ import { SignupFormField, signupSchema } from "@/app/(authentication)/_types/_sc
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import PillField from "../../_components/PillField";
 import PillOtp from "../../_components/PillOtp";
-
-const stepFields: Array<Array<keyof SignupFormField>> = [
-  ["role", "fullName", "email"],
-  ["verificationCode"],
-  ["username", "password", "confirmPassword", "termsAccepted"],
-];
-
-const roleOptions = [
-  { value: "student", labelKey: "auth.signup.student" },
-  { value: "teacher", labelKey: "auth.signup.teacher" },
-] as const;
-
-const DEMO_VERIFICATION_CODE = "123456";
+import {
+  authRoleOptions,
+  defaultSignupValues,
+  demoVerificationCode,
+  signupStepFields,
+} from "../../_constants";
 
 export default function SignupPage() {
   const { t } = useTranslation();
@@ -36,33 +29,24 @@ export default function SignupPage() {
     register,
     handleSubmit,
     trigger,
-    watch,
+    getValues,
     setValue,
     setError,
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<SignupFormField>({
     resolver: zodResolver(signupSchema),
-    defaultValues: {
-      role: "student",
-      fullName: "",
-      email: "",
-      verificationCode: "",
-      username: "",
-      password: "",
-      confirmPassword: "",
-      termsAccepted: false,
-    },
+    defaultValues: defaultSignupValues,
   });
 
-  const role = watch("role");
+  const role = useWatch({ control, name: "role" });
 
   const nextStep = async () => {
-    const valid = await trigger(stepFields[step], { shouldFocus: true });
+    const valid = await trigger(signupStepFields[step], { shouldFocus: true });
     if (!valid) return;
     if (step === 1) {
-      const code = watch("verificationCode")?.trim();
-      if (code !== DEMO_VERIFICATION_CODE) {
+      const code = getValues("verificationCode")?.trim();
+      if (code !== demoVerificationCode) {
         setError("verificationCode", { message: t("auth.signup.verificationIncorrect") });
         return;
       }
@@ -115,7 +99,7 @@ export default function SignupPage() {
             {step === 0 && (
               <>
                 <div className="grid grid-cols-2 gap-3">
-                  {roleOptions.map(({ value, labelKey }) => {
+                  {authRoleOptions.map(({ value, labelKey }) => {
                     const active = role === value;
                     return (
                       <button
@@ -140,7 +124,7 @@ export default function SignupPage() {
               <div>
                 <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/50">{t("auth.signup.verificationLabel")}</p>
                 <p className="mx-auto mb-5 mt-2 max-w-xs text-xs text-white/55">
-                  {t("auth.signup.demoCode")}: <span className="font-semibold text-white">{DEMO_VERIFICATION_CODE}</span>
+                  {t("auth.signup.demoCode")}: <span className="font-semibold text-white">{demoVerificationCode}</span>
                 </p>
                 <Controller
                   control={control}

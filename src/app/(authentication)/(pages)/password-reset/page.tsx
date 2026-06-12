@@ -16,7 +16,7 @@ const PasswordReset = () => {
         {t("auth.passwordReset.title")}
       </h1>
       <Link href="/login" className="mt-6 inline-block text-xs font-medium uppercase tracking-[0.16em] text-white/55 transition hover:text-white">
-        {t("auth.common.backToLanding")}
+        {t("auth.common.backToLogin")}
       </Link>
     </div>
   );

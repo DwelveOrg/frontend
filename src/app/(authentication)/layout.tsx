@@ -1,14 +1,18 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import type { AuthLayoutProps } from "./_types";
 
 /**
  * Immersive art variant. NOTE: public/images/auth/art.jpg is a stock
  * placeholder standing in for bespoke AI-generated artwork (the image
  * generator was out of credits). Regenerate and swap the file to ship.
  */
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: AuthLayoutProps) => {
+  const { t } = useTranslation();
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-[#0b0f1a] font-sans">
       <Image src="/images/auth/art.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
@@ -17,7 +21,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
       <Link
         href="/"
-        aria-label="Back"
+        aria-label={t("auth.common.backToLanding")}
         className="absolute left-5 top-5 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white/80 backdrop-blur-md transition hover:bg-white/20 hover:text-white"
       >
         <ArrowLeft className="h-4 w-4" />
