@@ -4,25 +4,23 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Eye, EyeOff, GraduationCap, Presentation, Check } from "lucide-react";
 import { SignupFormField, signupSchema } from "@/app/(authentication)/_types/_schemas/index";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import GlassField from "../../_components/GlassField";
 import GlassOtp from "../../_components/GlassOtp";
-
-const stepFields: Array<Array<keyof SignupFormField>> = [
-  ["role", "fullName", "email"],
-  ["verificationCode"],
-  ["username", "password", "confirmPassword", "termsAccepted"],
-];
+import {
+  defaultSignupValues,
+  demoVerificationCode,
+  signupStepCount,
+  signupStepFields,
+} from "../../_constants";
 
 const roleOptions = [
   { value: "student", icon: GraduationCap, labelKey: "auth.signup.student" },
   { value: "teacher", icon: Presentation, labelKey: "auth.signup.teacher" },
 ] as const;
-
-const DEMO_VERIFICATION_CODE = "123456";
 
 export default function SignupPage() {
   const { t } = useTranslation();
@@ -37,35 +35,27 @@ export default function SignupPage() {
     register,
     handleSubmit,
     trigger,
-    watch,
+    getValues,
     setValue,
     setError,
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<SignupFormField>({
     resolver: zodResolver(signupSchema),
-    defaultValues: {
-      role: "student",
-      fullName: "",
-      email: "",
-      verificationCode: "",
-      username: "",
-      password: "",
-      confirmPassword: "",
-      termsAccepted: false,
-    },
+    defaultValues: defaultSignupValues,
   });
 
-  const role = watch("role");
-  const progress = useMemo(() => ((step + 1) / 3) * 100, [step]);
+  const role = useWatch({ control, name: "role" });
+  const email = useWatch({ control, name: "email" });
+  const progress = ((step + 1) / signupStepCount) * 100;
 
   const nextStep = async () => {
-    const valid = await trigger(stepFields[step], { shouldFocus: true });
+    const valid = await trigger(signupStepFields[step], { shouldFocus: true });
     if (!valid) return;
 
     if (step === 1) {
-      const code = watch("verificationCode")?.trim();
-      if (code !== DEMO_VERIFICATION_CODE) {
+      const code = getValues("verificationCode")?.trim();
+      if (code !== demoVerificationCode) {
         setError("verificationCode", { message: t("auth.signup.verificationIncorrect") });
         return;
       }
@@ -177,8 +167,8 @@ export default function SignupPage() {
                     {t("auth.signup.verificationLabel")}
                   </p>
                   <p className="mb-5 text-center text-xs text-white/60">
-                    {t("auth.signup.verificationHelp", { email: watch("email") || t("auth.signup.yourEmail") })}{" "}
-                    {t("auth.signup.demoCode")}: <span className="font-semibold text-white">{DEMO_VERIFICATION_CODE}</span>
+                    {t("auth.signup.verificationHelp", { email: email || t("auth.signup.yourEmail") })}{" "}
+                    {t("auth.signup.demoCode")}: <span className="font-semibold text-white">{demoVerificationCode}</span>
                   </p>
                   <Controller
                     control={control}

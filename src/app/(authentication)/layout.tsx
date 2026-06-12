@@ -1,7 +1,8 @@
 import React from "react";
 import Image from "next/image";
+import type { AuthLayoutProps } from "./_types";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: AuthLayoutProps) => {
   return (
     <div className="relative min-h-screen w-full overflow-hidden font-sans">
       {/* Full-bleed cinematic backdrop */}
