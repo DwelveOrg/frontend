@@ -16,11 +16,11 @@ const PasswordReset = () => {
         </Link>
         <Link
           href="/login"
-          aria-label={t("auth.common.backToLanding")}
+          aria-label={t("auth.common.backToLogin")}
           className="ml-auto inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#94a3b8] transition hover:text-[#1a1a2e]"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
-          {t("auth.common.backToLanding")}
+          {t("auth.common.backToLogin")}
         </Link>
       </div>
       <div className="mt-12 h-px w-10 bg-[#1a1a2e]" />
