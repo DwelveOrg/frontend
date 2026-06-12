@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Input from "@/components/ui/Input";
-import Btn from "@/components/Custom/CustomButton";
 import { ArrowLeft, Eye, EyeOff, LoaderCircle } from "lucide-react";
 import React, { startTransition, useActionState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,6 +10,7 @@ import { loginSchema, LoginFormField } from "@/app/(authentication)/_types/_sche
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { login, type LoginActionState } from "../../_lib/actions";
+import BrutalField from "../../_components/BrutalField";
 
 type LoginPageClientProps = {
   logout?: string;
@@ -34,10 +33,7 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
     formState: { errors, isSubmitting },
   } = useForm<LoginFormField>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      identifier: "",
-      password: "",
-    },
+    defaultValues: { identifier: "", password: "" },
   });
 
   React.useEffect(() => {
@@ -63,108 +59,86 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
     const formData = new FormData();
     formData.set("identifier", data.identifier);
     formData.set("password", data.password);
-    startTransition(() => {
-      loginAction(formData);
-    });
+    startTransition(() => loginAction(formData));
   };
 
   const isBusy = isSubmitting || isActionPending;
 
   return (
-    <section className="w-full">
-      <div className="relative mx-auto w-full max-w-md rounded-2xl border border-slate-200/80 bg-white p-7 shadow-[0_18px_50px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#111726] dark:shadow-[0_18px_50px_rgba(0,0,0,0.5)]">
+    <div className="w-full max-w-md rounded-2xl border-[3px] border-black bg-white p-7 shadow-[8px_8px_0_0_#000]">
+      <div className="flex items-center justify-between">
+        <Link href="/" className="font-serif text-2xl leading-none text-black lg:hidden">
+          Dwelve
+        </Link>
         <Link
           href="/"
           aria-label={t("auth.common.backToLanding")}
-          className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-[#64748b] transition hover:border-slate-300 hover:bg-slate-50 hover:text-[#1a1a2e] dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+          className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-lg border-2 border-black bg-white text-black shadow-[2px_2px_0_0_#000] transition-all hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#4F46E5]"
         >
           <ArrowLeft className="h-4 w-4" />
         </Link>
+      </div>
 
-        <div className="mb-7">
-          <Link href="/" className="inline-flex items-center">
-            <span className="font-serif text-[22px] leading-none text-[#1a1a2e] dark:text-white">
-              Dwelve
-            </span>
-          </Link>
-          <h2 className="mt-6 text-2xl font-bold tracking-tight text-[#1a1a2e] dark:text-white">
-            {t("auth.login.title")}
-          </h2>
-          <p className="mt-2 text-sm text-[#64748b] dark:text-slate-300">
-            {t("auth.login.subtitle")}
-          </p>
-        </div>
+      <h1 className="mt-6 text-3xl font-black uppercase tracking-tight text-black">
+        {t("auth.login.title")}
+      </h1>
+      <p className="mt-2 text-sm font-medium text-neutral-600">{t("auth.login.subtitle")}</p>
 
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-[#1a1a2e] dark:text-white">
-              {t("auth.login.loginLabel")}
-            </label>
-            <Input
-              {...register("identifier")}
-              type="text"
-              placeholder={t("auth.login.loginPlaceholder")}
-              className={errors.identifier ? "border-red-500 focus:border-red-500 dark:border-red-400" : ""}
-            />
-            {errors.identifier && (
-              <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">
-                {errors.identifier.message}
-              </p>
-            )}
-          </div>
+      <form className="mt-7 space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <BrutalField
+          {...register("identifier")}
+          type="text"
+          label={t("auth.login.loginLabel")}
+          placeholder={t("auth.login.loginPlaceholder")}
+          error={errors.identifier?.message}
+        />
 
-          <div>
-            <div className="flex items-center justify-between">
-              <label className="mb-1.5 block text-sm font-medium text-[#1a1a2e] dark:text-white">
-                {t("auth.login.passwordLabel")}
-              </label>
-              <Link
-                href="/password-reset"
-                className="block text-sm font-medium text-[#4F46E5] hover:underline dark:text-indigo-300"
-              >
-                {t("auth.login.forgot")}
-              </Link>
-            </div>
-            <div className="relative">
-              <Input
-                {...register("password")}
-                type={showPassword ? "text" : "password"}
-                placeholder={t("auth.login.passwordPlaceholder")}
-                className={`pr-11 ${errors.password ? "border-red-500 focus:border-red-500 dark:border-red-400" : ""}`}
-              />
+        <div>
+          <BrutalField
+            {...register("password")}
+            type={showPassword ? "text" : "password"}
+            label={t("auth.login.passwordLabel")}
+            placeholder={t("auth.login.passwordPlaceholder")}
+            error={errors.password?.message}
+            trailing={
               <button
                 type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-1 right-1 inline-flex w-8 cursor-pointer items-center justify-center rounded-md text-[#94a3b8] transition hover:bg-slate-100 hover:text-[#4F46E5] focus-visible:outline-none dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
+                onClick={() => setShowPassword((p) => !p)}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-black transition hover:text-[#4F46E5]"
                 aria-label={showPassword ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
-            </div>
-            {errors.password && (
-              <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">
-                {errors.password.message}
-              </p>
-            )}
-            {errors.root && (
-              <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">
-                {errors.root.message}
-              </p>
-            )}
+            }
+          />
+          <div className="mt-2 flex justify-end">
+            <Link href="/password-reset" className="text-xs font-extrabold uppercase tracking-wide text-[#4F46E5] hover:underline">
+              {t("auth.login.forgot")}
+            </Link>
           </div>
+        </div>
 
-          <Btn type="submit" className="w-full" disabled={isBusy}>
-            {isBusy ? <LoaderCircle className="h-5 w-5 animate-spin" /> : t("auth.login.submit")}
-          </Btn>
-        </form>
+        {errors.root && (
+          <p className="rounded-lg border-2 border-black bg-red-100 px-3 py-2 text-xs font-bold text-red-700 shadow-[3px_3px_0_0_#000]">
+            {errors.root.message}
+          </p>
+        )}
 
-        <p className="mt-6 text-center text-sm text-[#64748b] dark:text-slate-300">
-          {t("auth.login.noAccount")}{" "}
-          <Link href="/signup" className="font-semibold text-[#4F46E5] hover:underline dark:text-indigo-300">
-            {t("auth.login.signup")}
-          </Link>
-        </p>
-      </div>
-    </section>
+        <button
+          type="submit"
+          disabled={isBusy}
+          className="inline-flex w-full items-center justify-center rounded-xl border-2 border-black bg-[#4F46E5] py-3.5 text-sm font-extrabold uppercase tracking-wide text-white shadow-[5px_5px_0_0_#000] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#000] active:translate-x-1 active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {isBusy ? <LoaderCircle className="h-5 w-5 animate-spin" /> : t("auth.login.submit")}
+        </button>
+      </form>
+
+      <p className="mt-6 text-center text-sm font-medium text-neutral-600">
+        {t("auth.login.noAccount")}{" "}
+        <Link href="/signup" className="font-extrabold text-black underline underline-offset-2">
+          {t("auth.login.signup")}
+        </Link>
+      </p>
+    </div>
   );
 }
