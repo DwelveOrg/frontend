@@ -3,28 +3,27 @@
 import Link from "next/link";
 import Input from "@/components/ui/Input";
 import Btn from "@/components/Custom/CustomButton";
-import { ArrowLeft, Eye, EyeOff, House } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { SignupFormField, signupSchema } from "@/app/(authentication)/_types/_schemas/index";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/InputOTP";
-
-
-const stepFields: Array<Array<keyof SignupFormField>> = [
-  ["role", "fullName", "email"],
-  ["verificationCode"],
-  ["username", "password", "confirmPassword", "termsAccepted"],
-];
+import {
+  authRoleOptions,
+  defaultSignupValues,
+  demoVerificationCode,
+  signupStepCount,
+  signupStepFields,
+} from "../../_constants";
 
 export default function SignupPage() {
   const { t } = useTranslation();
-  const DEMO_VERIFICATION_CODE = "123456";
   const [step, setStep] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -34,35 +33,27 @@ export default function SignupPage() {
     register,
     handleSubmit,
     trigger,
-    watch,
+    getValues,
     setValue,
     setError,
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<SignupFormField>({
     resolver: zodResolver(signupSchema),
-    defaultValues: {
-      role: "student",
-      fullName: "",
-      email: "",
-      verificationCode: "",
-      username: "",
-      password: "",
-      confirmPassword: "",
-      termsAccepted: false,
-    },
+    defaultValues: defaultSignupValues,
   });
 
-  const role = watch("role");
-  const progress = useMemo(() => ((step + 1) / 3) * 100, [step]);
+  const role = useWatch({ control, name: "role" });
+  const email = useWatch({ control, name: "email" });
+  const progress = ((step + 1) / signupStepCount) * 100;
 
   const nextStep = async () => {
-    const valid = await trigger(stepFields[step], { shouldFocus: true });
+    const valid = await trigger(signupStepFields[step], { shouldFocus: true });
     if (!valid) return;
 
     if (step === 1) {
-      const code = watch("verificationCode")?.trim();
-      if (code !== DEMO_VERIFICATION_CODE) {
+      const code = getValues("verificationCode")?.trim();
+      if (code !== demoVerificationCode) {
         setError("verificationCode", {
           message: t("auth.signup.verificationIncorrect"),
         });
@@ -84,16 +75,11 @@ export default function SignupPage() {
     });
   };
 
-  const onSubmit: SubmitHandler<SignupFormField> = async (data) => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 900));
-      throw new Error("Mock signup disabled");
-      console.log(data);
-    } catch {
-      setError("root", {
-        message: t("auth.signup.backendMissing"),
-      });
-    }
+  const onSubmit: SubmitHandler<SignupFormField> = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 900));
+    setError("root", {
+      message: t("auth.signup.backendMissing"),
+    });
   };
 
   return (
@@ -141,26 +127,19 @@ export default function SignupPage() {
             <>
               <div>
                 <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setValue("role", "student", { shouldValidate: true })}
-                    className={`rounded-lg border px-3 py-2 text-sm font-medium transition cursor-pointer ${role === "student"
-                      ? "border-[#0046FF] bg-[#e9f1ff] text-[#0046FF] dark:bg-[#1e2f55]"
-                      : "border-black/10 text-[#355181] hover:bg-[#f4f8ff] dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
-                      }`}
-                  >
-                    {t("auth.signup.student")}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setValue("role", "teacher", { shouldValidate: true })}
-                    className={`rounded-lg border px-3 py-2 text-sm font-medium transition cursor-pointer ${role === "teacher"
-                      ? "border-[#0046FF] bg-[#e9f1ff] text-[#0046FF] dark:bg-[#1e2f55]"
-                      : "border-black/10 text-[#355181] hover:bg-[#f4f8ff] dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
-                      }`}
-                  >
-                    {t("auth.signup.teacher")}
-                  </button>
+                  {authRoleOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setValue("role", option.value, { shouldValidate: true })}
+                      className={`rounded-lg border px-3 py-2 text-sm font-medium transition cursor-pointer ${role === option.value
+                        ? "border-[#0046FF] bg-[#e9f1ff] text-[#0046FF] dark:bg-[#1e2f55]"
+                        : "border-black/10 text-[#355181] hover:bg-[#f4f8ff] dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
+                        }`}
+                    >
+                      {t(option.labelKey)}
+                    </button>
+                  ))}
                 </div>
                 {errors.role && (
                   <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.role.message}</p>
@@ -202,8 +181,8 @@ export default function SignupPage() {
                   {t("auth.signup.verificationLabel")}
                 </label>
                 <p className="mb-2 text-xs text-[#355181] dark:text-slate-300">
-                  {t("auth.signup.verificationHelp", { email: watch("email") || t("auth.signup.yourEmail") })}{" "}
-                  {t("auth.signup.demoCode")}: <span className="font-semibold text-[#0046FF]">{DEMO_VERIFICATION_CODE}</span>
+                  {t("auth.signup.verificationHelp", { email: email || t("auth.signup.yourEmail") })}{" "}
+                  {t("auth.signup.demoCode")}: <span className="font-semibold text-[#0046FF]">{demoVerificationCode}</span>
                 </p>
                 <div className="flex w-full justify-center">
                   <Controller
@@ -246,7 +225,7 @@ export default function SignupPage() {
                 <Input
                   {...register("username")}
                   type="text"
-                  placeholder="@"
+                  placeholder={t("auth.signup.usernamePlaceholder")}
                   className={`w-full ${errors.username ? "border-red-500 focus:border-red-500 dark:border-red-400" : ""}`}
                 />
                 {errors.username && (
