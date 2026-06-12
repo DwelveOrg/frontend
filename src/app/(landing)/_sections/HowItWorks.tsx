@@ -1,41 +1,14 @@
 "use client";
 
 import React from "react";
-import { ChartNoAxesCombined, Share2, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
 
-type Step = {
-  step: string;
-  title: string;
-  description: string;
-  icon: LucideIcon;
-};
+import { landingSteps } from "../_constants";
 
 export default function HowItWorks() {
   const { t } = useTranslation();
   const shouldReduceMotion = useReducedMotion();
-
-  const steps: Step[] = [
-    {
-      step: "01",
-      title: t("landing.howItWorks.createTitle"),
-      description: t("landing.howItWorks.createDesc"),
-      icon: ShieldCheck,
-    },
-    {
-      step: "02",
-      title: t("landing.howItWorks.shareTitle"),
-      description: t("landing.howItWorks.shareDesc"),
-      icon: Share2,
-    },
-    {
-      step: "03",
-      title: t("landing.howItWorks.resultsTitle"),
-      description: t("landing.howItWorks.resultsDesc"),
-      icon: ChartNoAxesCombined,
-    },
-  ];
 
   const header = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 18 },
@@ -82,7 +55,7 @@ export default function HowItWorks() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
-          {steps.map((item) => {
+          {landingSteps.map((item) => {
             const Icon = item.icon;
             return (
               <motion.article
@@ -97,10 +70,10 @@ export default function HowItWorks() {
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3 className="mt-5 text-lg font-bold text-[#1a1a2e] dark:text-white">
-                  {item.title}
+                  {t(item.titleKey)}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-[#64748b] dark:text-slate-300">
-                  {item.description}
+                  {t(item.descriptionKey)}
                 </p>
               </motion.article>
             );

@@ -3,17 +3,11 @@
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
+import { landingFooterLinks } from "../_constants";
+
 export default function Footer() {
   const { t } = useTranslation();
   const year = new Date().getFullYear();
-
-  const links = [
-    { label: t("landing.footer.about"), href: "/" },
-    { label: t("landing.footer.contact"), href: "/" },
-    { label: t("landing.footer.support"), href: "mailto:support@gradeflow.app" },
-    { label: t("landing.footer.privacy"), href: "/" },
-    { label: t("landing.footer.terms"), href: "/" },
-  ];
 
   return (
     <footer className="w-full border-t border-slate-200/70 bg-white/60 dark:border-white/10 dark:bg-[#0b0f1a]/60">
@@ -23,13 +17,13 @@ export default function Footer() {
         </Link>
 
         <nav className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
-          {links.map((link) => (
+          {landingFooterLinks.map((link) => (
             <Link
-              key={link.label}
+              key={link.labelKey}
               href={link.href}
               className="text-sm font-medium text-[#64748b] transition-colors hover:text-[#4F46E5] dark:text-slate-400 dark:hover:text-white"
             >
-              {link.label}
+              {t(link.labelKey)}
             </Link>
           ))}
         </nav>

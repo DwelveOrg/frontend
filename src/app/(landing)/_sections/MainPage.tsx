@@ -6,18 +6,8 @@ import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
 
-const AVATAR_COLORS = ["bg-indigo-300", "bg-emerald-300", "bg-amber-300", "bg-rose-300"];
-
-const CHART_BARS = [
-  { height: "42%", color: "bg-indigo-200 dark:bg-indigo-400/40" },
-  { height: "60%", color: "bg-indigo-300 dark:bg-indigo-400/60" },
-  { height: "34%", color: "bg-indigo-200 dark:bg-indigo-400/40" },
-  { height: "78%", color: "bg-indigo-400 dark:bg-indigo-400/80" },
-  { height: "52%", color: "bg-indigo-300 dark:bg-indigo-400/60" },
-  { height: "94%", color: "bg-[#4F46E5]" },
-];
-
-const INSTITUTIONS = ["Stanford", "MIT", "Harvard", "Oxford", "Yale"];
+import StatCard from "../_components/StatCard";
+import { avatarColors, chartBars, trustedInstitutions } from "../_constants";
 
 function MainPage() {
   const { t } = useTranslation();
@@ -64,9 +54,9 @@ function MainPage() {
 
           <div className="mt-9 flex items-center gap-3">
             <div className="flex -space-x-2.5">
-              {AVATAR_COLORS.map((color, i) => (
+              {avatarColors.map((color, index) => (
                 <span
-                  key={i}
+                  key={`${color}-${index}`}
                   className={`h-8 w-8 rounded-full ring-2 ring-white dark:ring-[#0b0f1a] ${color}`}
                 />
               ))}
@@ -87,7 +77,7 @@ function MainPage() {
                   {t("landing.main.mockup.title")}
                 </p>
                 <p className="text-xs text-[#94a3b8] dark:text-slate-400">
-                  {t("landing.main.mockup.welcome")}, Sarah
+                  {t("landing.main.mockup.welcome")}, {t("landing.main.mockup.userName")}
                 </p>
               </div>
 
@@ -98,9 +88,9 @@ function MainPage() {
               </div>
 
               <div className="mt-3 flex h-36 items-end justify-between gap-2.5 rounded-xl bg-indigo-50/70 p-4 dark:bg-indigo-500/10">
-                {CHART_BARS.map((bar, i) => (
+                {chartBars.map((bar, index) => (
                   <div
-                    key={i}
+                    key={`${bar.height}-${index}`}
                     className={`w-full rounded-md ${bar.color}`}
                     style={{ height: bar.height }}
                   />
@@ -117,7 +107,7 @@ function MainPage() {
           {t("landing.main.trustedBy")}
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
-          {INSTITUTIONS.map((name) => (
+          {trustedInstitutions.map((name) => (
             <span
               key={name}
               className="text-lg font-bold text-slate-300 transition-colors hover:text-slate-400 dark:text-slate-600 dark:hover:text-slate-500"
@@ -128,21 +118,6 @@ function MainPage() {
         </div>
       </div>
     </section>
-  );
-}
-
-function StatCard({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div className="rounded-xl bg-slate-50 px-3 py-3 dark:bg-white/5">
-      <p className="text-[11px] font-medium text-[#94a3b8] dark:text-slate-400">{label}</p>
-      <p
-        className={`mt-1 text-xl font-bold ${
-          accent ? "text-[#4F46E5] dark:text-indigo-300" : "text-[#1a1a2e] dark:text-white"
-        }`}
-      >
-        {value}
-      </p>
-    </div>
   );
 }
 

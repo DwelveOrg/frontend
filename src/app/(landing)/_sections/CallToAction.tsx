@@ -34,7 +34,7 @@ export default function CallToAction() {
             {t("landing.cta.primary")}
           </Link>
           <Link
-            href="/login"
+            href="#features"
             className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold text-[#1a1a2e] transition-colors hover:text-[#4F46E5] dark:text-white dark:hover:text-indigo-300"
           >
             {t("landing.cta.secondary")}

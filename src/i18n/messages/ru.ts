@@ -351,9 +351,9 @@ translation: {
       },
       landing: {
         nav: {
-          features: "Features",
-          howItWorks: "Pricing",
-          accordion: "About",
+          features: "Возможности",
+          howItWorks: "Как это работает",
+          accordion: "FAQ",
           login: "Войти",
           signup: "Начать",
         },
@@ -370,6 +370,7 @@ translation: {
           mockup: {
             title: "Панель",
             welcome: "С возвращением",
+            userName: "Айша",
             courses: "Курсы",
             grade: "Оценка",
             tasks: "Задания",

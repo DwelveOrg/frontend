@@ -38,10 +38,6 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-body {
-  font-family: var(--font-inter);
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -242,7 +238,6 @@ html {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: var(--font-sans);
 }
 
 :root {

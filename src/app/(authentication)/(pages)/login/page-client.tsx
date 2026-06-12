@@ -68,45 +68,46 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
     });
   };
 
+  const isBusy = isSubmitting || isActionPending;
+
   return (
-    <section className="w-full px-4">
-      <div className="mx-auto relative w-full max-w-md rounded-2xl border border-black/10 bg-white/80 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] backdrop-blur dark:border-white/10 dark:bg-[#111827]/80">
-        <div className="mb-6">
-          <div className="flex justify-end">
-            <Link
-              href="/"
-              aria-label={t("auth.common.backToLanding")}
-              className="inline-flex absolute top-4 right-4 h-9 w-9 items-center justify-center rounded-lg border border-[#c7d8ff] bg-white text-[#0F2854] transition hover:bg-[#eef4ff] hover:text-[#0046FF] dark:border-white/15 dark:bg-[#0b1220] dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-white"
-            >
-              <span className="inline-flex items-center gap-0.5">
-                <ArrowLeft className="h-3.5 w-3.5" />
-              </span>
-            </Link>
-          </div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0046FF] dark:text-[#8fb0ff]">
-            {t("auth.login.access")}
-          </p>
-          <h2 className="mt-2 text-2xl font-bold text-[#0F2854] dark:text-white">
+    <section className="w-full">
+      <div className="relative mx-auto w-full max-w-md rounded-2xl border border-slate-200/80 bg-white p-7 shadow-[0_18px_50px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#111726] dark:shadow-[0_18px_50px_rgba(0,0,0,0.5)]">
+        <Link
+          href="/"
+          aria-label={t("auth.common.backToLanding")}
+          className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-[#64748b] transition hover:border-slate-300 hover:bg-slate-50 hover:text-[#1a1a2e] dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Link>
+
+        <div className="mb-7">
+          <Link href="/" className="inline-flex items-center">
+            <span className="font-serif text-[22px] leading-none text-[#1a1a2e] dark:text-white">
+              Dwelve
+            </span>
+          </Link>
+          <h2 className="mt-6 text-2xl font-bold tracking-tight text-[#1a1a2e] dark:text-white">
             {t("auth.login.title")}
           </h2>
-          <p className="mt-2 text-sm text-[#355181] dark:text-slate-300">
+          <p className="mt-2 text-sm text-[#64748b] dark:text-slate-300">
             {t("auth.login.subtitle")}
           </p>
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
           <div>
-            <label className="mb-1 block text-sm font-medium text-[#0F2854] dark:text-white">
+            <label className="mb-1.5 block text-sm font-medium text-[#1a1a2e] dark:text-white">
               {t("auth.login.loginLabel")}
             </label>
             <Input
               {...register("identifier")}
               type="text"
               placeholder={t("auth.login.loginPlaceholder")}
-              className={`w-full ${errors.identifier ? "border-red-500 focus:border-red-500 dark:border-red-400" : ""}`}
+              className={errors.identifier ? "border-red-500 focus:border-red-500 dark:border-red-400" : ""}
             />
             {errors.identifier && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+              <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">
                 {errors.identifier.message}
               </p>
             )}
@@ -114,12 +115,12 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
 
           <div>
             <div className="flex items-center justify-between">
-              <label className="mb-1 block text-sm font-medium text-[#0F2854] dark:text-white">
+              <label className="mb-1.5 block text-sm font-medium text-[#1a1a2e] dark:text-white">
                 {t("auth.login.passwordLabel")}
               </label>
               <Link
                 href="/password-reset"
-                className="block text-sm text-[#0046FF] hover:underline dark:text-[#8fb0ff]"
+                className="block text-sm font-medium text-[#4F46E5] hover:underline dark:text-indigo-300"
               >
                 {t("auth.login.forgot")}
               </Link>
@@ -129,45 +130,37 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
                 {...register("password")}
                 type={showPassword ? "text" : "password"}
                 placeholder={t("auth.login.passwordPlaceholder")}
-                className={`w-full pr-11 ${errors.password ? "border-red-500 focus:border-red-500 dark:border-red-400" : ""}`}
+                className={`pr-11 ${errors.password ? "border-red-500 focus:border-red-500 dark:border-red-400" : ""}`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-1 right-1 inline-flex w-8 cursor-pointer items-center justify-center rounded-md text-[#355181] transition hover:bg-slate-100 hover:text-[#0046FF] focus-visible:outline-none dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+                className="absolute inset-y-1 right-1 inline-flex w-8 cursor-pointer items-center justify-center rounded-md text-[#94a3b8] transition hover:bg-slate-100 hover:text-[#4F46E5] focus-visible:outline-none dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
                 aria-label={showPassword ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
             {errors.password && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+              <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">
                 {errors.password.message}
               </p>
             )}
             {errors.root && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+              <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">
                 {errors.root.message}
               </p>
             )}
           </div>
 
-          <Btn
-            type="submit"
-            className="w-full flex items-center justify-center"
-            disabled={isSubmitting || isActionPending}
-          >
-            {isSubmitting || isActionPending ? (
-              <LoaderCircle className="h-5 w-5 animate-spin" />
-            ) : (
-              t("auth.login.submit")
-            )}
+          <Btn type="submit" className="w-full" disabled={isBusy}>
+            {isBusy ? <LoaderCircle className="h-5 w-5 animate-spin" /> : t("auth.login.submit")}
           </Btn>
         </form>
 
-        <p className="mt-5 text-center text-sm text-[#355181] dark:text-slate-300">
+        <p className="mt-6 text-center text-sm text-[#64748b] dark:text-slate-300">
           {t("auth.login.noAccount")}{" "}
-          <Link href="/signup" className="font-semibold text-[#0046FF]">
+          <Link href="/signup" className="font-semibold text-[#4F46E5] hover:underline dark:text-indigo-300">
             {t("auth.login.signup")}
           </Link>
         </p>

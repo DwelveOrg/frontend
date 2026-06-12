@@ -4,6 +4,8 @@ import React from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
+import { landingNavItems } from "../_constants";
+
 export default function Navbar() {
   const { t } = useTranslation();
 
@@ -12,12 +14,6 @@ export default function Navbar() {
     if (!section) return;
     section.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-
-  const navItems = [
-    { label: t("landing.nav.features"), target: "features" },
-    { label: t("landing.nav.howItWorks"), target: "how-it-works" },
-    { label: t("landing.nav.accordion"), target: "accordion" },
-  ];
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/80 backdrop-blur-md dark:border-white/10 dark:bg-[#0b0f1a]/80">
@@ -30,14 +26,14 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2 min-[620px]:gap-6">
           <ul className="hidden gap-7 min-[620px]:flex">
-            {navItems.map((item) => (
+            {landingNavItems.map((item) => (
               <li key={item.target}>
                 <button
                   type="button"
                   onClick={() => scrollToSection(item.target)}
                   className="cursor-pointer text-[15px] font-medium text-[#64748b] transition-colors hover:text-[#1a1a2e] dark:text-slate-300 dark:hover:text-white"
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </button>
               </li>
             ))}

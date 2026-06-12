@@ -351,9 +351,9 @@ translation: {
       },
       landing: {
         nav: {
-          features: "Features",
-          howItWorks: "Pricing",
-          accordion: "About",
+          features: "Imkoniyatlar",
+          howItWorks: "Qanday ishlaydi",
+          accordion: "FAQ",
           login: "Kirish",
           signup: "Boshlash",
         },
@@ -370,6 +370,7 @@ translation: {
           mockup: {
             title: "Boshqaruv paneli",
             welcome: "Xush kelibsiz",
+            userName: "Oysha",
             courses: "Kurslar",
             grade: "Baho",
             tasks: "Vazifalar",
