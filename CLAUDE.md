@@ -116,6 +116,20 @@ Existing guidance says:
 
 Treat auth/session changes as high-risk. Verify the current code before editing.
 
+### Onboarding and access model (target design)
+
+Role is inherited from how a user enters, never chosen on a screen. There is no self-service "I am a teacher" control. The center grants a role through a credential, and the account is created already carrying it.
+
+- **Admin** is the only true signup: a short form (center name, email, password) creates the account and the center, then lands in an empty-but-usable dashboard. Center setup (logo, classes, inviting teachers) is progressive onboarding inside the app, not a gate before the admin can look around.
+- **Teacher**: the invite is the signup. A unique, single-use, expiring invite link already encodes the center; the teacher confirms their name, sets a password, and is immediately a teacher. Clicking the emailed link also verifies the email. An existing account invited to another center skips the password step and just gains a membership.
+- **Student**: a reusable class code plus a name places the student in that class. The code authorizes the join and always grants the student role.
+- **Empty-state redemption**: a freshly registered account that has joined nothing shows two entry points — "join a class" (reusable class code, low stakes) and "become a teacher" (targeted invite link). The buttons only open the input; the redeemed credential decides the role.
+- **Login** is one screen for all roles: identifier + password, no role picker. The account already knows the role and routes to the correct view. If one account holds memberships at several centers, login also selects which center to open.
+- **Email verification**: invited users are verified for free by clicking the link. For cold self-registration, admit immediately and verify lazily — required only at sensitive points such as password reset. OTP at the signup gate is optional.
+- **Identity**: key the unique account on email or phone so one person can hold multiple center memberships. Model the invite-token and class-code paths before wiring a real backend.
+
+Teacher access must never come from a free-floating code that could be shared in a group chat; use a unique invite link or an email-bound one-time code, because the teacher role exposes answer keys.
+
 ---
 
 ## Internationalization
