@@ -12,14 +12,15 @@ type RoleEmptyStateProps = {
 export default function RoleEmptyState({ role, entity }: RoleEmptyStateProps) {
   const { t } = useTranslation();
 
-  const actionKey =
-    role === "teacher"
-      ? entity === "school"
-        ? "root.empty.actions.createSchool"
-        : "root.empty.actions.createClass"
-      : entity === "school"
-        ? "root.empty.actions.joinSchool"
-        : "root.empty.actions.joinClass";
+  const canCreate = role === "teacher" || role === "admin";
+
+  const actionKey = canCreate
+    ? entity === "school"
+      ? "root.empty.actions.createSchool"
+      : "root.empty.actions.createClass"
+    : entity === "school"
+      ? "root.empty.actions.joinSchool"
+      : "root.empty.actions.joinClass";
 
   return (
     <Empty
