@@ -1,9 +1,3 @@
-
----
-
-## `docs/product-requirements.md`
-
-```md
 # Product Requirements Document — Dwelve
 
 | | |
@@ -162,6 +156,18 @@ Reasoning:
 ---
 
 ## 9. Key user flows
+
+### Onboarding and access
+
+Role is inherited from how a user enters, never chosen on a screen. The center grants a role through a credential, and the account is created already carrying it.
+
+1. **Admin** signs up with a short form (center name, email, password), which creates the account and the center, then lands in an empty-but-usable dashboard. Logo, classes, and teacher invites are completed later as in-app onboarding.
+2. **Teacher** receives a unique, single-use invite link from the admin. The link already knows the center; the teacher confirms their name, sets a password, and is immediately a teacher. Clicking the emailed link verifies their email.
+3. **Student** joins with a reusable class code plus a name and is placed in that class as a student. Email is not required.
+4. A freshly registered account that has joined nothing shows two redemption entry points: join a class with a class code, or become a teacher with an invite link. The credential, not the button, decides the role.
+5. **Login** is one screen for every role — identifier and password, with no role picker. The account already knows the role and routes the user to the correct view, and selects the center when the account holds several memberships.
+
+Notes: teacher access must use a targeted invite link or an email-bound one-time code rather than a shareable free-floating code, because the teacher role exposes answer keys. Invited users are verified by clicking the link; cold self-registration can be admitted immediately and verified lazily (required only at sensitive points such as password reset). Keying identity on email or phone lets one person hold memberships at several centers.
 
 ### Manual test creation → result
 
