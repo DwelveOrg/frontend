@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Input from "@/components/ui/Input";
 import Btn from "@/components/Custom/CustomButton";
-import { ArrowLeft, Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import React, { startTransition, useActionState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -13,7 +13,99 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import type { LoginPageClientProps } from "@/app/(authentication)/_types";
 import { login, type LoginActionState } from "../../_lib/actions";
+import AuthSplitLayout from "../../_components/AuthSplitLayout";
 
+/* ── Left panel content ─────────────────────────────────────── */
+function LoginPanel() {
+  const bars = [55, 72, 85, 90, 78, 88, 95, 70, 82];
+  const avatars = [
+    { initials: "AY", color: "from-violet-500 to-purple-600" },
+    { initials: "KM", color: "from-blue-500 to-indigo-600" },
+    { initials: "SR", color: "from-emerald-500 to-teal-600" },
+    { initials: "NB", color: "from-amber-400 to-orange-500" },
+  ];
+
+  return (
+    <>
+      {/* Logo */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/logo-white.png" alt="Dwelve" className="h-8 w-auto" />
+
+      {/* Main copy */}
+      <div className="flex flex-col gap-6">
+        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-medium text-white/90 backdrop-blur-sm">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]" />
+          Active across 500+ classrooms
+        </div>
+
+        <div>
+          <h2 className="font-serif text-[2.5rem] leading-[1.12] tracking-tight text-white">
+            Your students deserve<br />instant feedback.
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-white/55">
+            Auto-graded tests. Real-time analytics.<br />Zero paperwork.
+          </p>
+        </div>
+
+        {/* Floating test-result card */}
+        <div className="w-72 rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="mb-3 flex items-start justify-between gap-2">
+            <div>
+              <p className="text-xs font-semibold text-white">Algebra · Chapter 5</p>
+              <p className="mt-0.5 text-[10px] text-white/45">Graded automatically · 2 min ago</p>
+            </div>
+            <span className="shrink-0 rounded-lg border border-emerald-400/25 bg-emerald-400/15 px-2 py-1 text-[10px] font-semibold text-emerald-300">
+              ✓ Done
+            </span>
+          </div>
+          {/* Mini bar chart */}
+          <div className="mb-3 flex h-12 items-end gap-0.5">
+            {bars.map((h, i) => (
+              <div
+                key={i}
+                className="flex-1 rounded-t-[3px] bg-gradient-to-t from-indigo-400/50 to-indigo-200/80 transition-all"
+                style={{ height: `${h}%` }}
+              />
+            ))}
+          </div>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-white/45">24 students</span>
+            <span className="font-bold text-white">83% avg score</span>
+          </div>
+        </div>
+
+        {/* Quick stat chip */}
+        <div className="inline-flex w-fit items-center gap-2 rounded-xl border border-white/15 bg-white/8 px-3 py-2 text-xs text-white/70 backdrop-blur-sm">
+          <span className="text-base">⚡</span>
+          <span><strong className="text-white">5 tests</strong> graded in the last hour</span>
+        </div>
+      </div>
+
+      {/* Social proof */}
+      <div className="flex items-center gap-3">
+        <div className="flex -space-x-2.5">
+          {avatars.map((a) => (
+            <div
+              key={a.initials}
+              className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${a.color} border-2 border-white/20 text-[10px] font-bold text-white shadow-lg`}
+            >
+              {a.initials}
+            </div>
+          ))}
+          <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/20 bg-white/15 text-xs font-semibold text-white backdrop-blur-sm">
+            +
+          </div>
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-white">2,400+ teachers</p>
+          <p className="text-xs text-white/45">trust Dwelve every day</p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ── Page component ─────────────────────────────────────────── */
 export default function LoginPageClient({ logout }: Readonly<LoginPageClientProps>) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -31,10 +123,7 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
     formState: { errors, isSubmitting },
   } = useForm<LoginFormField>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      identifier: "",
-      password: "",
-    },
+    defaultValues: { identifier: "", password: "" },
   });
 
   React.useEffect(() => {
@@ -60,115 +149,112 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
     const formData = new FormData();
     formData.set("identifier", data.identifier);
     formData.set("password", data.password);
-    startTransition(() => {
-      loginAction(formData);
-    });
+    startTransition(() => { loginAction(formData); });
   };
 
+  const isBusy = isSubmitting || isActionPending;
+
   return (
-    <section className="w-full px-4">
-      <div className="mx-auto relative w-full max-w-md rounded-2xl border border-black/10 bg-white/80 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] backdrop-blur dark:border-white/10 dark:bg-[#111827]/80">
-        <div className="mb-6">
-          <div className="flex justify-end">
-            <Link
-              href="/"
-              aria-label={t("auth.common.backToLanding")}
-              className="inline-flex absolute top-4 right-4 h-9 w-9 items-center justify-center rounded-lg border border-[#c7d8ff] bg-white text-[#0F2854] transition hover:bg-[#eef4ff] hover:text-[#0046FF] dark:border-white/15 dark:bg-[#0b1220] dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-white"
-            >
-              <span className="inline-flex items-center gap-0.5">
-                <ArrowLeft className="h-3.5 w-3.5" />
-              </span>
-            </Link>
-          </div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0046FF] dark:text-[#8fb0ff]">
-            {t("auth.login.access")}
-          </p>
-          <h2 className="mt-2 text-2xl font-bold text-[#0F2854] dark:text-white">
-            {t("auth.login.title")}
-          </h2>
-          <p className="mt-2 text-sm text-[#355181] dark:text-slate-300">
-            {t("auth.login.subtitle")}
-          </p>
+    <AuthSplitLayout
+      imageSrc="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80"
+      imageAlt="Students collaborating with laptops"
+      panelContent={<LoginPanel />}
+    >
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-12">
+        {/* Mobile-only logo */}
+        <div className="mb-8 lg:hidden">
+          <img src="/images/logo-black.png" alt="Dwelve" className="h-7 w-auto dark:hidden" />
+          <img src="/images/logo-white.png" alt="Dwelve" className="hidden h-7 w-auto dark:block" />
         </div>
 
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-[#0F2854] dark:text-white">
-              {t("auth.login.loginLabel")}
-            </label>
-            <Input
-              {...register("identifier")}
-              type="text"
-              placeholder={t("auth.login.loginPlaceholder")}
-              className={`w-full ${errors.identifier ? "border-red-500 focus:border-red-500 dark:border-red-400" : ""}`}
-            />
-            {errors.identifier && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                {errors.identifier.message}
-              </p>
-            )}
+        <div className="w-full max-w-[400px]">
+          <div className="mb-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
+              {t("auth.login.access")}
+            </p>
+            <h1 className="mt-2 text-3xl font-bold text-[#1a1a2e] dark:text-white">
+              {t("auth.login.title")}
+            </h1>
+            <p className="mt-2 text-sm text-[#64748b] dark:text-slate-400">
+              {t("auth.login.subtitle")}
+            </p>
           </div>
 
-          <div>
-            <div className="flex items-center justify-between">
-              <label className="mb-1 block text-sm font-medium text-[#0F2854] dark:text-white">
-                {t("auth.login.passwordLabel")}
+          <form className="space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-[#1a1a2e] dark:text-white">
+                {t("auth.login.loginLabel")}
               </label>
-              <Link
-                href="/password-reset"
-                className="block text-sm text-[#0046FF] hover:underline dark:text-[#8fb0ff]"
-              >
-                {t("auth.login.forgot")}
-              </Link>
-            </div>
-            <div className="relative">
               <Input
-                {...register("password")}
-                type={showPassword ? "text" : "password"}
-                placeholder={t("auth.login.passwordPlaceholder")}
-                className={`w-full pr-11 ${errors.password ? "border-red-500 focus:border-red-500 dark:border-red-400" : ""}`}
+                {...register("identifier")}
+                type="text"
+                placeholder={t("auth.login.loginPlaceholder")}
+                className={`w-full py-3 ${errors.identifier ? "border-red-500 focus:border-red-500" : ""}`}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-1 right-1 inline-flex w-8 cursor-pointer items-center justify-center rounded-md text-[#355181] transition hover:bg-slate-100 hover:text-[#0046FF] focus-visible:outline-none dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
-                aria-label={showPassword ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+              {errors.identifier && (
+                <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors.identifier.message}</p>
+              )}
             </div>
-            {errors.password && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                {errors.password.message}
-              </p>
-            )}
+
+            <div>
+              <div className="mb-1.5 flex items-center justify-between">
+                <label className="text-sm font-medium text-[#1a1a2e] dark:text-white">
+                  {t("auth.login.passwordLabel")}
+                </label>
+                <Link href="/password-reset" className="text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">
+                  {t("auth.login.forgot")}
+                </Link>
+              </div>
+              <div className="relative">
+                <Input
+                  {...register("password")}
+                  type={showPassword ? "text" : "password"}
+                  placeholder={t("auth.login.passwordPlaceholder")}
+                  className={`w-full py-3 pr-11 ${errors.password ? "border-red-500 focus:border-red-500" : ""}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((p) => !p)}
+                  className="absolute inset-y-1 right-1 inline-flex w-9 cursor-pointer items-center justify-center rounded-lg text-[#94a3b8] hover:text-[#1a1a2e] dark:hover:text-white transition"
+                  aria-label={showPassword ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors.password.message}</p>
+              )}
+            </div>
+
             {errors.root && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800/50 dark:bg-red-900/20 dark:text-red-400">
                 {errors.root.message}
-              </p>
+              </div>
             )}
-          </div>
 
-          <Btn
-            type="submit"
-            className="w-full flex items-center justify-center"
-            disabled={isSubmitting || isActionPending}
-          >
-            {isSubmitting || isActionPending ? (
-              <LoaderCircle className="h-5 w-5 animate-spin" />
-            ) : (
-              t("auth.login.submit")
-            )}
-          </Btn>
-        </form>
+            <Btn
+              type="submit"
+              className="w-full flex items-center justify-center py-3 text-sm"
+              disabled={isBusy}
+            >
+              {isBusy ? <LoaderCircle className="h-5 w-5 animate-spin" /> : t("auth.login.submit")}
+            </Btn>
+          </form>
 
-        <p className="mt-5 text-center text-sm text-[#355181] dark:text-slate-300">
-          {t("auth.login.noAccount")}{" "}
-          <Link href="/signup" className="font-semibold text-[#0046FF]">
-            {t("auth.login.signup")}
-          </Link>
-        </p>
+          <p className="mt-8 text-center text-sm text-[#64748b] dark:text-slate-400">
+            {t("auth.login.noAccount")}{" "}
+            <Link href="/signup" className="font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">
+              {t("auth.login.signup")}
+            </Link>
+          </p>
+
+          <p className="mt-10 text-center">
+            <Link href="/" className="text-xs text-[#94a3b8] hover:text-[#64748b] dark:text-slate-500 dark:hover:text-slate-400 transition">
+              ← {t("auth.common.backToLanding")}
+            </Link>
+          </p>
+        </div>
       </div>
-    </section>
+    </AuthSplitLayout>
   );
 }
