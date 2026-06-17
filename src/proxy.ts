@@ -1,15 +1,19 @@
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt } from './app/(authentication)/_lib/session';
-import { protectedRoutes, publicRoutes} from "./app/(authentication)/_constants";
+import { SESSION_COOKIE_NAME } from "./app/(authentication)/_constants/session";
+import { protectedRoutes, publicRoutes} from "./app/(authentication)/_constants/routes";
+import { decryptSession } from './app/(authentication)/_lib/session-token';
+
+function isRouteMatch(path: string, routes: readonly string[]) {
+    return routes.some((route) => path === route || path.startsWith(`${route}/`));
+}
 
 export default async function proxy(req: NextRequest){
     const path = req.nextUrl.pathname;
-    const isProtectedRoute = protectedRoutes.includes(path)
-    const isPublicRoute = publicRoutes.includes(path)
+    const isProtectedRoute = isRouteMatch(path, protectedRoutes)
+    const isPublicRoute = isRouteMatch(path, publicRoutes)
 
-    const cookie = (await cookies()).get('session')?.value
-    const session = await decrypt(cookie)
+    const cookie = req.cookies.get(SESSION_COOKIE_NAME)?.value
+    const session = await decryptSession(cookie)
 
     if(isProtectedRoute && !session?.userId){
         return NextResponse.redirect(new URL('/login', req.url))

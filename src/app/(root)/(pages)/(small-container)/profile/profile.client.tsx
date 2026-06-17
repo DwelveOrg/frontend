@@ -1,7 +1,6 @@
 "use client";
 
 import Empty from "../../_components/ui/Empty";
-import { Bell, UserRound } from "lucide-react";
 
 type ProfileUser = {
   id: string;
@@ -25,12 +24,5 @@ export default function ProfileClient({ user }: Readonly<ProfileClientProps>) {
     );
   }
 
-  
-  return (
-    <>
-      {/* <div className="w-full">
-        <div className="flex items-center justify-between w-[100px] h-[100px] bg-gray-800"><UserRound/></div>
-      </div> */}
-    </>
-  );
+  return null;
 }

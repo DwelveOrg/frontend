@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
+import DwelveLogo from "@/components/Custom/DwelveLogo";
 
 export default function Navbar() {
   const { t } = useTranslation();
@@ -22,10 +23,8 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/80 backdrop-blur-md dark:border-white/10 dark:bg-[#0b0f1a]/80">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3.5">
-        <Link href="/" className="flex items-center gap-1">
-          <span className="font-serif text-[22px] leading-none text-[#1a1a2e] dark:text-white max-[338px]:hidden">
-            Dwelve
-          </span>
+        <Link href="/">
+          <DwelveLogo variant="form" />
         </Link>
 
         <div className="flex items-center gap-2 min-[620px]:gap-6">

@@ -1,50 +1,40 @@
 import 'server-only';
-import { SignJWT, jwtVerify } from 'jose';
-import { SessionPayload } from '../_types/index';
 import { cookies } from 'next/headers';
-
-const secretKey = process.env.SESSION_SECRET || 'default_secret';
-const encodedKey = new TextEncoder().encode(secretKey);
-
+import {
+    SESSION_COOKIE_NAME,
+    SESSION_DURATION_MS,
+} from '../_constants/session';
+import type { SessionPayload } from '../_types/auth';
+import {
+    decryptSession,
+    encryptSession,
+} from './session-token';
 
 type SessionProfile = Pick<SessionPayload, 'name' | 'role' | 'identifier'>;
 
 export async function createSession(userId: string, profile?: SessionProfile) {
     const cookieStore = await cookies()
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
-    const session = await encrypt({ userId, expiresAt, ...profile });
+    const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
+    const session = await encrypt({ userId, expiresAt: expiresAt.toISOString(), ...profile });
 
-    cookieStore.set('session', session, {
+    cookieStore.set(SESSION_COOKIE_NAME, session, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
         expires: expiresAt,
     })
 }
 
 export async function deleteSession(){
     const cookieStore = await cookies()
-    cookieStore.delete('session')
+    cookieStore.delete(SESSION_COOKIE_NAME)
 }
 
 export async function encrypt(payload: SessionPayload){
-    return new SignJWT(payload)
-        .setProtectedHeader({ alg: 'HS256' })
-        .setIssuedAt()
-        .setExpirationTime('1h')
-        .sign(encodedKey);
+    return encryptSession(payload);
 }
 
 export async function decrypt(session: string | undefined = '') {
-    if (!session) {
-        return null;
-    }
-    try {
-        const { payload } = await jwtVerify(session, encodedKey, {
-            algorithms: ['HS256'],
-        });
-        return payload as SessionPayload;
-    } catch (error) {
-        console.error('Failed to decrypt session:', error);
-        return null;
-    }
+    return decryptSession(session);
 }
