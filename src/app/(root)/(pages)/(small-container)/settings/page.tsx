@@ -6,7 +6,6 @@ import { motion } from "motion/react";
 import {
   BookOpenText,
   Bug,
-  Globe,
   History,
   KeyRound,
   Languages,

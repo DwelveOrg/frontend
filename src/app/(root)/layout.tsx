@@ -8,7 +8,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const user = await getUser();
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden overflow-hidden text-slate-900 md:min-h-screen md:h-screen md:flex-row dark:bg-[#1e1e1e] dark:text-slate-100">
+    <div className="flex h-dvh flex-col overflow-hidden text-slate-900 md:min-h-screen md:h-screen md:flex-row dark:bg-[#1e1e1e] dark:text-slate-100">
       <SideBar />
       <div className="layout-enter md:gap-[20px] relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden  md:h-screen md:px-3">
         <Navbar userName={user?.name} />

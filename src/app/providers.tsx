@@ -8,18 +8,6 @@ import { defaultLanguage, supportedLanguages, type AppLanguage } from "@/i18n/re
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    const disableRightClick = (event: MouseEvent) => {
-      event.preventDefault();
-    };
-
-    window.addEventListener("contextmenu", disableRightClick);
-
-    return () => {
-      window.removeEventListener("contextmenu", disableRightClick);
-    };
-  }, []);
-
-  useEffect(() => {
     const updateHtmlLanguage = (language: string) => {
       document.documentElement.lang = language;
       window.localStorage.setItem("gf-language", language);
@@ -41,7 +29,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="system">
       {children}
     </ThemeProvider>
   );

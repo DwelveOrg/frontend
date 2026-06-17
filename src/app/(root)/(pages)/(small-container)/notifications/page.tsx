@@ -7,10 +7,8 @@ import { useTranslation } from "react-i18next";
 import Empty from "../../_components/ui/Empty";
 import {
   AlertDialog,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogMedia,
   AlertDialogTitle,

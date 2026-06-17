@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Textarea from "@/components/ui/textarea";
 import { Modal } from "@/app/(root)/_components/Modal";
 
@@ -11,8 +10,6 @@ interface ModalProps {
 }
 
 export function SubmitModal({ className, children, title }: Readonly<ModalProps>) {
-  const [open, setOpen] = useState(false);
-
   return (
 
 
