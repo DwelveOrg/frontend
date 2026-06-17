@@ -6,6 +6,10 @@ This document is the design decision source of truth for Dwelve's frontend. Impl
 
 AGENTS.md and CLAUDE.md may summarize this file, but they must not duplicate the full design system.
 
+
+
+> **Logo color correction — 17 June 2026:** The logo assets in this package use the uploaded reference image as the master mask. The logo shape was not redrawn. Only RGB colors were mapped to the sampled reference palette: Ink `#0F1537`, Purple Accent `#7B58E8`, Purple Deep `#6A5DE9`, Light Background `#F3F4FF`, Dark Background `#14152A`, and White `#FFFFFF`.
+
 > **Changelog — 17 June 2026:** Added the canonical **Color system** (§4), **Logo color usage** (§5), and **Implementation mapping** (§6). These colors are derived from the approved Dwelve logo so that the logo, marketing, and product UI all share one palette. Before this revision the design system defined only typography and language rules, which left website color undefined and free to drift from the logo.
 
 ---
@@ -99,28 +103,28 @@ This palette is the single source of truth for color across the logo, marketing 
 
 | Token | Hex | Role |
 |---|---|---|
-| Ink (Primary Dark) | `#0F1430` | Logo cap & left page on light, primary text, dark surfaces |
-| Violet (Brand Accent) | `#7B61FF` | Logo book page, brand accent, focus ring, highlights, large accent type |
-| Violet Deep (Action) | `#6A4FF0` | Primary buttons & links (AA-safe with white text) |
+| Ink (Primary Dark) | `#0F1537` | Logo cap & left page on light, primary text, dark surfaces |
+| Violet (Brand Accent) | `#7B58E8` | Logo book page, brand accent, focus ring, highlights, large accent type |
+| Violet Deep (Action) | `#6A5DE9` | Primary buttons & links (AA-safe with white text) |
 | Mist (Light BG) | `#F3F4FF` | Soft section backgrounds, secondary surfaces, selected/hover tints |
 | White | `#FFFFFF` | Page background, surfaces, text on dark |
 | Black | `#000000` | Reserved for one-color print only; prefer Ink in product UI |
 
 ### 4.2 Violet scale (accent ramp)
 
-`#7B61FF` is the brand anchor at **500**. Use the ramp for states, tints, charts, and elevation.
+`#7B58E8` is the brand anchor at **500**. Use the ramp for states, tints, charts, and elevation.
 
 | 50 | 100 | 200 | 300 | 400 | **500** | 600 | 700 | 800 | 900 |
 |---|---|---|---|---|---|---|---|---|---|
-| `#F4F1FF` | `#E9E3FF` | `#D3C7FF` | `#B7A3FF` | `#9B80FF` | `#7B61FF` | `#6A4FF0` | `#5739D6` | `#432BA6` | `#2C1C73` |
+| `#F4F1FF` | `#E9E3FF` | `#D3C7FF` | `#B7A3FF` | `#9B80FF` | `#7B58E8` | `#6A5DE9` | `#5739D6` | `#4B36C9` | `#2E246E` |
 
 ### 4.3 Neutral / Ink scale (cool grey, tuned to the navy)
 
 | 0 | 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `#FFFFFF` | `#F7F8FC` | `#F1F2F9` | `#E6E8F2` | `#D4D7E6` | `#A9AEC6` | `#797F9C` | `#565C7A` | `#3B4160` | `#242949` | `#0F1430` |
+| `#FFFFFF` | `#F7F8FC` | `#F1F2F9` | `#E6E8F2` | `#D4D7E6` | `#A9AEC6` | `#797F9C` | `#565C7A` | `#3B4160` | `#242949` | `#0F1537` |
 
-Primary text = 900 (`#0F1430`). Muted text = 600 (`#565C7A`). Borders/dividers = 200 (`#E6E8F2`).
+Primary text = 900 (`#0F1537`). Muted text = 600 (`#565C7A`). Borders/dividers = 200 (`#E6E8F2`).
 
 ### 4.4 Semantic
 
@@ -135,15 +139,15 @@ Because Dwelve grades tests, the green/red pair carries meaning (correct / incor
 
 ### 4.5 Brand gradient
 
-`linear-gradient(135deg, #8E78FF 0%, #6A4FF0 100%)`
+`linear-gradient(135deg, #7B58E8 0%, #6A5DE9 100%)`
 
 This is the gradient on the logo's book page. Reuse it sparingly for hero accents, primary CTAs on marketing pages, and progress emphasis. Do not place small body text on it (use white text only at large sizes).
 
 ### 4.6 Accessibility rules
 
-- **`#6A4FF0` (Violet Deep)** on white ≈ 4.6:1 → AA for normal text. Use it for buttons, text links, and any small interactive label that needs white text.
-- **`#7B61FF` (Violet 500)** on white ≈ 3.7:1 → **not** for small body text. Use it for large headings (≥24px/bold ≥19px), icons, borders, focus rings, and filled chips.
-- **Ink `#0F1430`** on white ≈ 17:1 (AAA) and white on Ink ≈ 17:1 (AAA).
+- **`#6A5DE9` (Violet Deep)** on white ≈ 4.6:1 → AA for normal text. Use it for buttons, text links, and any small interactive label that needs white text.
+- **`#7B58E8` (Violet 500)** on white ≈ 3.7:1 → **not** for small body text. Use it for large headings (≥24px/bold ≥19px), icons, borders, focus rings, and filled chips.
+- **Ink `#0F1537`** on white ≈ 17:1 (AAA) and white on Ink ≈ 17:1 (AAA).
 - Never signal correct/incorrect by color alone; pair Success/Danger with an icon or label for color-blind users and for screenshots in reports.
 
 ---
@@ -154,13 +158,13 @@ The logo ships as outlined SVG and PNG exports in `public/dwelve_web_logo_assets
 
 | Surface | Cap & left page | Book (right page) | Wordmark |
 |---|---|---|---|
-| Light backgrounds | Ink `#0F1430` | Violet gradient `#8E78FF → #6A4FF0` | Ink `#0F1430` |
-| Dark backgrounds | White `#FFFFFF` | Violet gradient `#8E78FF → #6A4FF0` | White `#FFFFFF` |
+| Light backgrounds | Ink `#0F1537` | Violet gradient `#7B58E8 → #6A5DE9` | Ink `#0F1537` |
+| Dark backgrounds | White `#FFFFFF` | Violet gradient `#7B58E8 → #6A5DE9` | White `#FFFFFF` |
 | One-color (print) | Ink **or** White (whole mark, flat) | same as mark | same as mark |
 
 - Minimum clear space around the mark = the height of the cap.
 - Do not recolor the wordmark independently of the icon, recolor the book page to anything outside the violet ramp, or place the light-mode logo on backgrounds darker than Neutral 200.
-- For app icons / favicons use the icon-only mark on Mist `#F3F4FF` or white, with Ink `#0F1430` and the violet gradient preserved. Do not use unrelated blue, teal, orange, or generic SaaS gradients for logo containers.
+- For app icons / favicons use the icon-only mark on Mist `#F3F4FF` or white, with Ink `#0F1537` and the violet gradient preserved. Do not use unrelated blue, teal, orange, or generic SaaS gradients for logo containers.
 - Use `/dwelve_web_logo_assets/logos/dwelve-logo-horizontal.svg` as the default light-surface website logo and `/dwelve_web_logo_assets/logos/dwelve-logo-horizontal-dark.svg` on dark surfaces.
 - Use `/dwelve_web_logo_assets/logos/dwelve-logo-icon.svg` only where the full wordmark would be too small or redundant, such as app icons, compact navigation, or favicons.
 
@@ -172,18 +176,18 @@ Light mode:
 
 - Page background: White `#FFFFFF`.
 - Large soft sections: Mist `#F3F4FF` or Neutral 50 `#F7F8FC`.
-- Primary text: Ink `#0F1430`.
+- Primary text: Ink `#0F1537`.
 - Muted text: Neutral 600 `#565C7A`.
-- Primary actions: Violet Deep `#6A4FF0`.
-- Decorative accents: Violet 500 `#7B61FF` or brand gradient only.
+- Primary actions: Violet Deep `#6A5DE9`.
+- Decorative accents: Violet 500 `#7B58E8` or brand gradient only.
 
 Dark mode:
 
-- Page background: `#0B0F26`.
+- Page background: `#14152A`.
 - Cards and elevated panels: `#131A3A`.
 - Primary text: `#ECEEF9` or White.
 - Muted text: `#9AA0BE`.
-- Primary actions and focus states: Violet Light `#8E78FF`.
+- Primary actions and focus states: Violet Light `#7B58E8`.
 - Keep the logo wordmark white on dark backgrounds and preserve the violet book-page gradient.
 
 Marketing visuals:
@@ -202,21 +206,21 @@ Color is implemented as CSS variables in `src/app/globals.css` and exposed to Ta
 
 | shadcn / Tailwind token | Light | Dark |
 |---|---|---|
-| `--background` | `#FFFFFF` | `#0B0F26` |
-| `--foreground` | `#0F1430` | `#ECEEF9` |
+| `--background` | `#FFFFFF` | `#14152A` |
+| `--foreground` | `#0F1537` | `#ECEEF9` |
 | `--card` | `#FFFFFF` | `#131A3A` |
-| `--card-foreground` | `#0F1430` | `#ECEEF9` |
-| `--primary` | `#6A4FF0` | `#8E78FF` |
-| `--primary-foreground` | `#FFFFFF` | `#0B0F26` |
+| `--card-foreground` | `#0F1537` | `#ECEEF9` |
+| `--primary` | `#6A5DE9` | `#7B58E8` |
+| `--primary-foreground` | `#FFFFFF` | `#14152A` |
 | `--secondary` | `#F3F4FF` | `#1B2245` |
-| `--secondary-foreground` | `#2C1C73` | `#ECEEF9` |
+| `--secondary-foreground` | `#2E246E` | `#ECEEF9` |
 | `--muted` | `#F1F2F9` | `#1B2245` |
 | `--muted-foreground` | `#565C7A` | `#9AA0BE` |
 | `--accent` | `#EFEBFF` | `#25204A` |
-| `--accent-foreground` | `#432BA6` | `#D7CEFF` |
+| `--accent-foreground` | `#4B36C9` | `#D7CEFF` |
 | `--destructive` | `#E5484D` | `#FF6B6F` |
 | `--border` / `--input` | `#E6E8F2` | `#262C4E` |
-| `--ring` | `#7B61FF` | `#8E78FF` |
+| `--ring` | `#7B58E8` | `#7B58E8` |
 | `--radius` | `0.75rem` | `0.75rem` |
 
 Brand-named tokens (`--brand-ink`, `--brand-violet`, `--brand-violet-600`, `--brand-mist`, `--brand-gradient`) are also exported so logo-accurate colors can be used directly, e.g. `bg-brand-violet`, `text-brand-ink`, `bg-[image:var(--brand-gradient)]`.
