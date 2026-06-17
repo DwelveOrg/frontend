@@ -150,7 +150,7 @@ This is the gradient on the logo's book page. Reuse it sparingly for hero accent
 
 ## 5. Logo color usage
 
-The logo ships as outlined SVG and PNG exports in `public/dwelve_web_logo_assets/`. The canonical asset inventory, served URLs, and file-purpose mapping live in [brand-assets.md](./brand-assets.md). Color variants map to this palette exactly:
+The logo ships as outlined SVG in the brand-assets package. Color variants map to this palette exactly:
 
 | Surface | Cap & left page | Book (right page) | Wordmark |
 |---|---|---|---|
@@ -161,8 +161,6 @@ The logo ships as outlined SVG and PNG exports in `public/dwelve_web_logo_assets
 - Minimum clear space around the mark = the height of the cap.
 - Do not recolor the wordmark independently of the icon, recolor the book page to anything outside the violet ramp, or place the light-mode logo on backgrounds darker than Neutral 200.
 - For app icons / favicons use the icon-only mark on Mist `#F3F4FF` or white, with Ink `#0F1430` and the violet gradient preserved. Do not use unrelated blue, teal, orange, or generic SaaS gradients for logo containers.
-- Use `/dwelve_web_logo_assets/logos/dwelve-logo-horizontal.svg` as the default light-surface website logo and `/dwelve_web_logo_assets/logos/dwelve-logo-horizontal-dark.svg` on dark surfaces.
-- Use `/dwelve_web_logo_assets/logos/dwelve-logo-icon.svg` only where the full wordmark would be too small or redundant, such as app icons, compact navigation, or favicons.
 
 ### 5.1 Website style direction
 

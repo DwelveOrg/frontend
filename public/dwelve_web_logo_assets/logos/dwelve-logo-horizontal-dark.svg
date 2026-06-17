@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="240" viewBox="0 0 960 240" role="img" aria-label="Dwelve logo">
+<defs>
+  <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#8E78FF"/>
+    <stop offset="100%" stop-color="#6A4FF0"/>
+  </linearGradient>
+</defs>
+<g transform="translate(20 12) scale(0.84)">
+  <!-- mortarboard cap -->
+  <path d="M26 68 L128 30 L230 68 L128 106 Z" fill="#FFFFFF"/>
+  <path d="M214 72 L214 122" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round"/>
+  <rect x="207" y="116" width="14" height="34" rx="7" fill="#FFFFFF"/>
+
+  <!-- open book left page -->
+  <path d="M35 104 C72 106 108 118 128 148 L128 225 C101 192 70 177 35 170 Z" fill="#FFFFFF"/>
+  <!-- open book right page -->
+  <path d="M221 104 C184 106 148 118 128 148 L128 225 C155 192 186 177 221 170 Z" fill="url(#bookGradient)"/>
+  <!-- central page split -->
+  <path d="M128 145 L128 225" stroke="#0B0F26" stroke-width="8" stroke-linecap="round"/>
+  <!-- page shine -->
+  <path d="M48 111 C75 112 101 119 119 135" stroke="#0B0F26" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.95"/>
+</g>
+<text x="290" y="164" font-family="Manrope, DM Sans, Avenir Next, Arial, Helvetica, sans-serif" font-size="112" font-weight="800" letter-spacing="0.5" fill="#FFFFFF">Dwelve</text>
+</svg>

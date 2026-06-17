@@ -1,0 +1,8 @@
+:root {
+  --brand-ink: #0F1430;
+  --brand-violet: #7B61FF;
+  --brand-violet-600: #6A4FF0;
+  --brand-violet-light: #8E78FF;
+  --brand-mist: #F3F4FF;
+  --brand-gradient: linear-gradient(135deg, #8E78FF 0%, #6A4FF0 100%);
+}
