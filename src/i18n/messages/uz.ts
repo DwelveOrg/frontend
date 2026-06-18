@@ -363,28 +363,83 @@ translation: {
       landing: {
         nav: {
           features: "Features",
-          howItWorks: "Pricing",
-          accordion: "About",
+          howItWorks: "Qanday ishlaydi",
+          accordion: "FAQ",
           login: "Kirish",
           signup: "Boshlash",
         },
         main: {
           title: "Maktab testlarini bir necha daqiqada onlayn yarating va ishlang.",
-          subtitle: "Qog'ozsiz. Darhol baholash. O'qituvchi va o'quvchi uchun sodda.",
-          teacherCta: "O'qituvchi sifatida boshlash",
-          studentCta: "boshlash",
-          badge: "500+ maktab ishonadi",
+          subtitle:
+            "O'z materiallaringizdan testlar tuzing, har bir savolni nazoratda saqlang va o'quvchilar topshirishi bilan baholang.",
+          badge: "Hozir erta foydalanishda",
           primaryCta: "Bepul boshlash",
           secondaryCta: "Kirish",
-          socialProof: "o'qituvchi va o'quvchi",
-          trustedBy: "Dunyo bo'ylab muassasalar ishonadi",
-          mockup: {
-            title: "Boshqaruv paneli",
-            welcome: "Xush kelibsiz",
-            courses: "Kurslar",
-            grade: "Baho",
-            tasks: "Vazifalar",
+          socialProof: "Haqiqiy o'qituvchi va repetitorlar fikri asosida yaratilgan",
+          schoolsTitle: "Maktablar va xususiy o'quv markazlari uchun yaratilgan",
+          useCases: {
+            quizzes: "Haftalik quizlar",
+            placement: "Saralash testlari",
+            mock: "Sinov imtihonlari",
+            homework: "Uy vazifasi tekshiruvi",
+            finals: "Yakuniy imtihonlar",
+            progress: "Rivojlanish kuzatuvi",
           },
+          scene: {
+            alt: "Dars hujjatidan tuzilayotgan savol kartalari",
+            tagDocument: "Dars PDF",
+            tagDraft: "AI qoralama",
+            tagReady: "Ko'rib chiqishga tayyor",
+          },
+        },
+        ai: {
+          label: "AI yordamida qoralama",
+          title: "PDF va dars materiallarini test qoralamalariga aylantiring",
+          subtitle:
+            "Ish varaqasi, dars yoki yozuvlarni yuklang — Dwelve savollarni taklif qiladi, ulardan tayyor test tuzasiz. Jarayonni to'liq siz nazorat qilasiz.",
+          b1: "PDF, ish varaqasi yoki dars materialini yuklang",
+          b2: "Qoralama savollarni avtomatik yarating",
+          b3: "Har bir savolni e'lon qilishdan oldin ko'rib chiqing va tahrirlang",
+          b4: "Tasdiqlangan savollarni savollar bankiga saqlang",
+          b5: "O'qituvchi nazoratini yo'qotmasdan testlarni tezroq tuzing",
+          mock: {
+            file: "biology-chapter-4.pdf",
+            meta: "Yuklandi · 4 sahifa",
+            drafting: "Savollar tuzilmoqda",
+            heading: "Qoralama savollar",
+            q1: "Qaysi jarayon yorug'lik energiyasini kimyoviy energiyaga aylantiradi?",
+            q2: "Fotosintez sodir bo'ladigan organellani ayting.",
+            tag: "AI qoralama",
+            action: "Ko'rib chiqish",
+          },
+        },
+        teacherControl: {
+          label: "O'qituvchi nazorati",
+          title: "AI yordam beradi. O'qituvchi qaror qiladi.",
+          subtitle:
+            "Dwelve test tuzishni tezlashtiradi, lekin sizning fikringizni almashtirmaydi. Har bir qoralama savolni o'quvchi ko'rishidan oldin ko'rib chiqishingiz, tahrirlashingiz, tasdiqlashingiz yoki o'chirishingiz mumkin.",
+          b1: "AI tuzgan savollarni e'lon qilishdan oldin ko'rib chiqing",
+          b2: "Savol matni, javoblar va variantlarni tahrirlang",
+          b3: "Zaif yoki keraksiz savollarni o'chiring",
+          b4: "Vaqt limitlari va test qoidalarini belgilang",
+          b5: "Faqat test tayyor bo'lganda e'lon qiling",
+          stepReview: "Ko'rib chiqilmoqda",
+          stepApprove: "Tasdiqlandi",
+          edit: "Tahrirlash",
+          remove: "O'chirish",
+          approve: "Tasdiqlash",
+        },
+        roles: {
+          label: "Har bir rol uchun",
+          title: "O'quv markazingizdagi har bir rol uchun yaratilgan",
+          subtitle:
+            "Administrator, o'qituvchi va o'quvchi — har biri o'z vazifasiga moslangan ko'rinishni oladi.",
+          adminTitle: "Administratorlar uchun",
+          adminDesc: "O'qituvchilar, sinflar, o'quvchilar va test faolligini bir joydan boshqaring.",
+          teacherTitle: "O'qituvchilar uchun",
+          teacherDesc: "Testlar tuzing, savollarni qayta ishlating, taymerlar qo'ying va natijalarni darhol ko'ring.",
+          studentTitle: "O'quvchilar uchun",
+          studentDesc: "Testlarni istalgan qurilmadan topshiring — ilova o'rnatish shart emas.",
         },
         howItWorks: {
           title: "Qanday ishlaydi",
@@ -411,10 +466,31 @@ translation: {
           questionBankTitle: "Savollar banki",
           questionBankDesc: "Savollarni saqlang va keyingi imtihonlarda qayta ishlating.",
         },
+        analytics: {
+          label: "Tahlil",
+          title: "Faqat ballarni emas, o'quvchilar nimani tushunganini ko'ring",
+          subtitle:
+            "Har bir testdan keyin Dwelve topshiriqlarni sinf natijalari va e'tibor talab qiladigan joylarning aniq manzarasiga aylantiradi.",
+          b1: "O'rtacha ball va topshiriqlar sonini ko'ring",
+          b2: "Alohida o'quvchi natijalarini tekshiring",
+          b3: "Ko'p xato qilingan savollarni toping",
+          b4: "Eng yaxshi o'quvchilarni aniqlang",
+          b5: "Sinf darajasidagi natijalarni kuzating",
+          b6: "Natijalarni topshirilgandan so'ng darhol ko'ring",
+          mock: {
+            title: "Sinf natijalari",
+            average: "Sinf o'rtachasi",
+            submitted: "Topshirildi",
+            topPerformer: "Eng yaxshi o'quvchi",
+            missedLabel: "Eng ko'p xato qilingan savol",
+            missedQuestion: "4-savol · Mitoz bosqichlari",
+            missedRate: "58% xato",
+          },
+        },
         accordion: {
           label: "FAQ",
           title: "Boshlashdan oldin bilishingiz kerak bo'lgan hamma narsa",
-          subtitle: "Dwelve'dan foydalanayotgan o'qituvchi va o'quvchilar uchun qisqa javoblar.",
+          subtitle: "Dwelve'dan foydalanayotgan o'qituvchi va markazlar uchun qisqa javoblar.",
           item1: {
             question: "O'quvchilar ilova o'rnatishi kerakmi?",
             answer: "Yo'q. Dwelve brauzerning o'zida telefon, planshet va noutbukda ishlaydi.",
@@ -431,12 +507,33 @@ translation: {
             question: "Eski savollarni qayta ishlatish mumkinmi?",
             answer: "Ha. Savollarni bankka saqlab, uy vazifasi, quiz yoki imtihonlarda qayta qo'llashingiz mumkin.",
           },
+          item5: {
+            question: "PDF'dan test yaratish mumkinmi?",
+            answer:
+              "Ha. Dars materialini yuklang — Dwelve qoralama savollarni tuzadi, ularni e'lon qilishdan oldin ko'rib chiqib tahrirlashingiz mumkin.",
+          },
+          item6: {
+            question: "O'qituvchilar AI tuzgan savollarni tahrirlay oladimi?",
+            answer:
+              "Har doim. Har bir savolni o'quvchilar testni boshlashidan oldin o'zgartirish, o'chirish, tartibini almashtirish yoki tasdiqlash mumkin.",
+          },
+          item7: {
+            question: "Dwelve maktablar uchunmi yoki xususiy o'quv markazlari uchunmi?",
+            answer:
+              "Ikkalasi uchun ham. Dwelve sodda onlayn test kerak bo'lgan o'qituvchi, repetitor, maktab va o'quv markazlari uchun yaratilgan.",
+          },
+          item8: {
+            question: "O'quvchilarga akkaunt kerakmi?",
+            answer:
+              "O'quvchilar o'qituvchisi yoki markazi tanlagan usul orqali qo'shiladi, shuning uchun boshlash oddiy.",
+          },
         },
         cta: {
-          title: "Bugun Dwelve'dan foydalanishni boshlang",
-          subtitle: "O'z sinflarini o'zgartirayotgan minglab o'qituvchilarga qo'shiling. Boshlash bepul — karta shart emas.",
-          primary: "Bepul ro'yxatdan o'tish",
-          secondary: "Batafsil",
+          title: "Qog'oz testlarni aqlli onlayn imtihonlarga almashtiring",
+          subtitle:
+            "Testlarni tezroq tuzing, oson ulashing va natijalarni darhol ko'ring — chop etish, qo'lda baholash va chalkash jadvallarsiz.",
+          primary: "Bepul boshlash",
+          secondary: "Qanday ishlashini ko'ring",
         },
         footer: {
           description: "Maktab testlarini bir necha daqiqada onlayn yarating, ulashing va baholang.",

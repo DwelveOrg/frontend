@@ -36,6 +36,26 @@ export default function LandingAccordion() {
       question: t("landing.accordion.item4.question"),
       answer: t("landing.accordion.item4.answer"),
     },
+    {
+      key: "item5",
+      question: t("landing.accordion.item5.question"),
+      answer: t("landing.accordion.item5.answer"),
+    },
+    {
+      key: "item6",
+      question: t("landing.accordion.item6.question"),
+      answer: t("landing.accordion.item6.answer"),
+    },
+    {
+      key: "item7",
+      question: t("landing.accordion.item7.question"),
+      answer: t("landing.accordion.item7.answer"),
+    },
+    {
+      key: "item8",
+      question: t("landing.accordion.item8.question"),
+      answer: t("landing.accordion.item8.answer"),
+    },
   ];
 
   const sectionVariants = {

@@ -1,23 +1,19 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
 
 import BrandButton from "@/components/Custom/BrandButton";
 
+// Lazy, client-only: the three.js scene is its own chunk and never blocks paint.
+// The CSS glow behind it stays visible while it loads and if WebGL is missing.
+const HeroScene = dynamic(() => import("../_components/HeroScene"), { ssr: false });
+
 const AVATAR_COLORS = ["bg-indigo-300", "bg-emerald-300", "bg-amber-300", "bg-rose-300"];
 
-const CHART_BARS = [
-  { height: "42%", color: "bg-indigo-200 dark:bg-indigo-400/40" },
-  { height: "60%", color: "bg-indigo-300 dark:bg-indigo-400/60" },
-  { height: "34%", color: "bg-indigo-200 dark:bg-indigo-400/40" },
-  { height: "78%", color: "bg-indigo-400 dark:bg-indigo-400/80" },
-  { height: "52%", color: "bg-indigo-300 dark:bg-indigo-400/60" },
-  { height: "94%", color: "bg-[#4F46E5]" },
-];
-
-const INSTITUTIONS = ["Stanford", "MIT", "Harvard", "Oxford", "Yale"];
+const USE_CASES = ["quizzes", "placement", "mock", "homework", "finals", "progress"] as const;
 
 function MainPage() {
   const { t } = useTranslation();
@@ -34,11 +30,15 @@ function MainPage() {
       <div className="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2">
         {/* Left: copy */}
         <motion.div className="flex flex-col items-start text-left" {...fade(0)}>
-          <span className="inline-flex items-center rounded-full bg-indigo-50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#4F46E5] dark:bg-indigo-500/15 dark:text-indigo-300">
+          <span className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#4F46E5] dark:bg-indigo-500/15 dark:text-indigo-300">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            </span>
             {t("landing.main.badge")}
           </span>
 
-          <h1 className="mt-6 max-w-xl text-4xl font-bold leading-[1.08] tracking-tight text-[#1a1a2e] sm:text-5xl lg:text-[3.4rem] dark:text-white">
+          <h1 className="mt-6 max-w-xl text-balance text-4xl font-bold leading-[1.08] tracking-tight text-[#1a1a2e] sm:text-5xl lg:text-[3.4rem] dark:text-white">
             {t("landing.main.title")}
           </h1>
 
@@ -64,78 +64,84 @@ function MainPage() {
                 />
               ))}
             </div>
-            <p className="text-sm text-[#64748b] dark:text-slate-400">
-              <span className="font-semibold text-[#1a1a2e] dark:text-white">2,400+</span>{" "}
+            <p className="max-w-[14rem] text-sm leading-snug text-[#64748b] dark:text-slate-400">
               {t("landing.main.socialProof")}
             </p>
           </div>
         </motion.div>
 
-        {/* Right: dashboard preview */}
+        {/* Right: 3D hero scene (PDF → drafted questions) */}
         <motion.div className="relative" {...fade(0.15)}>
-          <div className="rounded-[28px] bg-slate-100/70 p-3 sm:p-5 dark:bg-white/5">
-            <div className="rounded-2xl bg-white p-5 shadow-[0_24px_60px_rgba(15,23,42,0.12)] dark:bg-[#111726] dark:shadow-[0_24px_60px_rgba(0,0,0,0.5)]">
-              <div className="flex items-center justify-between">
-                <p className="text-base font-bold text-[#1a1a2e] dark:text-white">
-                  {t("landing.main.mockup.title")}
-                </p>
-                <p className="text-xs text-[#94a3b8] dark:text-slate-400">
-                  {t("landing.main.mockup.welcome")}, Sarah
-                </p>
-              </div>
+          <div className="relative mx-auto aspect-square w-full max-w-[540px] overflow-hidden sm:aspect-[5/4] lg:aspect-square">
+            {/* Brand glow / WebGL fallback backdrop */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 rounded-[36px] bg-[radial-gradient(60%_55%_at_50%_45%,rgba(123,97,255,0.22),transparent_72%)] dark:bg-[radial-gradient(60%_55%_at_50%_45%,rgba(142,120,255,0.30),transparent_72%)]"
+            />
+            <HeroScene className="absolute inset-0 h-full w-full" />
 
-              <div className="mt-5 grid grid-cols-3 gap-3">
-                <StatCard label={t("landing.main.mockup.courses")} value="6" />
-                <StatCard label={t("landing.main.mockup.grade")} value="A-" />
-                <StatCard label={t("landing.main.mockup.tasks")} value="4" accent />
-              </div>
-
-              <div className="mt-3 flex h-36 items-end justify-between gap-2.5 rounded-xl bg-indigo-50/70 p-4 dark:bg-indigo-500/10">
-                {CHART_BARS.map((bar, i) => (
-                  <div
-                    key={i}
-                    className={`w-full rounded-md ${bar.color}`}
-                    style={{ height: bar.height }}
-                  />
-                ))}
-              </div>
-            </div>
+            {/* Narrative tags overlaying the scene */}
+            <SceneTag className="left-1 top-6 sm:left-4" label={t("landing.main.scene.tagDocument")} tone="neutral" />
+            <SceneTag
+              className="right-2 top-[42%] sm:right-4"
+              label={t("landing.main.scene.tagDraft")}
+              tone="violet"
+            />
+            <SceneTag
+              className="bottom-7 right-6 sm:bottom-9"
+              label={t("landing.main.scene.tagReady")}
+              tone="success"
+            />
+            <span className="sr-only">{t("landing.main.scene.alt")}</span>
           </div>
         </motion.div>
       </div>
 
-      {/* Trusted-by institutions */}
-      <div className="mx-auto mt-20 w-full max-w-5xl px-4 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#94a3b8] dark:text-slate-500">
-          {t("landing.main.trustedBy")}
+      {/* School / learning-center positioning band (replaces the old institutions strip) */}
+      <motion.div
+        className="mx-auto mt-20 w-full max-w-4xl px-4 text-center"
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.5 }}
+      >
+        <p className="text-sm font-semibold text-[#1a1a2e] dark:text-white">
+          {t("landing.main.schoolsTitle")}
         </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
-          {INSTITUTIONS.map((name) => (
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+          {USE_CASES.map((key) => (
             <span
-              key={name}
-              className="text-lg font-bold text-slate-300 transition-colors hover:text-slate-400 dark:text-slate-600 dark:hover:text-slate-500"
+              key={key}
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/70 px-4 py-2 text-sm font-medium text-[#475569] dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
             >
-              {name}
+              <span className="h-1.5 w-1.5 rounded-full bg-[#7B61FF]" />
+              {t(`landing.main.useCases.${key}`)}
             </span>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
 
-function StatCard({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+function SceneTag({
+  label,
+  tone,
+  className,
+}: {
+  label: string;
+  tone: "neutral" | "violet" | "success";
+  className?: string;
+}) {
+  const dot =
+    tone === "violet" ? "bg-[#7B61FF]" : tone === "success" ? "bg-emerald-500" : "bg-slate-400";
   return (
-    <div className="rounded-xl bg-slate-50 px-3 py-3 dark:bg-white/5">
-      <p className="text-[11px] font-medium text-[#94a3b8] dark:text-slate-400">{label}</p>
-      <p
-        className={`mt-1 text-xl font-bold ${
-          accent ? "text-[#4F46E5] dark:text-indigo-300" : "text-[#1a1a2e] dark:text-white"
-        }`}
-      >
-        {value}
-      </p>
-    </div>
+    <span
+      className={`pointer-events-none absolute z-10 inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/90 px-3 py-1.5 text-xs font-semibold text-[#1a1a2e] shadow-[0_8px_24px_rgba(15,23,42,0.10)] dark:border-white/10 dark:bg-[#111726]/90 dark:text-white ${className ?? ""}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+      {label}
+    </span>
   );
 }
 
