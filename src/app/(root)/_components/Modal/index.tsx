@@ -20,11 +20,22 @@ interface ModalProps {
     description?: string;
     trigger: React.ReactNode;
     isSubmit?: boolean;
+    closeLabel?: string;
+    submitLabel?: string;
 }
 
 // correction to props  making it readonly
 
-export function Modal({ children, className, title, description, trigger, isSubmit = false }: Readonly<ModalProps>) {
+export function Modal({
+    children,
+    className,
+    title,
+    description,
+    trigger,
+    isSubmit = false,
+    closeLabel = "Close modal",
+    submitLabel = "Submit",
+}: Readonly<ModalProps>) {
     const [open, setOpen] = useState(false);
 
     return (
@@ -37,7 +48,7 @@ export function Modal({ children, className, title, description, trigger, isSubm
                     type="button"
                     onClick={() => setOpen(false)}
                     className="absolute right-4 top-4 inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-transparent text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
-                    aria-label="Close modal"
+                    aria-label={closeLabel}
                 >
                     <X className="h-4 w-4" />
                 </button>
@@ -50,7 +61,7 @@ export function Modal({ children, className, title, description, trigger, isSubm
                     </AlertDialogDescription>
                 </AlertDialogHeader>{children}<AlertDialogFooter className="mt-2">
                     {isSubmit && <AlertDialogAction className="h-12 w-full cursor-pointer text-base font-semibold transition active:scale-[0.99] active:opacity-90">
-                        Submit
+                        {submitLabel}
                     </AlertDialogAction>}
                 </AlertDialogFooter>
             </AlertDialogContent>

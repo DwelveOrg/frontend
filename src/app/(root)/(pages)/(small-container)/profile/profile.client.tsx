@@ -1,18 +1,7 @@
 "use client";
 
 import Empty from "../../_components/ui/Empty";
-
-type ProfileUser = {
-  id: string;
-  identifier: string;
-  name: string;
-  role: string;
-};
-
-type ProfileClientProps = {
-  user: ProfileUser | null;
-};
-
+import type { ProfileClientProps } from "./_types";
 
 export default function ProfileClient({ user }: Readonly<ProfileClientProps>) {
 

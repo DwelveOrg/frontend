@@ -29,7 +29,7 @@ export default function Footer() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-sm font-medium text-[#64748b] transition-colors hover:text-[#4F46E5] dark:text-slate-400 dark:hover:text-white"
+              className="text-sm font-medium text-[#64748b] transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-white"
             >
               {link.label}
             </Link>

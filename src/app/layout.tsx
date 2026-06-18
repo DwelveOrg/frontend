@@ -38,6 +38,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Dwelve",
   description: "Dwelve is a digital academic testing and performance management platform built for schools and learning centers. It streamlines the entire assessment workflow — from test creation and submission to automated grading and performance analytics.",
+  icons: {
+    icon: [
+      { url: "/logo/favicon/favicon.svg", type: "image/svg+xml" },
+      { url: "/logo/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/logo/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/logo/app-icons/apple-touch-icon.png",
+  },
 };
 
 export default function MainLayout({

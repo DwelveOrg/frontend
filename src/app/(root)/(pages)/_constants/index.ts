@@ -1,5 +1,5 @@
 import { type Variants } from "motion/react";
-import type { ExamItem } from "../_types";
+import type { ExamItem, ExamTab } from "../_types";
 
 const entryEase = [0.22, 1, 0.36, 1] as const;
 
@@ -21,6 +21,13 @@ export const itemVariants: Variants = {
     y: 0,
     transition: { duration: 0.36, ease: entryEase },
   },
+};
+
+export const examTabs: ExamTab[] = ["active", "completed"];
+
+export const examTabLabelKeys: Record<ExamTab, string> = {
+  active: "root.exams.tabs.active",
+  completed: "root.exams.tabs.completed",
 };
 
 export const examItems: ExamItem[] = [

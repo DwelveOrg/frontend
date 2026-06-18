@@ -12,3 +12,5 @@ export interface ExamItem {
   passingScore: number;
   completed: boolean;
 }
+
+export type ExamTab = "active" | "completed";

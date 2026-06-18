@@ -269,73 +269,8 @@
   animation: layout-fade-slide 380ms ease-out both;
 }
 
-.navbar-logo-text {
-  color: var(--foreground);
-}
-
-.navbar-option {
-  color: var(--muted-foreground);
-  transition: color 180ms ease, transform 180ms ease;
-}
-
-.navbar-option:hover {
-  color: var(--foreground);
-  transform: translateY(-1px);
-}
-
-.login-button {
-  color: var(--primary);
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.55rem 1rem;
-  min-height: 40px;
-  transition:
-    background-color 180ms ease,
-    border-color 180ms ease,
-    color 180ms ease,
-    transform 180ms ease,
-    box-shadow 180ms ease,
-    filter 180ms ease;
-}
-
-.login-button:hover {
-  color: var(--primary-hover);
-  background: var(--muted);
-  border-color: color-mix(in srgb, var(--primary) 26%, var(--border));
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-ink) 8%, transparent);
-}
-
-.login-button:active {
-  transform: translateY(0);
-  filter: brightness(0.98);
-  box-shadow: none;
-}
-
-.login-button:focus-visible {
-  outline: none;
-  border-color: var(--ring);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ring) 18%, transparent);
-}
-
-.get-started-button {
-  color: var(--primary-foreground);
-  background: var(--primary);
-  border: 1px solid var(--primary);
-  transition:
-    background-color 180ms ease,
-    border-color 180ms ease,
-    transform 180ms ease,
-    box-shadow 180ms ease;
-}
-
-.get-started-button:hover {
-  background: var(--primary-hover);
-  border-color: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 10px 24px color-mix(in srgb, var(--primary) 22%, transparent);
-}
+/* Landing nav/hero/CTA buttons now live in the shared <BrandButton> component
+   (src/components/Custom/BrandButton.tsx) — see the reuse rule in CLAUDE.md. */
 
 .sidebar-scroll {
   scrollbar-width: none;

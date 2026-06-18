@@ -122,6 +122,7 @@ translation: {
             deleteAccount: {
               title: "Hisobni o'chirish",
               description: "Hisob va unga bog'liq barcha ma'lumotlarni butunlay o'chiring.",
+              unavailable: "Hisobni o'chirib bo'lmadi.",
             },
           },
           support: {
@@ -129,10 +130,12 @@ translation: {
             description: "Erta bosqichdagi mahsulotlar va tezkor fikr bildirish uchun foydali bo'lim.",
             reportBug: {
               title: "Xato haqida xabar berish",
+              modalTitle: "Xato haqida xabar berish",
               description: "Biror narsa ishlamay qolsa yoki noto'g'ri ishlasa, tezkor xabar yuboring.",
             },
             requestFeature: {
               title: "Funksiya so'rash",
+              modalTitle: "Funksiya so'rash",
               description: "Mahsulot g'oyalari va ish jarayonini yaxshilash takliflarini ulashing.",
             },
             contactSupport: {
@@ -142,6 +145,14 @@ translation: {
             documentation: {
               title: "Hujjatlar",
               description: "Qo'llanmalar, yo'riqnomalar va mahsulotdan foydalanish materiallarini oching.",
+            },
+            feedbackModal: {
+              description: "Tezda javob berishimiz uchun tafsilotlarni quyida yozing.",
+              messageLabel: "Xabar",
+              attachmentLabel: "Ilova",
+              placeholder: "Muammo yoki g'oyani tasvirlab bering...",
+              close: "Oynani yopish",
+              submit: "Yuborish",
             },
           },
           documentation: {
