@@ -122,6 +122,7 @@ translation: {
             deleteAccount: {
               title: "Delete account",
               description: "Permanently remove your account and all associated data.",
+              unavailable: "Unable to delete an account.",
             },
           },
           support: {
@@ -129,10 +130,12 @@ translation: {
             description: "Helpful tools for early products and fast feedback loops.",
             reportBug: {
               title: "Report bug",
+              modalTitle: "Report a bug",
               description: "Send a quick issue report when something breaks or behaves unexpectedly.",
             },
             requestFeature: {
               title: "Request feature",
+              modalTitle: "Request a feature",
               description: "Share product ideas and workflow improvements you want to see next.",
             },
             contactSupport: {
@@ -142,6 +145,14 @@ translation: {
             documentation: {
               title: "Documentation",
               description: "Open setup notes, guides, and product usage references.",
+            },
+            feedbackModal: {
+              description: "Share the details below so we can follow up quickly.",
+              messageLabel: "Message",
+              attachmentLabel: "Attachment",
+              placeholder: "Describe the issue or idea...",
+              close: "Close modal",
+              submit: "Submit",
             },
           },
           documentation: {

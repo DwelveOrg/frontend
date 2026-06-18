@@ -1,6 +1,6 @@
-import { notificationItemsInterface } from "../_types";
+import type { NotificationItem } from "../_types";
 
-export const notificationItems: notificationItemsInterface[] = [
+export const notificationItems: NotificationItem[] = [
   {
     id: 1,
     title: "root.notifications.items.newMessage.title",
@@ -9,7 +9,6 @@ export const notificationItems: notificationItemsInterface[] = [
     unread: true,
   },
   {
-    
     id: 2,
     title: "root.notifications.items.serverAlert.title",
     description: "root.notifications.items.serverAlert.description",

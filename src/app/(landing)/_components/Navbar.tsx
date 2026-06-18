@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import DwelveLogo from "@/components/Custom/DwelveLogo";
+import BrandButton from "@/components/Custom/BrandButton";
 
 export default function Navbar() {
   const { t } = useTranslation();
@@ -43,18 +44,12 @@ export default function Navbar() {
           </ul>
 
           <div className="flex items-center gap-2 min-[390px]:gap-3">
-            <Link
-              href="/login"
-              className="login-button flex items-center justify-center text-[14px] font-semibold max-[390px]:text-[12px]"
-            >
+            <BrandButton href="/login" variant="secondary" size="sm">
               {t("landing.nav.login")}
-            </Link>
-            <Link
-              href="/signup"
-              className="get-started-button flex h-[40px] items-center justify-center rounded-[10px] px-4 text-[14px] font-semibold max-[390px]:h-[34px] max-[390px]:px-3 max-[390px]:text-[12px]"
-            >
+            </BrandButton>
+            <BrandButton href="/signup" variant="primary" size="sm">
               {t("landing.nav.signup")}
-            </Link>
+            </BrandButton>
           </div>
         </div>
       </div>

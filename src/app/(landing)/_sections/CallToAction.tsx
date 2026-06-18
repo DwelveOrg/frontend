@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
+
+import BrandButton from "@/components/Custom/BrandButton";
 
 export default function CallToAction() {
   const { t } = useTranslation();
@@ -27,19 +27,12 @@ export default function CallToAction() {
         </p>
 
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href="/signup"
-            className="inline-flex h-12 items-center justify-center rounded-xl bg-[#4F46E5] px-7 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(79,70,229,0.25)] transition-all duration-200 hover:bg-[#4338ca] hover:shadow-[0_14px_30px_rgba(79,70,229,0.32)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#4F46E5]/20"
-          >
+          <BrandButton href="/signup" variant="primary" size="lg">
             {t("landing.cta.primary")}
-          </Link>
-          <Link
-            href="/login"
-            className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold text-[#1a1a2e] transition-colors hover:text-[#4F46E5] dark:text-white dark:hover:text-indigo-300"
-          >
+          </BrandButton>
+          <BrandButton href="/login" variant="secondary" size="lg" withArrow>
             {t("landing.cta.secondary")}
-            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-          </Link>
+          </BrandButton>
         </div>
       </motion.div>
     </section>

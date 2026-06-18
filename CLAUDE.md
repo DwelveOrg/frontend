@@ -98,6 +98,17 @@ Route-local code goes in underscored folders such as `_components`, `_constants`
 - Forms use `react-hook-form` and `zod` schemas, commonly under `_types/_schemas`.
 - Icons use `lucide-react`.
 
+### Reuse before you create
+
+Before adding any UI element, check whether a component for it already exists, and prefer it over re-styling from scratch:
+
+- Look in `src/components/ui` (shadcn primitives), `src/components/Custom` (shared cross-app components), and the route-local `_components` folder.
+- If the same visual element appears — or will appear — in more than one place, extract it into a single reusable component and use that everywhere, instead of copy-pasting inline Tailwind classes. One source of truth means one place to change.
+- Drive shared values (colours, sizes, radii) from design-system tokens (`bg-primary`, `var(--primary)`, etc.), not hard-coded hex. Two call sites that hard-code different hexes for "the same" button is the bug this rule prevents.
+- Promote a component up the tree as its reach grows: route-local `_components` → `src/components/Custom` (or `ui`) once it is used across route groups.
+
+Reference examples: the brand action button `src/components/Custom/BrandButton.tsx` (primary/secondary, sized) is reused across the landing nav, hero, and CTA; the brand mark uses `src/components/Custom/DwelveLogo.tsx`.
+
 ---
 
 ## Auth and sessions

@@ -87,6 +87,7 @@ Route-local code should stay beside its route in underscored folders:
 - Use Tailwind classes for styling.
 - Use `cn` from `src/lib/utils.ts` for conditional class composition.
 - Keep route-local constants, types, utilities, and components in route-local underscored folders.
+- Reuse before you create: check `src/components/ui`, `src/components/Custom`, and the route-local `_components` for an existing component before building UI. If an element is used in more than one place, extract it into one reusable component and reuse it instead of duplicating inline classes; drive shared colours/sizes from design-system tokens (e.g. `bg-primary`), never hard-coded hex.
 - Run `npm run lint` before submitting changes.
 
 ---

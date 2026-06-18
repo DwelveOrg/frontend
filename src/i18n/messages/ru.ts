@@ -122,6 +122,7 @@ translation: {
             deleteAccount: {
               title: "Удалить аккаунт",
               description: "Полностью удалите аккаунт и связанные с ним данные.",
+              unavailable: "Не удалось удалить аккаунт.",
             },
           },
           support: {
@@ -129,10 +130,12 @@ translation: {
             description: "Полезные инструменты для ранних продуктов и быстрой обратной связи.",
             reportBug: {
               title: "Сообщить об ошибке",
+              modalTitle: "Сообщить об ошибке",
               description: "Быстро отправьте отчёт, если что-то сломалось или ведёт себя странно.",
             },
             requestFeature: {
               title: "Запросить функцию",
+              modalTitle: "Запросить функцию",
               description: "Поделитесь идеями продукта и улучшениями рабочего процесса.",
             },
             contactSupport: {
@@ -142,6 +145,14 @@ translation: {
             documentation: {
               title: "Документация",
               description: "Откройте инструкции, гайды и справочные материалы по продукту.",
+            },
+            feedbackModal: {
+              description: "Опишите детали ниже, чтобы мы могли быстро ответить.",
+              messageLabel: "Сообщение",
+              attachmentLabel: "Вложение",
+              placeholder: "Опишите проблему или идею...",
+              close: "Закрыть окно",
+              submit: "Отправить",
             },
           },
           documentation: {

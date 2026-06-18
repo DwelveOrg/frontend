@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import React from "react";
-import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
+
+import BrandButton from "@/components/Custom/BrandButton";
 
 const AVATAR_COLORS = ["bg-indigo-300", "bg-emerald-300", "bg-amber-300", "bg-rose-300"];
 
@@ -47,19 +47,12 @@ function MainPage() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href="/signup"
-              className="inline-flex h-12 items-center justify-center rounded-xl bg-[#4F46E5] px-6 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(79,70,229,0.25)] transition-all duration-200 hover:bg-[#4338ca] hover:shadow-[0_14px_30px_rgba(79,70,229,0.32)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#4F46E5]/20"
-            >
+            <BrandButton href="/signup" variant="primary" size="lg">
               {t("landing.main.primaryCta")}
-            </Link>
-            <Link
-              href="/login"
-              className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 text-sm font-semibold text-[#1a1a2e] transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
-            >
+            </BrandButton>
+            <BrandButton href="/login" variant="secondary" size="lg" withArrow>
               {t("landing.main.secondaryCta")}
-              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </Link>
+            </BrandButton>
           </div>
 
           <div className="mt-9 flex items-center gap-3">

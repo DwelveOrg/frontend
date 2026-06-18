@@ -1,12 +1,14 @@
 import { LucideIcon } from "lucide-react";
 
-export interface notificationItemsInterface {
+export interface NotificationItem {
   id: number;
   title: string;
   description: string;
   timestamp: string;
   unread: boolean;
 }
+
+export type notificationItemsInterface = NotificationItem;
 
 export type NavItem = {
   href: string;
