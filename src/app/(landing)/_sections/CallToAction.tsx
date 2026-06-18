@@ -30,7 +30,7 @@ export default function CallToAction() {
           <BrandButton href="/signup" variant="primary" size="lg">
             {t("landing.cta.primary")}
           </BrandButton>
-          <BrandButton href="/login" variant="secondary" size="lg" withArrow>
+          <BrandButton href="#how-it-works" variant="secondary" size="lg" withArrow>
             {t("landing.cta.secondary")}
           </BrandButton>
         </div>

@@ -363,28 +363,83 @@ translation: {
       landing: {
         nav: {
           features: "Features",
-          howItWorks: "Pricing",
-          accordion: "About",
+          howItWorks: "How it works",
+          accordion: "FAQ",
           login: "Login",
           signup: "Sign up",
         },
         main: {
           title: "Create and take school tests online in minutes.",
-          subtitle: "No printing. Instant grading. Simple for teachers and students.",
-          teacherCta: "Start as Teacher",
-          studentCta: "Log in",
-          badge: "Trusted by 500+ schools",
-          primaryCta: "Get started free",
+          subtitle:
+            "Draft tests from your own materials, keep every question under your control, and grade the moment students submit.",
+          badge: "Now in early access",
+          primaryCta: "Start for free",
           secondaryCta: "Log in",
-          socialProof: "educators and students",
-          trustedBy: "Trusted by institutions worldwide",
-          mockup: {
-            title: "Dashboard",
-            welcome: "Welcome back",
-            courses: "Courses",
-            grade: "Grade",
-            tasks: "Tasks",
+          socialProof: "Built with feedback from real teachers and tutors",
+          schoolsTitle: "Made for schools and private learning centers",
+          useCases: {
+            quizzes: "Weekly quizzes",
+            placement: "Placement tests",
+            mock: "Mock exams",
+            homework: "Homework checks",
+            finals: "Final exams",
+            progress: "Progress tracking",
           },
+          scene: {
+            alt: "Floating question cards being drafted from a lesson document",
+            tagDocument: "Lesson PDF",
+            tagDraft: "AI draft",
+            tagReady: "Ready to review",
+          },
+        },
+        ai: {
+          label: "AI-assisted drafting",
+          title: "Turn PDFs and lesson materials into draft tests",
+          subtitle:
+            "Upload a worksheet, lesson, or notes and Dwelve suggests questions you can shape into a finished test — you stay in control the whole way.",
+          b1: "Upload a PDF, worksheet, or lesson material",
+          b2: "Generate draft questions automatically",
+          b3: "Review and edit every question before publishing",
+          b4: "Save approved questions to your question bank",
+          b5: "Build tests faster without losing teacher control",
+          mock: {
+            file: "biology-chapter-4.pdf",
+            meta: "Uploaded · 4 pages",
+            drafting: "Drafting questions",
+            heading: "Draft questions",
+            q1: "Which process converts light energy into chemical energy?",
+            q2: "Name the organelle where photosynthesis takes place.",
+            tag: "AI draft",
+            action: "Review",
+          },
+        },
+        teacherControl: {
+          label: "Teacher control",
+          title: "AI helps. Teachers decide.",
+          subtitle:
+            "Dwelve speeds up test creation; it never replaces your judgment. Every drafted question is yours to review, edit, approve, or remove before a student sees it.",
+          b1: "Review AI-drafted questions before publishing",
+          b2: "Edit question text, answers, and options",
+          b3: "Remove weak or irrelevant questions",
+          b4: "Set time limits and test rules",
+          b5: "Publish only when the test is ready",
+          stepReview: "In review",
+          stepApprove: "Approved",
+          edit: "Edit",
+          remove: "Remove",
+          approve: "Approve",
+        },
+        roles: {
+          label: "For every role",
+          title: "Built for every role in your learning center",
+          subtitle:
+            "Admins, teachers, and students each get a view shaped around what they actually do.",
+          adminTitle: "For admins",
+          adminDesc: "Manage teachers, classes, students, and test activity from one place.",
+          teacherTitle: "For teachers",
+          teacherDesc: "Create tests, reuse questions, set timers, and review results instantly.",
+          studentTitle: "For students",
+          studentDesc: "Take tests from any device — no app to install.",
         },
         howItWorks: {
           title: "How it works",
@@ -411,10 +466,31 @@ translation: {
           questionBankTitle: "Reusable Question Bank",
           questionBankDesc: "Save questions and reuse them for future exams.",
         },
+        analytics: {
+          label: "Analytics",
+          title: "See what students understand, not just their scores",
+          subtitle:
+            "After each test, Dwelve turns submissions into a clear picture of class performance and what needs another look.",
+          b1: "View average scores and submissions",
+          b2: "Check individual student results",
+          b3: "Find commonly missed questions",
+          b4: "Identify top performers",
+          b5: "Track class-level performance",
+          b6: "Review results right after submission",
+          mock: {
+            title: "Class results",
+            average: "Class average",
+            submitted: "Submitted",
+            topPerformer: "Top performer",
+            missedLabel: "Most missed question",
+            missedQuestion: "Q4 · Stages of mitosis",
+            missedRate: "58% missed",
+          },
+        },
         accordion: {
           label: "FAQ",
           title: "Everything you need to know before you start",
-          subtitle: "Quick answers for teachers and students using Dwelve.",
+          subtitle: "Quick answers for teachers and centers using Dwelve.",
           item1: {
             question: "Do students need to install an app?",
             answer: "No. Dwelve works directly in the browser on phones, tablets, and laptops.",
@@ -431,12 +507,33 @@ translation: {
             question: "Can I reuse my old questions?",
             answer: "Yes. Save questions to your bank and reuse them for homework, quizzes, or exams.",
           },
+          item5: {
+            question: "Can I generate tests from a PDF?",
+            answer:
+              "Yes. Upload learning material and Dwelve drafts questions you can review and edit before publishing.",
+          },
+          item6: {
+            question: "Can teachers edit AI-drafted questions?",
+            answer:
+              "Always. You can change, delete, reorder, or approve every question before students take the test.",
+          },
+          item7: {
+            question: "Is Dwelve for schools or private learning centers?",
+            answer:
+              "Both. Dwelve is built for teachers, tutors, schools, and learning centers that need simple online testing.",
+          },
+          item8: {
+            question: "Do students need an account?",
+            answer:
+              "Students join through the access method their teacher or center chooses, so getting started stays simple.",
+          },
         },
         cta: {
-          title: "Start using Dwelve today",
-          subtitle: "Join thousands of educators transforming their classrooms. Free to get started — no credit card required.",
-          primary: "Sign up for free",
-          secondary: "Learn more",
+          title: "Replace paper tests with smarter online exams",
+          subtitle:
+            "Create tests faster, share them easily, and see results instantly — without printing, manual grading, or messy spreadsheets.",
+          primary: "Start for free",
+          secondary: "See how it works",
         },
         footer: {
           description: "Create, share, and grade school tests online in minutes with instant analytics.",

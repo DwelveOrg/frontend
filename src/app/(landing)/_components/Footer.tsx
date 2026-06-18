@@ -12,7 +12,7 @@ export default function Footer() {
   const links = [
     { label: t("landing.footer.about"), href: "/" },
     { label: t("landing.footer.contact"), href: "/" },
-    { label: t("landing.footer.support"), href: "mailto:support@gradeflow.app" },
+    { label: t("landing.footer.support"), href: "mailto:support@dwelve.app" },
     { label: t("landing.footer.privacy"), href: "/" },
     { label: t("landing.footer.terms"), href: "/" },
   ];
