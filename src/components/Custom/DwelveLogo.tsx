@@ -22,7 +22,7 @@ type DwelveLogoProps = {
 
 export default function DwelveLogo({ variant = "panel", className = "" }: DwelveLogoProps) {
   const textClass =
-    variant === "panel" ? "text-white" : "text-[#1a1a2e] dark:text-white";
+    variant === "panel" ? "text-white" : "text-foreground";
 
   return (
     <div className={`inline-flex items-center gap-2.5 ${className}`}>

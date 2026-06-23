@@ -9,6 +9,9 @@ translation: {
       },
       root: {
         navbarTitle: "Dwelve",
+        breadcrumb: {
+          home: "Главная",
+        },
         empty: {
           title: "Пока пусто",
           description: "Начните с одного действия.",
@@ -360,11 +363,14 @@ translation: {
         toggleAssignments: "Показать варианты заданий",
         toggleMore: "Показать дополнительные пункты",
         comingSoon: "Скоро",
+        primaryNav: "Основная навигация",
       },
       landing: {
         nav: {
-          features: "Features",
+          aiDrafting: "ИИ-генерация",
+          features: "Возможности",
           howItWorks: "Как это работает",
+          analytics: "Аналитика",
           accordion: "FAQ",
           login: "Войти",
           signup: "Начать",
@@ -392,7 +398,6 @@ translation: {
             tagDraft: "AI-черновик",
             tagReady: "Готово к проверке",
             tagEditable: "Редактируемые вопросы",
-            flowLabel: "PDF в тест для проверки",
           },
         },
         ai: {
@@ -564,6 +569,84 @@ translation: {
         common: {
           backToLanding: "Назад на лендинг",
           backToLogin: "Назад ко входу",
+        },
+        visual: {
+          login: {
+            badge: "Активно в 500+ классах",
+            titleLine1: "Ваши ученики заслуживают",
+            titleLine2: "мгновенной обратной связи.",
+            subtitleLine1: "Автопроверка тестов. Аналитика в реальном времени.",
+            subtitleLine2: "Без бумажной работы.",
+            card: {
+              subject: "Алгебра · Глава 5",
+              meta: "Проверено автоматически · 2 мин назад",
+              done: "Готово",
+              students: "24 ученика",
+              average: "83% средний балл",
+            },
+            activityStrong: "5 тестов",
+            activityRest: "проверено за последний час",
+            socialTitle: "2 400+ учителей",
+            socialSubtitle: "доверяют Dwelve каждый день",
+          },
+          signup: {
+            titleLine1: "Начните учиться",
+            titleLine2: "умнее уже сегодня.",
+            subtitle: "Платформа для учеников и учителей, которым нужны реальные результаты, а не лишняя бумажная работа.",
+            features: {
+              grading: "Мгновенная автопроверка",
+              analytics: "Аналитика прогресса",
+              pdf: "Создание тестов из PDF",
+              device: "Работает на любом устройстве",
+            },
+            score: {
+              subject: "Физика · Раздел 4",
+              title: "Ваш последний результат",
+              caption: "Последние 5 предметов",
+            },
+            socialTitle: "12 000+ учеников",
+            socialSubtitle: "уже используют Dwelve",
+          },
+          admin: {
+            titleLine1: "Одна платформа для",
+            titleLine2: "всего вашего центра.",
+            subtitle: "От создания тестов до проверки и аналитики — всё, что нужно школе или учебному центру, в одном месте.",
+            stats: {
+              setupValue: "3 мин",
+              setup: "средняя настройка",
+              centersValue: "500+",
+              centers: "центров",
+              paperValue: "0",
+              paper: "бумажных отходов",
+            },
+            classCard: {
+              title: "Класс 10A — Математика",
+              meta: "3 активных теста · 28 учеников",
+              status: "Онлайн",
+              tests: {
+                algebra: "Тест по алгебре",
+                geometry: "Итог по геометрии",
+                statistics: "ДЗ по статистике",
+              },
+            },
+            features: {
+              classes: {
+                title: "Управление классами",
+                desc: "Управляйте учителями, учениками и классами из одного места.",
+              },
+              pdf: {
+                title: "Импорт тестов из PDF",
+                desc: "Загрузите PDF, и Dwelve сразу создаст черновик теста.",
+              },
+              analytics: {
+                title: "Аналитика центра",
+                desc: "Отслеживайте баллы, тренды и прогресс по всем классам.",
+              },
+            },
+            trustedPrefix: "Нам доверяют",
+            trustedStrong: "500+ учебных центров",
+            trustedSuffix: "по всему миру",
+          },
         },
         login: {
           access: "Доступ Dwelve",

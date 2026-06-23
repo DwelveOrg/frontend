@@ -2,13 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { logout } from '@/app/(authentication)/_lib/actions'
+import { logout } from "@/app/(authentication)/_lib/actions";
 import {
   Bell,
-  ChevronLeft,
-  ChevronRight,
   GraduationCap,
   House,
   LogOut,
@@ -17,9 +15,10 @@ import {
   School,
   Settings,
   UserRound,
-  type LucideIcon
+  type LucideIcon,
 } from "lucide-react";
 import { NavItem } from "../../_types/index";
+import { isRouteActive, notificationItems } from "../../_constants";
 import DwelveLogo from "@/components/Custom/DwelveLogo";
 import {
   DropdownMenu,
@@ -29,142 +28,63 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const COLLAPSED_BUTTON_SIZE = "h-11 w-11 min-h-11 min-w-11 shrink-0 aspect-square";
-const SIDEBAR_BUTTON_PADDING = "p-2.5";
+const SIDEBAR_WIDTH = "w-[264px]";
+
+/**
+ * Shared row geometry so every nav row (link, locked, logout) lines up exactly.
+ * Weight is the state signal, not size: idle rests at `font-normal` (400) so the
+ * active jump to `font-semibold` (600) reads clearly; row size never changes, so
+ * switching tabs never shifts the layout.
+ */
+const ROW_BASE =
+  "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-normal outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sidebar)]";
+// Active fill is a soft brand tint derived from --primary (clearly visible on the
+// --sidebar surface, unlike the near-white --accent), not a solid fill.
+const ROW_ACTIVE =
+  "bg-[color-mix(in_srgb,var(--primary)_14%,transparent)] text-[var(--accent-foreground)] font-semibold tracking-[0.01em]";
+const ROW_IDLE =
+  "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]";
 
 function NavIcon({ icon: Icon, color }: { icon: LucideIcon; color?: string }) {
-  return (
-    <span className="flex h-6 w-6 items-center justify-center">
-      <Icon color={color} className="h-6 w-6 shrink-0" strokeWidth={2} absoluteStrokeWidth />
-    </span>
-  );
+  return <Icon color={color} className="h-5 w-5 shrink-0" strokeWidth={2} />;
 }
 
-function SidebarTooltip({
-  label,
-  collapsed,
-  children,
-}: {
-  label: string;
-  collapsed: boolean;
-  children: ReactNode;
-}) {
-  if (!collapsed) return <>{children}</>;
-
+/** Red count pill used on the Notifications row. */
+function CountBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
   return (
-    <div className="group/tt relative z-[120] flex w-full justify-center">
-      {children}
-      <div className="pointer-events-none absolute left-full top-1/2 z-[130] ml-3 -translate-y-1/2 whitespace-nowrap rounded-md border border-[var(--border)] bg-[var(--background)] px-2 py-1 text-xs font-medium text-[var(--foreground)] opacity-0 shadow-sm transition-opacity duration-150 group-hover/tt:opacity-100">
-        {label}
-      </div>
-    </div>
+    <span className="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[var(--destructive)] px-1.5 text-[11px] font-bold leading-none text-[var(--destructive-foreground)]">
+      {count}
+    </span>
   );
 }
 
 function NavLink({
   item,
   active,
-  collapsed,
+  badge,
   onClick,
 }: {
   item: NavItem;
   active: boolean;
-  collapsed: boolean;
+  badge?: number;
   onClick?: () => void;
 }) {
-  const Icon = item.icon;
-
-  return (
-    <SidebarTooltip label={item.label} collapsed={collapsed}>
-      <Link
-        href={item.href}
-        prefetch={false}
-        onClick={onClick}
-        className={`group flex cursor-pointer items-center rounded-2xl border transition-all duration-200 ${
-          collapsed
-            ? `mx-auto ${COLLAPSED_BUTTON_SIZE} ${SIDEBAR_BUTTON_PADDING} justify-center overflow-visible`
-            : `justify-start ${SIDEBAR_BUTTON_PADDING}`
-        } ${
-          active
-            ? "border-[var(--sidebar-primary)] bg-[var(--sidebar-primary)] text-[var(--sidebar-primary-foreground)]"
-            : "border-transparent text-[var(--sidebar-foreground)] opacity-70 hover:border-[var(--sidebar-border)] hover:bg-[var(--sidebar-accent)] hover:opacity-100"
-        }`}
-      >
-        <NavIcon icon={Icon} />
-        {!collapsed ? (
-          <span className="ml-3 truncate text-[15px] font-semibold tracking-tight">{item.label}</span>
-        ) : null}
-      </Link>
-    </SidebarTooltip>
-  );
-}
-
-function LockedNavItem({
-  icon: Icon,
-  label,
-  collapsed,
-  comingSoonLabel,
-}: {
-  icon: LucideIcon;
-  label: string;
-  collapsed: boolean;
-  comingSoonLabel: string;
-}) {
-  return (
-    <SidebarTooltip label={`${label} — ${comingSoonLabel}`} collapsed={collapsed}>
-      <div
-        aria-disabled="true"
-        className={`flex items-center rounded-2xl border border-dashed border-[var(--sidebar-border)] transition-all ${
-          collapsed
-            ? `mx-auto ${COLLAPSED_BUTTON_SIZE} ${SIDEBAR_BUTTON_PADDING} justify-center`
-            : `${SIDEBAR_BUTTON_PADDING} justify-start`
-        } cursor-not-allowed select-none opacity-40`}
-      >
-        <NavIcon icon={Icon} />
-        {!collapsed ? (
-          <>
-            <span className="ml-3 truncate text-[15px] font-semibold tracking-tight text-[var(--sidebar-foreground)]">
-              {label}
-            </span>
-            <span className="ml-auto shrink-0 rounded-full bg-[var(--accent)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--accent-foreground)]">
-              {comingSoonLabel}
-            </span>
-          </>
-        ) : null}
-      </div>
-    </SidebarTooltip>
-  );
-}
-
-function MobileLink({
-  item,
-  active,
-  onPress,
-}: {
-  item: NavItem;
-  active: boolean;
-  onPress?: () => void;
-}) {
-  const Icon = item.icon;
-
   return (
     <Link
       href={item.href}
-      prefetch={false}
-      onClick={onPress}
-      className={`flex min-w-0 flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 transition ${
-        active
-          ? "bg-[var(--sidebar-primary)] text-[var(--sidebar-primary-foreground)]"
-          : "text-[var(--sidebar-foreground)] opacity-70 hover:bg-[var(--sidebar-accent)] hover:opacity-100"
-      }`}
+      onClick={onClick}
+      aria-current={active ? "page" : undefined}
+      className={`${ROW_BASE} ${active ? ROW_ACTIVE : ROW_IDLE}`}
     >
-      <NavIcon icon={Icon} />
-      <span className="truncate text-[11px] font-semibold max-[430px]:hidden">{item.label}</span>
+      <NavIcon icon={item.icon} />
+      <span className="truncate">{item.label}</span>
+      {badge ? <CountBadge count={badge} /> : null}
     </Link>
   );
 }
 
-function MobileLockedItem({
+function LockedNavItem({
   icon: Icon,
   label,
   comingSoonLabel,
@@ -176,142 +96,140 @@ function MobileLockedItem({
   return (
     <div
       aria-disabled="true"
-      className="relative flex min-w-0 flex-1 cursor-not-allowed select-none flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 opacity-40"
+      className={`${ROW_BASE} cursor-not-allowed select-none text-[var(--muted-foreground)] opacity-55`}
     >
       <NavIcon icon={Icon} />
-      <span className="truncate text-[11px] font-semibold text-[var(--sidebar-foreground)] max-[430px]:hidden">
-        {label}
-      </span>
-      <span className="absolute -top-0.5 right-0 rounded-full bg-[var(--accent)] px-1.5 py-px text-[8px] font-bold uppercase tracking-wide text-[var(--accent-foreground)]">
+      <span className="truncate">{label}</span>
+      <span className="ml-auto shrink-0 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--muted-foreground)]">
         {comingSoonLabel}
       </span>
     </div>
   );
 }
 
+function MobileLink({
+  item,
+  active,
+  badge,
+  onPress,
+}: {
+  item: NavItem;
+  active: boolean;
+  badge?: number;
+  onPress?: () => void;
+}) {
+  return (
+    <Link
+      href={item.href}
+      onClick={onPress}
+      aria-current={active ? "page" : undefined}
+      className={`relative flex min-w-0 flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 transition ${
+        active
+          ? "bg-[var(--accent)] text-[var(--accent-foreground)]"
+          : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+      }`}
+    >
+      <span className="relative">
+        <NavIcon icon={item.icon} />
+        {badge ? (
+          <span className="absolute -right-2 -top-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[var(--destructive)] px-1 text-[9px] font-bold leading-none text-[var(--destructive-foreground)]">
+            {badge}
+          </span>
+        ) : null}
+      </span>
+      <span className="truncate text-[11px] font-semibold max-[430px]:hidden">{item.label}</span>
+    </Link>
+  );
+}
+
 export default function SideBar() {
   const { t } = useTranslation();
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("gf-sidebar-collapsed") === "1";
-  });
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
 
-  const topItems: NavItem[] = [
+  const unreadCount = useMemo(
+    () => notificationItems.filter((item) => item.unread).length,
+    []
+  );
+
+  // Primary navigation — order and items mirror the reference design.
+  const primaryItems: NavItem[] = [
     { href: "/dashboard", label: t("sidebar.dashboard"), icon: House },
-    { href: "/school", label: t("sidebar.school"), icon: School },
     { href: "/groups", label: t("sidebar.classes"), icon: GraduationCap },
-    { href: "/notifications", label: t("sidebar.notifications"), icon: Bell },
-  ];
-
-  const bottomItems: NavItem[] = [
-    { href: "/settings", label: t("sidebar.settings"), icon: Settings },
-    { href: "/profile", label: t("sidebar.profile"), icon: UserRound },
-  ];
-
-  const mobilePrimary: NavItem[] = [
-    { href: "/dashboard", label: t("sidebar.dashboard"), icon: House },
     { href: "/school", label: t("sidebar.school"), icon: School },
-    { href: "/groups", label: t("sidebar.classes"), icon: GraduationCap },
   ];
+  const notificationsItem: NavItem = {
+    href: "/notifications",
+    label: t("sidebar.notifications"),
+    icon: Bell,
+  };
+  const settingsItem: NavItem = { href: "/settings", label: t("sidebar.settings"), icon: Settings };
+  const profileItem: NavItem = { href: "/profile", label: t("sidebar.profile"), icon: UserRound };
 
-  const mobileExtra = [...topItems.slice(3), ...bottomItems];
   const comingSoon = t("sidebar.comingSoon");
+  const isActive = (href: string) => isRouteActive(pathname, href);
 
-  useEffect(() => {
-    localStorage.setItem("gf-sidebar-collapsed", collapsed ? "1" : "0");
-  }, [collapsed]);
-
-  const desktopWidth = useMemo(() => (collapsed ? "w-[96px]" : "w-[300px]"), [collapsed]);
-
-  if (!mounted) {
-    return <aside className="hidden md:flex w-[300px] shrink-0 p-4" aria-hidden />;
-  }
+  const mobileExtra: NavItem[] = [settingsItem, profileItem];
 
   return (
     <>
-      <aside className={`hidden md:sticky md:top-0 md:flex md:h-screen ${desktopWidth} shrink-0 p-4 transition-[width] duration-300`}>
-        <div className="relative flex h-[calc(100vh-2rem)] w-full flex-col overflow-visible rounded-[28px] border border-[var(--sidebar-border)] bg-[var(--sidebar)] p-3 text-[var(--sidebar-foreground)] shadow-sm">
-          <div className={`mb-4 ${collapsed ? "flex justify-center" : "flex items-start justify-between"}`}>
-            {!collapsed ? (
-              <div className="min-w-0 pl-[10px]">
-                <DwelveLogo variant="form" />
-                <p className="truncate mt-1 text-xs text-[var(--muted-foreground)]">{t("sidebar.brandSub")}</p>
-              </div>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => setCollapsed((prev) => !prev)}
-              className={`inline-flex ${COLLAPSED_BUTTON_SIZE} ${SIDEBAR_BUTTON_PADDING} cursor-pointer items-center justify-center rounded-2xl border border-[var(--sidebar-border)] bg-[var(--sidebar-accent)] text-[var(--sidebar-foreground)] transition hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]`}
-              aria-label={collapsed ? t("sidebar.expand") : t("sidebar.collapse")}
-            >
-              {collapsed ? <NavIcon icon={ChevronRight} /> : <NavIcon icon={ChevronLeft} />}
-            </button>
-          </div>
+      {/* Desktop: flat, flush-left full-height panel with a hairline right divider. */}
+      <aside
+        className={`hidden md:sticky md:top-0 md:flex md:h-screen md:flex-col ${SIDEBAR_WIDTH} shrink-0 border-r border-[var(--border)] bg-[var(--sidebar)] text-[var(--sidebar-foreground)]`}
+      >
+        <div className="px-6 pb-5 pt-6">
+          <DwelveLogo variant="form" />
+        </div>
 
-          <div
-            className={`flex-1 pr-1 ${
-              collapsed
-                ? "overflow-visible"
-                : "sidebar-scroll overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-            }`}
+        <nav
+          aria-label={t("sidebar.primaryNav")}
+          className="flex-1 space-y-1 overflow-y-auto px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {primaryItems.map((item) => (
+            <NavLink key={item.href} item={item} active={isActive(item.href)} />
+          ))}
+          <LockedNavItem icon={NotebookPen} label={t("sidebar.assignments")} comingSoonLabel={comingSoon} />
+          <NavLink
+            item={notificationsItem}
+            active={isActive(notificationsItem.href)}
+            badge={unreadCount}
+          />
+          <NavLink item={settingsItem} active={isActive(settingsItem.href)} />
+        </nav>
+
+        <div className="space-y-1 border-t border-[var(--border)] px-3 py-3">
+          <NavLink item={profileItem} active={isActive(profileItem.href)} />
+          <button
+            type="button"
+            onClick={logout}
+            className={`${ROW_BASE} ${ROW_IDLE} cursor-pointer hover:bg-[var(--destructive)]/10 hover:text-[var(--destructive)]`}
           >
-            <nav className={collapsed ? "mx-auto flex w-full flex-col items-center gap-2" : "space-y-2"}>
-              {topItems.map((item) => (
-                <NavLink key={item.href} item={item} collapsed={collapsed} active={pathname === item.href} />
-              ))}
-            </nav>
-          </div>
-
-          <div className={collapsed ? "mt-4 flex flex-col items-center gap-2" : "mt-4 space-y-2"}>
-            <LockedNavItem
-              icon={NotebookPen}
-              label={t("sidebar.assignments")}
-              collapsed={collapsed}
-              comingSoonLabel={comingSoon}
-            />
-            {bottomItems.map((item) => (
-              <NavLink key={item.href} item={item} collapsed={collapsed} active={pathname === item.href} />
-            ))}
-            <SidebarTooltip label={t("sidebar.logOut")} collapsed={collapsed}>
-              <button
-                type="button"
-                onClick={logout}
-                className={`flex cursor-pointer items-center rounded-2xl border border-[var(--sidebar-border)] bg-[var(--sidebar-accent)] text-[var(--sidebar-foreground)] transition hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] ${
-                  collapsed
-                    ? `mx-auto ${COLLAPSED_BUTTON_SIZE} ${SIDEBAR_BUTTON_PADDING} justify-center overflow-visible`
-                    : `w-full justify-start ${SIDEBAR_BUTTON_PADDING}`
-                }`}
-              >
-                <NavIcon color="#FF746C" icon={LogOut} />
-                {!collapsed ? <span className="ml-3 text-[15px] font-semibold">{t("sidebar.logOut")}</span> : null}
-              </button>
-            </SidebarTooltip>
-          </div>
+            <NavIcon icon={LogOut} />
+            <span className="truncate">{t("sidebar.logOut")}</span>
+          </button>
         </div>
       </aside>
 
+      {/* Mobile: bottom navigation bar. */}
       <div className="fixed inset-x-0 bottom-0 z-40 md:hidden">
-        <nav className="border-t border-[var(--sidebar-border)] bg-[var(--sidebar)]/95 p-2 backdrop-blur">
+        <nav
+          aria-label={t("sidebar.primaryNav")}
+          className="border-t border-[var(--border)] bg-[var(--card)]/95 p-2 backdrop-blur"
+        >
           <div className="flex items-stretch gap-1.5">
-            {mobilePrimary.map((item) => (
+            {primaryItems.map((item) => (
               <MobileLink
                 key={item.href}
                 item={item}
-                active={pathname === item.href}
+                active={isActive(item.href)}
                 onPress={() => setMobileMoreOpen(false)}
               />
             ))}
-            <MobileLockedItem
-              icon={NotebookPen}
-              label={t("sidebar.assignments")}
-              comingSoonLabel={comingSoon}
+            <MobileLink
+              item={notificationsItem}
+              active={isActive(notificationsItem.href)}
+              badge={unreadCount}
+              onPress={() => setMobileMoreOpen(false)}
             />
             <DropdownMenu open={mobileMoreOpen} onOpenChange={setMobileMoreOpen}>
               <DropdownMenuTrigger asChild>
@@ -319,8 +237,8 @@ export default function SideBar() {
                   type="button"
                   className={`flex min-w-0 flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 text-[11px] font-semibold transition ${
                     mobileMoreOpen
-                      ? "bg-[var(--sidebar-primary)] text-[var(--sidebar-primary-foreground)]"
-                      : "text-[var(--sidebar-foreground)] opacity-75 hover:bg-[var(--sidebar-accent)] hover:opacity-100"
+                      ? "bg-[var(--accent)] text-[var(--accent-foreground)]"
+                      : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
                   }`}
                   aria-label={t("sidebar.toggleMore")}
                 >
@@ -333,17 +251,28 @@ export default function SideBar() {
                 align="end"
                 className="mb-2 w-[260px] rounded-2xl border-[var(--border)] bg-[var(--popover)] p-2 shadow-xl max-[350px]:w-[220px]"
               >
+                <DropdownMenuItem
+                  disabled
+                  className="rounded-xl px-3 py-2.5 text-sm font-semibold opacity-70 max-[350px]:rounded-lg max-[350px]:px-2.5 max-[350px]:py-2 max-[350px]:text-xs"
+                >
+                  <NavIcon icon={NotebookPen} />
+                  <span className="ml-3">{t("sidebar.assignments")}</span>
+                  <span className="ml-auto rounded-full bg-[var(--muted)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--muted-foreground)]">
+                    {comingSoon}
+                  </span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="my-1.5" />
                 {mobileExtra.map((item) => (
                   <DropdownMenuItem
                     key={item.href}
                     asChild
                     className={`cursor-pointer rounded-xl px-3 py-2.5 text-sm font-semibold max-[350px]:rounded-lg max-[350px]:px-2.5 max-[350px]:py-2 max-[350px]:text-xs ${
-                      pathname === item.href
-                        ? "bg-[var(--sidebar-primary)] text-[var(--sidebar-primary-foreground)] focus:bg-[var(--sidebar-primary)] focus:text-[var(--sidebar-primary-foreground)]"
+                      isActive(item.href)
+                        ? "bg-[var(--accent)] text-[var(--accent-foreground)] focus:bg-[var(--accent)] focus:text-[var(--accent-foreground)]"
                         : "text-[var(--popover-foreground)]/75"
                     }`}
                   >
-                    <Link href={item.href} prefetch={false}>
+                    <Link href={item.href}>
                       <NavIcon icon={item.icon} />
                       <span className="ml-3">{item.label}</span>
                     </Link>
@@ -357,7 +286,7 @@ export default function SideBar() {
                   }}
                   className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--popover-foreground)]/75 max-[350px]:rounded-lg max-[350px]:px-2.5 max-[350px]:py-2 max-[350px]:text-xs"
                 >
-                  <NavIcon color="#FF746C" icon={LogOut} />
+                  <NavIcon color="var(--destructive)" icon={LogOut} />
                   <span className="ml-3">{t("sidebar.logOut")}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

@@ -9,6 +9,9 @@ translation: {
       },
       root: {
         navbarTitle: "Dwelve",
+        breadcrumb: {
+          home: "Home",
+        },
         empty: {
           title: "Nothing here yet",
           description: "Start with one action.",
@@ -360,11 +363,14 @@ translation: {
         toggleAssignments: "Toggle assignment options",
         toggleMore: "Toggle more navigation items",
         comingSoon: "Soon",
+        primaryNav: "Primary navigation",
       },
       landing: {
         nav: {
+          aiDrafting: "AI drafting",
           features: "Features",
           howItWorks: "How it works",
+          analytics: "Analytics",
           accordion: "FAQ",
           login: "Login",
           signup: "Sign up",
@@ -392,7 +398,6 @@ translation: {
             tagDraft: "AI draft",
             tagReady: "Ready to review",
             tagEditable: "Editable questions",
-            flowLabel: "PDF to review-ready test",
           },
         },
         ai: {
@@ -449,26 +454,26 @@ translation: {
         howItWorks: {
           title: "How it works",
           subtitle: "Replace paper tests in three simple steps",
-          createTitle: "Create Your Test",
+          createTitle: "Create your test",
           createDesc: "Build quizzes in minutes. Add questions and set a time limit.",
-          shareTitle: "Share with Students",
+          shareTitle: "Share with students",
           shareDesc: "Send a test link or code. No printing needed.",
-          resultsTitle: "Get Instant Results",
+          resultsTitle: "Get instant results",
           resultsDesc: "Automatic grading and real-time analytics.",
         },
         features: {
           label: "Core Features",
           title: "Built for modern classrooms, designed for speed and clarity.",
           subtitle: "Powerful tools designed for modern education, wrapped in a simple interface.",
-          instantGradingTitle: "Instant Grading",
+          instantGradingTitle: "Instant grading",
           instantGradingDesc: "Automatic scoring saves hours of manual checking.",
-          timedExamsTitle: "Time-Controlled Exams",
+          timedExamsTitle: "Time-controlled exams",
           timedExamsDesc: "Set exam durations and automatically close submissions when time runs out.",
-          insightsTitle: "Performance Insights",
+          insightsTitle: "Performance insights",
           insightsDesc: "View average scores, top performers, and commonly missed questions.",
-          anyDeviceTitle: "Works on Any Device",
+          anyDeviceTitle: "Works on any device",
           anyDeviceDesc: "Students can take tests from phones, tablets, or laptops.",
-          questionBankTitle: "Reusable Question Bank",
+          questionBankTitle: "Reusable question bank",
           questionBankDesc: "Save questions and reuse them for future exams.",
         },
         analytics: {
@@ -564,6 +569,84 @@ translation: {
         common: {
           backToLanding: "Back to landing",
           backToLogin: "Back to login",
+        },
+        visual: {
+          login: {
+            badge: "Active across 500+ classrooms",
+            titleLine1: "Your students deserve",
+            titleLine2: "instant feedback.",
+            subtitleLine1: "Auto-graded tests. Real-time analytics.",
+            subtitleLine2: "Zero paperwork.",
+            card: {
+              subject: "Algebra · Chapter 5",
+              meta: "Graded automatically · 2 min ago",
+              done: "Done",
+              students: "24 students",
+              average: "83% avg score",
+            },
+            activityStrong: "5 tests",
+            activityRest: "graded in the last hour",
+            socialTitle: "2,400+ teachers",
+            socialSubtitle: "trust Dwelve every day",
+          },
+          signup: {
+            titleLine1: "Start learning",
+            titleLine2: "smarter today.",
+            subtitle: "The platform built for students and teachers who want real results, not more paperwork.",
+            features: {
+              grading: "Instant auto-grading",
+              analytics: "Progress analytics",
+              pdf: "PDF test generation",
+              device: "Works on any device",
+            },
+            score: {
+              subject: "Physics · Unit 4",
+              title: "Your latest score",
+              caption: "Last 5 subjects",
+            },
+            socialTitle: "12,000+ students",
+            socialSubtitle: "already on Dwelve",
+          },
+          admin: {
+            titleLine1: "One platform for",
+            titleLine2: "your whole center.",
+            subtitle: "From test creation to grading and analytics — everything your school or learning center needs, in one place.",
+            stats: {
+              setupValue: "3 min",
+              setup: "avg setup",
+              centersValue: "500+",
+              centers: "centers",
+              paperValue: "0",
+              paper: "paper waste",
+            },
+            classCard: {
+              title: "Class 10A — Mathematics",
+              meta: "3 active tests · 28 students",
+              status: "Live",
+              tests: {
+                algebra: "Algebra Quiz",
+                geometry: "Geometry Final",
+                statistics: "Statistics HW",
+              },
+            },
+            features: {
+              classes: {
+                title: "Class management",
+                desc: "Manage teachers, students, and classes from one place.",
+              },
+              pdf: {
+                title: "PDF test import",
+                desc: "Upload a PDF and Dwelve builds the test draft instantly.",
+              },
+              analytics: {
+                title: "Center analytics",
+                desc: "Track scores, trends, and progress across all your classes.",
+              },
+            },
+            trustedPrefix: "Trusted by",
+            trustedStrong: "500+ learning centers",
+            trustedSuffix: "worldwide",
+          },
         },
         login: {
           access: "Dwelve Access",

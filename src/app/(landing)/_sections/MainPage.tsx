@@ -4,6 +4,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
+import { Sparkle } from "lucide-react";
 
 import BrandButton from "@/components/Custom/BrandButton";
 
@@ -11,7 +12,7 @@ import BrandButton from "@/components/Custom/BrandButton";
 // The CSS glow behind it stays visible while it loads and if WebGL is missing.
 const HeroScene = dynamic(() => import("../_components/HeroScene"), { ssr: false });
 
-const AVATAR_COLORS = ["bg-indigo-300", "bg-emerald-300", "bg-amber-300", "bg-rose-300"];
+const AVATAR_COLORS = ["bg-primary", "bg-primary/75", "bg-primary/55", "bg-primary/40"];
 
 const USE_CASES = ["quizzes", "placement", "mock", "homework", "finals", "progress"] as const;
 
@@ -30,19 +31,19 @@ function MainPage() {
       <div className="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2">
         {/* Left: copy */}
         <motion.div className="flex flex-col items-start text-left" {...fade(0)}>
-          <span className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#4F46E5] dark:bg-indigo-500/15 dark:text-indigo-300">
+          <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-accent-foreground">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success/70" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
             </span>
             {t("landing.main.badge")}
           </span>
 
-          <h1 className="mt-6 max-w-xl text-balance text-4xl font-bold leading-[1.08] tracking-tight text-[#1a1a2e] sm:text-5xl lg:text-[3.4rem] dark:text-white">
+          <h1 className="mt-6 max-w-xl text-balance text-[clamp(2.5rem,6vw,3.85rem)] font-bold leading-[1.05] tracking-[-0.02em] text-foreground">
             {t("landing.main.title")}
           </h1>
 
-          <p className="mt-5 max-w-lg text-base leading-relaxed text-[#64748b] sm:text-lg dark:text-slate-300">
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
             {t("landing.main.subtitle")}
           </p>
 
@@ -60,11 +61,11 @@ function MainPage() {
               {AVATAR_COLORS.map((color, i) => (
                 <span
                   key={i}
-                  className={`h-8 w-8 rounded-full ring-2 ring-white dark:ring-[#0b0f1a] ${color}`}
+                  className={`h-8 w-8 rounded-full ring-2 ring-background ${color}`}
                 />
               ))}
             </div>
-            <p className="max-w-[14rem] text-sm leading-snug text-[#64748b] dark:text-slate-400">
+            <p className="max-w-[14rem] text-sm leading-snug text-muted-foreground">
               {t("landing.main.socialProof")}
             </p>
           </div>
@@ -87,7 +88,6 @@ function MainPage() {
                 draft: t("landing.main.scene.tagDraft"),
                 ready: t("landing.main.scene.tagReady"),
                 editable: t("landing.main.scene.tagEditable"),
-                flow: t("landing.main.scene.flowLabel"),
               }}
             />
             <span className="sr-only">{t("landing.main.scene.alt")}</span>
@@ -95,30 +95,66 @@ function MainPage() {
         </motion.div>
       </div>
 
-      {/* School / learning-center positioning band (replaces the old institutions strip) */}
-      <motion.div
-        className="mx-auto mt-20 w-full max-w-4xl px-4 text-center"
-        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.5 }}
-      >
-        <p className="text-sm font-semibold text-[#1a1a2e] dark:text-white">
-          {t("landing.main.schoolsTitle")}
-        </p>
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
-          {USE_CASES.map((key) => (
-            <span
-              key={key}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/70 px-4 py-2 text-sm font-medium text-[#475569] dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-[#7B61FF]" />
-              {t(`landing.main.useCases.${key}`)}
-            </span>
-          ))}
-        </div>
-      </motion.div>
+      {/* School / learning-center positioning band — a flowing ribbon of real use
+          cases. The continuous scroll reads as "and everything in between". */}
+      <SchoolsBand reduceMotion={!!shouldReduceMotion} />
     </section>
+  );
+}
+
+/** Renders one pass of the use-case ribbon: a violet spark before each phrase. */
+function UseCaseItems() {
+  const { t } = useTranslation();
+  return (
+    <>
+      {USE_CASES.map((key) => (
+        <li key={key} className="flex items-center gap-3 whitespace-nowrap">
+          <Sparkle className="h-3.5 w-3.5 shrink-0 text-primary" fill="currentColor" />
+          <span className="text-lg font-medium text-foreground/80 sm:text-xl">
+            {t(`landing.main.useCases.${key}`)}
+          </span>
+        </li>
+      ))}
+    </>
+  );
+}
+
+function SchoolsBand({ reduceMotion }: { reduceMotion: boolean }) {
+  const { t } = useTranslation();
+  const edgeFade = {
+    maskImage: "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)",
+    WebkitMaskImage: "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)",
+  };
+
+  return (
+    <motion.div
+      className="mx-auto mt-24 w-full max-w-6xl border-t border-border/60 pt-12"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.6 }}
+    >
+      <p className="mx-auto max-w-2xl text-center text-sm font-medium text-muted-foreground">
+        {t("landing.main.schoolsTitle")}
+      </p>
+
+      {reduceMotion ? (
+        <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3.5">
+          <UseCaseItems />
+        </ul>
+      ) : (
+        <div className="landing-marquee group relative mt-7 flex overflow-hidden" style={edgeFade}>
+          <div className="landing-marquee-track flex w-max items-center">
+            <ul className="flex w-max items-center gap-x-10 pr-10">
+              <UseCaseItems />
+            </ul>
+            <ul aria-hidden className="flex w-max items-center gap-x-10 pr-10">
+              <UseCaseItems />
+            </ul>
+          </div>
+        </div>
+      )}
+    </motion.div>
   );
 }
 

@@ -281,6 +281,28 @@
   animation: mock-shimmer 1.5s ease-in-out infinite;
 }
 
+/* Continuous use-case ribbon on the landing hero. The track holds two identical
+   groups; translateX(-50%) lands the second exactly where the first began, so the
+   loop is seamless. Transform-only, so it stays on the compositor. The reduced-
+   motion fallback is a static wrapped list rendered in React, not this track. */
+@keyframes landing-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.landing-marquee-track {
+  animation: landing-marquee 38s linear infinite;
+  will-change: transform;
+}
+
+.landing-marquee:hover .landing-marquee-track {
+  animation-play-state: paused;
+}
+
 .animate-accordion-down {
   animation: accordion-down 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -313,7 +335,8 @@
   .layout-enter,
   .animate-accordion-down,
   .animate-accordion-up,
-  .mock-shimmer {
+  .mock-shimmer,
+  .landing-marquee-track {
     animation: none;
   }
 }

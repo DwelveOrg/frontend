@@ -85,19 +85,16 @@ export default function LandingAccordion() {
         viewport={{ once: true, amount: 0.2 }}
       >
         <motion.div className="mb-10 text-center" variants={itemVariants}>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4F46E5] dark:text-indigo-300">
-            {t("landing.accordion.label")}
-          </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#1a1a2e] sm:text-4xl dark:text-white">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             {t("landing.accordion.title")}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base text-[#64748b] dark:text-slate-300">
+          <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground">
             {t("landing.accordion.subtitle")}
           </p>
         </motion.div>
 
         <motion.div
-          className="rounded-2xl border border-slate-200/70 bg-white px-5 py-2 shadow-[0_12px_40px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-[#111726] dark:shadow-[0_14px_40px_rgba(0,0,0,0.5)]"
+          className="rounded-2xl border border-border bg-card px-5 py-2 shadow-[0_12px_40px_rgba(15,23,42,0.06)] dark:shadow-[0_14px_40px_rgba(0,0,0,0.5)]"
           variants={itemVariants}
         >
           <Accordion type="single" collapsible className="w-full">

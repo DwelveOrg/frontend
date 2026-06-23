@@ -34,10 +34,10 @@ export default function FeatureBullets({ items, className }: { items: string[]; 
             visible: { opacity: 1, x: 0, transition: { duration: 0.35 } },
           }}
         >
-          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-[#4F46E5] dark:bg-indigo-500/15 dark:text-indigo-300">
+          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
             <Check className="h-3.5 w-3.5" strokeWidth={3} />
           </span>
-          <span className="text-[15px] leading-relaxed text-[#475569] dark:text-slate-300">{item}</span>
+          <span className="text-[15px] leading-relaxed text-muted-foreground">{item}</span>
         </motion.li>
       ))}
     </motion.ul>
