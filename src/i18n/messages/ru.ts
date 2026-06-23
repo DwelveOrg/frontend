@@ -359,6 +359,7 @@ translation: {
         collapse: "Свернуть боковую панель",
         toggleAssignments: "Показать варианты заданий",
         toggleMore: "Показать дополнительные пункты",
+        comingSoon: "Скоро",
       },
       landing: {
         nav: {
@@ -390,6 +391,8 @@ translation: {
             tagDocument: "Учебный PDF",
             tagDraft: "AI-черновик",
             tagReady: "Готово к проверке",
+            tagEditable: "Редактируемые вопросы",
+            flowLabel: "PDF в тест для проверки",
           },
         },
         ai: {
@@ -405,7 +408,9 @@ translation: {
           mock: {
             file: "biology-chapter-4.pdf",
             meta: "Загружено · 4 страницы",
+            analyzing: "Анализ документа",
             drafting: "Создание вопросов",
+            ready: "Черновик готов",
             heading: "Черновые вопросы",
             q1: "Какой процесс превращает энергию света в химическую энергию?",
             q2: "Назовите органеллу, где происходит фотосинтез.",

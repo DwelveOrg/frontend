@@ -9,36 +9,36 @@ export default function Footer() {
   const { t } = useTranslation();
   const year = new Date().getFullYear();
 
-  const links = [
-    { label: t("landing.footer.about"), href: "/" },
-    { label: t("landing.footer.contact"), href: "/" },
-    { label: t("landing.footer.support"), href: "mailto:support@dwelve.app" },
-    { label: t("landing.footer.privacy"), href: "/" },
-    { label: t("landing.footer.terms"), href: "/" },
-  ];
-
   return (
-    <footer className="w-full border-t border-slate-200/70 bg-white/60 dark:border-white/10 dark:bg-[#0b0f1a]/60">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-6 px-4 py-8 md:flex-row md:justify-between md:gap-4">
-        <Link href="/">
+    <footer className="w-full border-t border-slate-200/50 dark:border-white/[0.06]">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-4 py-6 sm:flex-row sm:justify-between">
+        <Link href="/" className="shrink-0">
           <DwelveLogo variant="form" />
         </Link>
 
-        <nav className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
-          {links.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-sm font-medium text-[#64748b] transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-white"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <p className="text-sm text-[#94a3b8] dark:text-slate-500">
-          {`© ${year} ${BRAND_NAME}. ${t("landing.footer.rights")}`}
-        </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 sm:justify-end">
+          <span className="text-xs text-[#94a3b8] dark:text-slate-500">
+            {`© ${year} ${BRAND_NAME}`}
+          </span>
+          <Link
+            href="/"
+            className="text-xs text-[#94a3b8] transition-colors hover:text-[#64748b] dark:text-slate-500 dark:hover:text-slate-400"
+          >
+            {t("landing.footer.privacy")}
+          </Link>
+          <Link
+            href="/"
+            className="text-xs text-[#94a3b8] transition-colors hover:text-[#64748b] dark:text-slate-500 dark:hover:text-slate-400"
+          >
+            {t("landing.footer.terms")}
+          </Link>
+          <Link
+            href="mailto:support@dwelve.app"
+            className="text-xs text-[#94a3b8] transition-colors hover:text-[#64748b] dark:text-slate-500 dark:hover:text-slate-400"
+          >
+            {t("landing.footer.support")}
+          </Link>
+        </div>
       </div>
     </footer>
   );

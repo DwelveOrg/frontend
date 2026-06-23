@@ -359,6 +359,7 @@ translation: {
         collapse: "Yon panelni yopish",
         toggleAssignments: "Topshiriqlar variantlarini ochish",
         toggleMore: "Qo'shimcha menyuni ochish",
+        comingSoon: "Tez kunda",
       },
       landing: {
         nav: {
@@ -390,6 +391,8 @@ translation: {
             tagDocument: "Dars PDF",
             tagDraft: "AI qoralama",
             tagReady: "Ko'rib chiqishga tayyor",
+            tagEditable: "Tahrirlanadigan savollar",
+            flowLabel: "PDFdan tekshiruvga tayyor test",
           },
         },
         ai: {
@@ -405,7 +408,9 @@ translation: {
           mock: {
             file: "biology-chapter-4.pdf",
             meta: "Yuklandi · 4 sahifa",
+            analyzing: "Hujjat tahlil qilinmoqda",
             drafting: "Savollar tuzilmoqda",
+            ready: "Qoralama tayyor",
             heading: "Qoralama savollar",
             q1: "Qaysi jarayon yorug'lik energiyasini kimyoviy energiyaga aylantiradi?",
             q2: "Fotosintez sodir bo'ladigan organellani ayting.",

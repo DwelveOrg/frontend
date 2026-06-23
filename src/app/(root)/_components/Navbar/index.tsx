@@ -88,21 +88,21 @@ const Navbar = ({ userName }: { userName?: string | null }) => {
 
   return (
     <div className="sticky top-0 z-30 w-full md:top-4">
-      <nav className="rounded-none border-b border-black/10 bg-white px-4 py-3 shadow-none dark:border-[#3a3a3a] dark:bg-[#1a1a1a] md:rounded-[28px] md:border md:border-black/10 md:bg-white/85 md:px-5 md:py-4 md:shadow-[0_16px_40px_rgba(15,23,42,0.08)] md:backdrop-blur md:dark:bg-[#1a1a1a]/88 md:dark:shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
+      <nav className="rounded-none border-b border-[var(--border)] bg-[var(--background)] px-4 py-3 shadow-none md:rounded-[28px] md:border md:border-[var(--border)] md:bg-[var(--background)]/85 md:px-5 md:py-4 md:shadow-[0_16px_40px_rgba(15,23,42,0.08)] md:backdrop-blur dark:md:shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="truncate text-lg font-bold text-slate-700 capitalize dark:text-white">{pageTitle}</h1>
+            <h1 className="truncate text-lg font-bold text-[var(--foreground)] capitalize">{pageTitle}</h1>
 
             <Breadcrumb className="mt-1">
-              <BreadcrumbList className="text-slate-500 dark:text-slate-300">
+              <BreadcrumbList className="text-[var(--muted-foreground)]">
                 {crumbs.map((crumb, index) => (
                   <React.Fragment key={crumb.href}>
-                    {index > 0 ? <BreadcrumbSeparator className="text-slate-400 dark:text-slate-500" /> : null}
+                    {index > 0 ? <BreadcrumbSeparator className="text-[var(--muted-foreground)]" /> : null}
                     <BreadcrumbItem>
                       {index === crumbs.length - 1 ? (
-                        <BreadcrumbPage className="text-slate-600 dark:text-slate-200">{crumb.label}</BreadcrumbPage>
+                        <BreadcrumbPage className="text-[var(--foreground)]/70">{crumb.label}</BreadcrumbPage>
                       ) : (
-                        <Link href={crumb.href} className="text-slate-500 transition hover:text-slate-700 dark:text-slate-300 dark:hover:text-white">
+                        <Link href={crumb.href} className="text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
                           {crumb.label}
                         </Link>
                       )}
@@ -117,7 +117,7 @@ const Navbar = ({ userName }: { userName?: string | null }) => {
             <div ref={notificationsRef} className="relative">
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-black/10 bg-white text-slate-700 transition hover:bg-slate-100 md:h-10 md:w-10 md:rounded-xl dark:border-white/10 dark:bg-[#242424] dark:text-slate-300 dark:hover:bg-[#2f2f2f] dark:hover:text-slate-100 cursor-pointer"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] transition hover:bg-[var(--muted)] md:h-10 md:w-10 md:rounded-xl cursor-pointer"
                 aria-label={t("root.pages.notifications")}
               >
                 <Bell className="h-4 w-4" />

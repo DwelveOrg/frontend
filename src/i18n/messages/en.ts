@@ -359,6 +359,7 @@ translation: {
         collapse: "Collapse sidebar",
         toggleAssignments: "Toggle assignment options",
         toggleMore: "Toggle more navigation items",
+        comingSoon: "Soon",
       },
       landing: {
         nav: {
@@ -390,6 +391,8 @@ translation: {
             tagDocument: "Lesson PDF",
             tagDraft: "AI draft",
             tagReady: "Ready to review",
+            tagEditable: "Editable questions",
+            flowLabel: "PDF to review-ready test",
           },
         },
         ai: {
@@ -405,7 +408,9 @@ translation: {
           mock: {
             file: "biology-chapter-4.pdf",
             meta: "Uploaded · 4 pages",
+            analyzing: "Analyzing document",
             drafting: "Drafting questions",
+            ready: "Draft ready",
             heading: "Draft questions",
             q1: "Which process converts light energy into chemical energy?",
             q2: "Name the organelle where photosynthesis takes place.",

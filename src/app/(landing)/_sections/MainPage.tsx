@@ -78,19 +78,17 @@ function MainPage() {
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 rounded-[36px] bg-[radial-gradient(60%_55%_at_50%_45%,rgba(123,97,255,0.22),transparent_72%)] dark:bg-[radial-gradient(60%_55%_at_50%_45%,rgba(142,120,255,0.30),transparent_72%)]"
             />
-            <HeroScene className="absolute inset-0 h-full w-full" />
-
-            {/* Narrative tags overlaying the scene */}
-            <SceneTag className="left-1 top-6 sm:left-4" label={t("landing.main.scene.tagDocument")} tone="neutral" />
-            <SceneTag
-              className="right-2 top-[42%] sm:right-4"
-              label={t("landing.main.scene.tagDraft")}
-              tone="violet"
-            />
-            <SceneTag
-              className="bottom-7 right-6 sm:bottom-9"
-              label={t("landing.main.scene.tagReady")}
-              tone="success"
+            {/* Labels are drawn onto the 3D card faces themselves (see HeroScene),
+                so the narrative reads as part of the model, not as floating tags. */}
+            <HeroScene
+              className="absolute inset-0 h-full w-full"
+              labels={{
+                document: t("landing.main.scene.tagDocument"),
+                draft: t("landing.main.scene.tagDraft"),
+                ready: t("landing.main.scene.tagReady"),
+                editable: t("landing.main.scene.tagEditable"),
+                flow: t("landing.main.scene.flowLabel"),
+              }}
             />
             <span className="sr-only">{t("landing.main.scene.alt")}</span>
           </div>
@@ -121,27 +119,6 @@ function MainPage() {
         </div>
       </motion.div>
     </section>
-  );
-}
-
-function SceneTag({
-  label,
-  tone,
-  className,
-}: {
-  label: string;
-  tone: "neutral" | "violet" | "success";
-  className?: string;
-}) {
-  const dot =
-    tone === "violet" ? "bg-[#7B61FF]" : tone === "success" ? "bg-emerald-500" : "bg-slate-400";
-  return (
-    <span
-      className={`pointer-events-none absolute z-10 inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/90 px-3 py-1.5 text-xs font-semibold text-[#1a1a2e] shadow-[0_8px_24px_rgba(15,23,42,0.10)] dark:border-white/10 dark:bg-[#111726]/90 dark:text-white ${className ?? ""}`}
-    >
-      <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
-      {label}
-    </span>
   );
 }
 
