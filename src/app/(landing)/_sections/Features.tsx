@@ -7,15 +7,18 @@ import {
   BarChart3,
   Hourglass,
   MonitorSmartphone,
-  FileQuestion,
-  TrendingUp,
+  Library,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 type Feature = {
   title: string;
   description: string;
   icon: LucideIcon;
+  /** Icon-chip palette for the compact tiles. */
   tile: string;
 };
 
@@ -23,36 +26,38 @@ export default function Features() {
   const { t } = useTranslation();
   const shouldReduceMotion = useReducedMotion();
 
+  // The spotlight tile leads the bento — the headline value, given room to breathe.
+  const spotlight = {
+    title: t("landing.features.instantGradingTitle"),
+    description: t("landing.features.instantGradingDesc"),
+    icon: Zap,
+  };
+
+  // The four supporting capabilities fill the right of the bento as compact tiles.
   const features: Feature[] = [
     {
-      title: t("landing.features.instantGradingTitle"),
-      description: t("landing.features.instantGradingDesc"),
-      icon: TrendingUp,
-      tile: "bg-indigo-100 text-[#4F46E5] dark:bg-indigo-500/15 dark:text-indigo-300",
-    },
-    {
-      title: t("landing.features.timedExamsTitle"),
-      description: t("landing.features.timedExamsDesc"),
-      icon: Hourglass,
-      tile: "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300",
+      title: t("landing.features.questionBankTitle"),
+      description: t("landing.features.questionBankDesc"),
+      icon: Library,
+      tile: "bg-accent text-accent-foreground",
     },
     {
       title: t("landing.features.insightsTitle"),
       description: t("landing.features.insightsDesc"),
       icon: BarChart3,
-      tile: "bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300",
+      tile: "bg-accent text-accent-foreground",
+    },
+    {
+      title: t("landing.features.timedExamsTitle"),
+      description: t("landing.features.timedExamsDesc"),
+      icon: Hourglass,
+      tile: "bg-accent text-accent-foreground",
     },
     {
       title: t("landing.features.anyDeviceTitle"),
       description: t("landing.features.anyDeviceDesc"),
       icon: MonitorSmartphone,
-      tile: "bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-300",
-    },
-    {
-      title: t("landing.features.questionBankTitle"),
-      description: t("landing.features.questionBankDesc"),
-      icon: FileQuestion,
-      tile: "bg-sky-100 text-sky-600 dark:bg-sky-500/15 dark:text-sky-300",
+      tile: "bg-accent text-accent-foreground",
     },
   ];
 
@@ -73,6 +78,8 @@ export default function Features() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
   };
 
+  const SpotlightIcon = spotlight.icon;
+
   return (
     <section id="features" className="w-full scroll-mt-24 py-20 md:py-28">
       <div className="mx-auto w-full max-w-6xl px-4">
@@ -83,41 +90,77 @@ export default function Features() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.4 }}
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4F46E5] dark:text-indigo-300">
-            {t("landing.features.label")}
-          </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#1a1a2e] sm:text-4xl dark:text-white">
+          <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             {t("landing.features.title")}
           </h2>
-          <p className="mt-4 text-base text-[#64748b] dark:text-slate-300">
+          <p className="mt-4 text-base text-muted-foreground">
             {t("landing.features.subtitle")}
           </p>
         </motion.div>
 
         <motion.div
-          className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2"
           variants={container}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
+          {/* Spotlight — fills the left 2×2 of the bento (full width on tablet). */}
+          <motion.article
+            variants={card}
+            className="group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-accent/60 via-card to-card p-7 sm:col-span-2 sm:p-8 lg:col-span-2 lg:row-span-2 dark:from-primary/[0.12] dark:via-card dark:to-card"
+          >
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-primary/15 blur-3xl dark:bg-primary/20"
+            />
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-b from-brand-violet-300 to-brand-violet-600 text-white shadow-[0_12px_30px_-8px_rgba(106,79,240,0.65)]">
+              <SpotlightIcon className="h-7 w-7" />
+            </div>
+            <h3 className="relative mt-6 text-2xl font-bold tracking-tight text-foreground">
+              {spotlight.title}
+            </h3>
+            <p className="relative mt-2.5 max-w-sm text-[15px] leading-relaxed text-muted-foreground">
+              {spotlight.description}
+            </p>
+
+            {/* A small "submissions auto-graded" visual to fill and ground the tile. */}
+            <div className="relative mt-auto pt-8">
+              <div className="space-y-2.5 rounded-2xl border border-border bg-card/70 p-4 backdrop-blur-sm dark:bg-white/[0.04]">
+                {GRADED_ROWS.map((row, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <span className={cn("h-7 w-7 shrink-0 rounded-full", row.avatar)} />
+                    <span className="h-2 flex-1 overflow-hidden rounded-full bg-muted dark:bg-white/10">
+                      <span
+                        className="block h-full rounded-full bg-gradient-to-r from-brand-violet-300 to-brand-violet-600"
+                        style={{ width: row.score }}
+                      />
+                    </span>
+                    <span className="w-9 shrink-0 text-right text-xs font-bold tabular-nums text-success">
+                      {row.score}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.article>
+
+          {/* Four supporting tiles flow into the right two columns across both rows. */}
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
               <motion.article
                 key={feature.title}
                 variants={card}
-                className="group rounded-2xl border border-slate-200/70 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-200 hover:shadow-[0_18px_40px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#111726] dark:hover:border-white/20"
+                className="group flex flex-col rounded-2xl border border-border bg-card p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_40px_rgba(15,23,42,0.08)] dark:hover:border-white/20"
               >
-                <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-xl ${feature.tile}`}
-                >
-                  <Icon className="h-6 w-6" />
+                <div className={cn("flex h-11 w-11 items-center justify-center rounded-xl", feature.tile)}>
+                  <Icon className="h-5 w-5" />
                 </div>
-                <h3 className="mt-5 text-lg font-bold text-[#1a1a2e] dark:text-white">
+                <h3 className="mt-4 text-base font-bold text-foreground">
                   {feature.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-[#64748b] dark:text-slate-300">
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                   {feature.description}
                 </p>
               </motion.article>
@@ -128,3 +171,11 @@ export default function Features() {
     </section>
   );
 }
+
+/** Decorative graded-submission rows inside the spotlight tile. Scores are
+ *  numeric (locale-agnostic), so no translation keys are needed. */
+const GRADED_ROWS = [
+  { avatar: "bg-primary/80", score: "96%" },
+  { avatar: "bg-primary/60", score: "88%" },
+  { avatar: "bg-primary/40", score: "92%" },
+] as const;

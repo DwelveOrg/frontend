@@ -1,5 +1,7 @@
 import type { NotificationItem } from "../_types";
 
+export { getRouteLabelKey, isRouteActive, ROUTE_LABEL_KEYS } from "./routes";
+
 export const notificationItems: NotificationItem[] = [
   {
     id: 1,

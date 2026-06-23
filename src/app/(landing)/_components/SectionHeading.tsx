@@ -38,13 +38,13 @@ export default function SectionHeading({
       transition={{ duration: 0.45 }}
     >
       {label ? (
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4F46E5] dark:text-indigo-300">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
           {label}
         </p>
       ) : null}
       <h2
         className={cn(
-          "text-balance text-3xl font-bold tracking-tight text-[#1a1a2e] sm:text-4xl dark:text-white",
+          "text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl",
           label && "mt-3",
         )}
       >
@@ -53,7 +53,7 @@ export default function SectionHeading({
       {subtitle ? (
         <p
           className={cn(
-            "mt-4 text-base leading-relaxed text-[#64748b] dark:text-slate-300",
+            "mt-4 text-base leading-relaxed text-muted-foreground",
             isCenter && "mx-auto max-w-2xl",
           )}
         >

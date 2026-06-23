@@ -101,7 +101,7 @@ export default function SignupPage() {
             type="button"
             onClick={onGoogle}
             disabled={isBusy}
-            className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-black/10 bg-white px-4 py-3 text-sm font-semibold text-[#1a1a2e] shadow-sm transition hover:bg-[#f8fafc] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+            className="flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-black/10 bg-white px-4 py-3 text-sm font-semibold text-[#1a1a2e] shadow-sm transition hover:bg-[#f8fafc] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
           >
             {isGooglePending ? (
               <LoaderCircle className="h-4 w-4 animate-spin" />

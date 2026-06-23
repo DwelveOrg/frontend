@@ -20,7 +20,7 @@ type BrandButtonProps = {
 };
 
 const BASE =
-  "group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl font-semibold whitespace-nowrap transition-all duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 active:translate-y-0";
+  "group inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl font-semibold whitespace-nowrap transition-all duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 active:translate-y-0";
 
 const SIZES: Record<BrandButtonSize, string> = {
   sm: "h-10 px-4 text-[14px] max-[390px]:h-9 max-[390px]:px-3 max-[390px]:text-[13px]",

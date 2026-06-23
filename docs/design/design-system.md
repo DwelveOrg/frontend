@@ -226,3 +226,62 @@ Color is implemented as CSS variables in `src/app/globals.css` and exposed to Ta
 Brand-named tokens (`--brand-ink`, `--brand-violet`, `--brand-violet-600`, `--brand-mist`, `--brand-gradient`) are also exported so logo-accurate colors can be used directly, e.g. `bg-brand-violet`, `text-brand-ink`, `bg-[image:var(--brand-gradient)]`.
 
 Dark mode uses the `.dark` class strategy through `next-themes`, consistent with CLAUDE.md.
+
+---
+
+## 7. Application shell & navigation
+
+> **Changelog — 23 June 2026:** The authenticated dashboard shell (`src/app/(root)`) was rebuilt from the floating-card layout to a **flat-panel layout** to match the approved reference (`public/images/image 7.svg`). Only structure, spacing, and component states changed — **all colors continue to come from the tokens in §4 / §6; no new colors were introduced.** This section is the contract for the shell; the implementation lives in `src/app/(root)/_components/`.
+
+### 7.1 Shell structure
+
+The shell is two columns with no outer canvas padding — panels meet at hairline dividers instead of floating on a tinted background.
+
+| Region | Surface token | Separator |
+|---|---|---|
+| Canvas (page background behind content) | `--muted` (light) / `--background` (dark) | — |
+| Sidebar (flush-left, full height) | `--sidebar` (cool off-white, one layer off the white content surface) | `border-r` = `--border` |
+| Top bar (flush-top of content column) | `--card` | `border-b` = `--border` |
+| Content | transparent (shows the canvas) | — |
+
+- Layout: `src/app/(root)/layout.tsx`. A flex row of `<SideBar>` + a content column (`<Navbar>` over a scrolling `<main>`).
+- Content is centred in a `max-w-[1180px]` column with `px-4 py-6 md:px-8 md:py-8`.
+- On mobile (`< md`) the sidebar collapses to a fixed bottom navigation bar; the content column is full-width and reserves `pb-24` for it.
+
+### 7.2 Sidebar (`_components/Sidebar`)
+
+- Fixed width `264px`. No collapse/expand control — the sidebar is always expanded.
+- **Brand:** `<DwelveLogo variant="form" />` at the top (`px-6 pt-6 pb-5`, so the logo's left edge lines up with the nav-row icon column). No tagline/subtitle.
+- **Primary nav** (single flat list, in order): Dashboard, Classes, School, Assignments, Notifications, Settings.
+- **Bottom group** (separated by `border-t`): Profile, Log out. Log out is neutral at rest (icon inherits `--muted-foreground`) and turns `--destructive` — icon, text, and a soft background tint — on hover only.
+- **Row geometry:** `rounded-xl px-3 py-2.5`, 20px icon, `gap-3`, `text-[15px]`.
+
+Nav row states:
+
+| State | Background | Text / icon | Weight |
+|---|---|---|---|
+| Active | `color-mix(--primary 14%, transparent)` — soft brand tint | `--accent-foreground` | `font-semibold` (600) + `tracking-[0.01em]` |
+| Idle | transparent | `--muted-foreground` | `font-normal` (400) |
+| Hover (idle) | `--muted` | `--foreground` | `font-normal` (400) — color shift only |
+| Locked ("Soon") | transparent, `opacity-55`, not interactive | `--muted-foreground` | `font-normal` (400) |
+
+**Weight is the primary state signal, not size.** Idle rests at `font-normal` (400) so the active jump to `font-semibold` (600) reads as a clear "you are here"; a heavier idle would leave the active state nowhere to go. Hover shifts colour only (no weight bump), so idle rows never carry two competing signals and never reflow. Row size is constant (`text-[15px]`) across all states — state is never signalled by size, which would shift the layout.
+
+- **Count badge** (Notifications row): a pill using `--destructive` / `--destructive-foreground`, right-aligned (`ml-auto`). Driven by the live unread count from `notificationItems`.
+- The locked **Assignments** item carries a `--muted` "Soon" pill and is non-interactive (teacher-gated feature, not yet shipped).
+
+The active treatment is a **soft brand tint** (`color-mix(in srgb, var(--primary) 14%, transparent)` background + `--accent-foreground` text), not a solid fill. It is mixed from `--primary` rather than the near-white `--accent` so it stays legible on the `--sidebar` surface in both themes. All interactive rows share one `focus-visible` ring (`--ring`, offset against `--sidebar`).
+
+### 7.3 Top bar (`_components/Navbar`)
+
+- Flat bar, `--card` surface, `border-b` hairline, `px-4 py-3 md:px-6 md:py-3.5`. No large page title.
+- **Left:** breadcrumb only, always led by **Home** (→ `/dashboard`) followed by the active route trail, e.g. `Home / Notifications`. The trailing crumb is the current page (`--foreground`, semibold); ancestors are `--muted-foreground` links. Key: `root.breadcrumb.home`.
+- **Right:** a notification icon button (square, `rounded-xl`, `--border`), showing a `--destructive` dot when there are unread items, and a circular **avatar menu**.
+- **Avatar menu** (`_components/Navbar/_components/Profile`): a `--accent` circle showing the user's initial (or a fallback icon) that opens a dropdown with Profile, Settings, and Log out.
+
+### 7.4 Content page header (`_components/PageHeader` + `_components/RouteHeader`)
+
+Because the top bar no longer carries the title, every view names itself in the content area:
+
+- `PageHeader` — reusable presentational header: `title` (≈28px bold), optional `subtitle` (`--muted-foreground`), optional right-aligned `actions`.
+- `RouteHeader` — derives the title from the current route and renders `PageHeader`; mounted once in the shell layout so all pages get a consistent heading. Pages needing a subtitle or action buttons should compose `PageHeader` directly.

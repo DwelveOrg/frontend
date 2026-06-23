@@ -57,7 +57,7 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="w-full scroll-mt-24 bg-slate-50/70 py-20 md:py-28 dark:bg-white/[0.02]"
+      className="w-full scroll-mt-24 bg-secondary py-20 md:py-28 dark:bg-white/[0.02]"
     >
       <div className="mx-auto w-full max-w-6xl px-4">
         <motion.div
@@ -67,10 +67,10 @@ export default function HowItWorks() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.4 }}
         >
-          <h2 className="text-3xl font-bold tracking-tight text-[#1a1a2e] sm:text-4xl dark:text-white">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             {t("landing.howItWorks.title")}
           </h2>
-          <p className="mt-4 text-base text-[#64748b] dark:text-slate-300">
+          <p className="mt-4 text-base text-muted-foreground">
             {t("landing.howItWorks.subtitle")}
           </p>
         </motion.div>
@@ -88,18 +88,18 @@ export default function HowItWorks() {
               <motion.article
                 key={item.step}
                 variants={card}
-                className="relative rounded-2xl border border-slate-200/70 bg-white p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-[#111726]"
+                className="relative rounded-2xl border border-border bg-card p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
               >
-                <span className="absolute right-6 top-6 text-3xl font-bold text-slate-100 dark:text-white/10">
+                <span className="absolute right-6 top-6 text-3xl font-bold text-primary/10 dark:text-primary/15">
                   {item.step}
                 </span>
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-[#4F46E5] dark:bg-indigo-500/15 dark:text-indigo-300">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-accent-foreground">
                   <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="mt-5 text-lg font-bold text-[#1a1a2e] dark:text-white">
+                <h3 className="mt-5 text-lg font-bold text-foreground">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-[#64748b] dark:text-slate-300">
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {item.description}
                 </p>
               </motion.article>
