@@ -129,15 +129,16 @@ Treat auth/session changes as high-risk. Verify the current code before editing.
 
 ### Onboarding and access model (target design)
 
-Role is inherited from how a user enters, never chosen on a screen. There is no self-service "I am a teacher" control. The center grants a role through a credential, and the account is created already carrying it.
+A user's platform account is global and role-free at signup. Roles are not stored as one global user role; they are memberships inside a specific school or learning center. There is no self-service "I am a teacher" control and no role picker during signup or login.
 
-- **Admin** is the only true signup: a short form (center name, email, password) creates the account and the center, then lands in an empty-but-usable dashboard. Center setup (logo, classes, inviting teachers) is progressive onboarding inside the app, not a gate before the admin can look around.
-- **Teacher**: the invite is the signup. A unique, single-use, expiring invite link already encodes the center; the teacher confirms their name, sets a password, and is immediately a teacher. Clicking the emailed link also verifies the email. An existing account invited to another center skips the password step and just gains a membership.
-- **Student**: a reusable class code plus a name places the student in that class. The code authorizes the join and always grants the student role.
-- **Empty-state redemption**: a freshly registered account that has joined nothing shows two entry points — "join a class" (reusable class code, low stakes) and "become a teacher" (targeted invite link). The buttons only open the input; the redeemed credential decides the role.
-- **Login** is one screen for all roles: identifier + password, no role picker. The account already knows the role and routes to the correct view. If one account holds memberships at several centers, login also selects which center to open.
-- **Email verification**: invited users are verified for free by clicking the link. For cold self-registration, admit immediately and verify lazily — required only at sensitive points such as password reset. OTP at the signup gate is optional.
-- **Identity**: key the unique account on email or phone so one person can hold multiple center memberships. Model the invite-token and class-code paths before wiring a real backend.
+- **User signup** creates only a normal account with email/password. The user may have no memberships yet.
+- **Admin** is created by action, not by a separate admin signup. After signup/login, a user can create a school or learning center; that action creates the organization and gives the creator an `admin` membership inside it. Center setup (logo, classes, inviting teachers/students) is progressive onboarding inside the app.
+- **Teacher** access comes from an admin invite. The invited person registers or logs in as a normal user, then the invite creates a `teacher` membership inside that school or learning center. Existing accounts invited to another center skip password creation and only gain the new membership.
+- **Student** access comes from an admin/teacher invite or an approved class/school code. The user registers or joins as a normal user, then the credential creates a `student` membership inside that school or learning center.
+- **Empty-state redemption**: a freshly registered account with no memberships shows entry points to create a school, redeem a teacher invite, or join as a student. The button only opens the flow; the action/credential decides the membership role.
+- **Login** is one screen for all users: identifier + password, no role picker. After login, route by the selected/current membership. If one account holds memberships at several centers, let the user choose which center to open.
+- **Email verification**: invited users can be verified through the invite link. For cold self-registration, admit immediately and verify lazily — required only at sensitive points such as password reset. OTP at the signup gate is optional.
+- **Identity**: key the unique account on email or phone so one person can hold multiple center memberships. Model organization creation, invite-token, and class-code paths before wiring a real backend.
 
 Teacher access must never come from a free-floating code that could be shared in a group chat; use a unique invite link or an email-bound one-time code, because the teacher role exposes answer keys.
 

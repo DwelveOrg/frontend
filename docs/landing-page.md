@@ -313,6 +313,12 @@ Current landing page buttons and links send users to:
 - final CTA primary -> `/signup`
 - final CTA secondary -> `/login`
 
+Important signup behavior:
+
+- `/signup` creates a normal platform user account only.
+- Creating a school or learning center happens after signup/login and gives the creator an admin membership inside that organization.
+- Teacher and student roles are not chosen during signup; they are granted through an invite or approved join code inside a specific school or learning center.
+
 ## Languages
 
 The landing page has copy in:

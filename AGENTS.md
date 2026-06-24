@@ -108,15 +108,16 @@ All user-facing components must render Uzbek Latin and Russian Cyrillic correctl
 
 ## Authentication and onboarding
 
-A user's role is inherited from how they enter, never chosen on a screen. The center grants a role through a credential; the account is created already carrying it. Do not add a self-service control that lets a user declare themselves a teacher.
+A user's platform account is global and role-free at signup. Roles are created only as memberships inside a specific school or learning center. Do not add a role picker, and do not add a self-service control that lets a user declare themselves a teacher.
 
-- **Admin** is the only true signup: a short form creates the account and the center, then lands in an empty-but-usable dashboard. Center setup happens as progressive onboarding inside the app.
-- **Teacher**: the invite is the signup. A unique, single-use invite link encodes the center; the teacher sets a password and is immediately a teacher. Clicking the emailed link verifies the email.
-- **Student**: a reusable class code plus a name places the student in that class and grants the student role.
-- **Empty state**: a fresh account that has joined nothing offers "join a class" (class code) and "become a teacher" (invite link). The button only opens the input; the credential decides the role.
-- **Login** is one screen for all roles — identifier + password, no role picker. The account routes the user to the right view, and selects the center when several memberships exist.
+- **User signup** creates only a normal user account with email/password. The user may initially have no school or role.
+- **Create school / learning center** is a separate post-signup action. When a user creates one, create the organization and a membership for that user with `admin` role inside that organization.
+- **Teacher** access comes from an admin invite. The invited person registers or logs in as a normal user, then the invite creates a `teacher` membership inside that school or learning center.
+- **Student** access comes from an admin/teacher invite or an approved class/school code. The user registers or joins as a normal user, then the credential creates a `student` membership inside that school or learning center.
+- **Empty state**: a fresh account with no memberships offers entry points to create a school, redeem a teacher invite, or join as a student. The action/credential decides the membership role.
+- **Login** is one screen for all users — identifier + password, no role picker. After login, route by the selected/current membership; if the account has several memberships, let the user choose the school or learning center context.
 
-Teacher access must use a targeted invite link or email-bound one-time code, never a shareable free-floating code, because the teacher role exposes answer keys. Auth lives in the `(authentication)` route group; student join and "add student" are teacher actions under `(root)`. Treat auth/session changes as high-risk.
+Teacher access must use a targeted invite link or email-bound one-time code, never a shareable free-floating code, because the teacher role exposes answer keys. Auth lives in the `(authentication)` route group; student join and "add student" are teacher/admin actions under `(root)`. Treat auth/session changes as high-risk.
 
 ---
 

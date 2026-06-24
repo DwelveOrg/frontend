@@ -159,15 +159,16 @@ Reasoning:
 
 ### Onboarding and access
 
-Role is inherited from how a user enters, never chosen on a screen. The center grants a role through a credential, and the account is created already carrying it.
+A user account is global and role-free at signup. Roles are defined only through memberships inside a specific school or learning center. A user can create a school and become its admin, be invited as a teacher in another school, and join as a student somewhere else.
 
-1. **Admin** signs up with a short form (center name, email, password), which creates the account and the center, then lands in an empty-but-usable dashboard. Logo, classes, and teacher invites are completed later as in-app onboarding.
-2. **Teacher** receives a unique, single-use invite link from the admin. The link already knows the center; the teacher confirms their name, sets a password, and is immediately a teacher. Clicking the emailed link verifies their email.
-3. **Student** joins with a reusable class code plus a name and is placed in that class as a student. Email is not required.
-4. A freshly registered account that has joined nothing shows two redemption entry points: join a class with a class code, or become a teacher with an invite link. The credential, not the button, decides the role.
-5. **Login** is one screen for every role — identifier and password, with no role picker. The account already knows the role and routes the user to the correct view, and selects the center when the account holds several memberships.
+1. **User signup** creates a normal account with email/password. Signup does not include a role picker and does not automatically create a school.
+2. **Create school / learning center** is a separate action after signup/login. When a user creates one, Dwelve creates the organization and gives that user an `admin` membership inside it.
+3. **Teacher** receives a targeted invite from an admin. The invited person registers or logs in as a normal user, then the invite creates a `teacher` membership inside that school or learning center.
+4. **Student** receives an invite or uses an approved class/school code. The user registers or joins as a normal user, then the credential creates a `student` membership inside that school or learning center.
+5. **Empty account state** shows entry points to create a school, redeem a teacher invite, or join as a student. The action/credential, not a role picker, decides the membership role.
+6. **Login** is one screen for every user — identifier and password, with no role picker. After login, the account routes by the selected/current membership, and lets the user choose a school or learning center when several memberships exist.
 
-Notes: teacher access must use a targeted invite link or an email-bound one-time code rather than a shareable free-floating code, because the teacher role exposes answer keys. Invited users are verified by clicking the link; cold self-registration can be admitted immediately and verified lazily (required only at sensitive points such as password reset). Keying identity on email or phone lets one person hold memberships at several centers.
+Notes: teacher access must use a targeted invite link or an email-bound one-time code rather than a shareable free-floating code, because the teacher role exposes answer keys. Invited users can be verified by clicking the link; cold self-registration can be admitted immediately and verified lazily (required only at sensitive points such as password reset). Keying identity on email or phone lets one person hold memberships at several centers.
 
 ### Manual test creation → result
 
