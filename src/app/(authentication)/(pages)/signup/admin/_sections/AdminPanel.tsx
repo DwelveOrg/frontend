@@ -1,57 +1,76 @@
-import DwelveLogo from "@/components/Custom/DwelveLogo";
+import { BarChart3, FileText, School } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
+import {
+  AuthPanelHeading,
+  AuthPanelLogo,
+} from "@/app/(authentication)/_components/AuthVisualParts";
 
 export default function AdminPanel() {
+  const { t } = useTranslation();
   const stats = [
-    { value: "3 min", label: "avg setup" },
-    { value: "500+", label: "centers" },
-    { value: "0", label: "paper waste" },
+    { value: t("auth.visual.admin.stats.setupValue"), label: t("auth.visual.admin.stats.setup") },
+    { value: t("auth.visual.admin.stats.centersValue"), label: t("auth.visual.admin.stats.centers") },
+    { value: t("auth.visual.admin.stats.paperValue"), label: t("auth.visual.admin.stats.paper") },
   ];
 
   const features = [
-    { icon: "🏫", title: "Class management", desc: "Manage teachers, students, and classes from one place." },
-    { icon: "📄", title: "PDF test import", desc: "Upload a PDF and Dwelve builds the test draft instantly." },
-    { icon: "📊", title: "Center analytics", desc: "Track scores, trends, and progress across all your classes." },
+    {
+      icon: <School className="h-4 w-4" />,
+      title: t("auth.visual.admin.features.classes.title"),
+      desc: t("auth.visual.admin.features.classes.desc"),
+    },
+    {
+      icon: <FileText className="h-4 w-4" />,
+      title: t("auth.visual.admin.features.pdf.title"),
+      desc: t("auth.visual.admin.features.pdf.desc"),
+    },
+    {
+      icon: <BarChart3 className="h-4 w-4" />,
+      title: t("auth.visual.admin.features.analytics.title"),
+      desc: t("auth.visual.admin.features.analytics.desc"),
+    },
+  ];
+
+  const tests = [
+    { name: t("auth.visual.admin.classCard.tests.algebra"), pct: 88 },
+    { name: t("auth.visual.admin.classCard.tests.geometry"), pct: 72 },
+    { name: t("auth.visual.admin.classCard.tests.statistics"), pct: 95 },
   ];
 
   return (
     <>
-      <DwelveLogo />
+      <AuthPanelLogo />
 
       <div className="flex flex-col gap-7">
-        <div>
-          <h2 className="font-serif text-[2.5rem] leading-[1.12] tracking-tight text-white">
-            One platform for<br />your whole center.
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-white/55">
-            From test creation to grading and analytics — everything your school or learning center needs, in one place.
-          </p>
-        </div>
+        <AuthPanelHeading
+          titleLine1={t("auth.visual.admin.titleLine1")}
+          titleLine2={t("auth.visual.admin.titleLine2")}
+        >
+          {t("auth.visual.admin.subtitle")}
+        </AuthPanelHeading>
 
-        {/* Stat pills */}
         <div className="flex gap-2">
-          {stats.map((s) => (
-            <div key={s.label} className="flex-1 rounded-xl border border-white/15 bg-white/8 px-3 py-3 text-center backdrop-blur-sm">
-              <p className="text-lg font-bold text-white">{s.value}</p>
-              <p className="text-[10px] text-white/50">{s.label}</p>
+          {stats.map((stat) => (
+            <div key={stat.label} className="flex-1 rounded-xl border border-white/15 bg-white/8 px-3 py-3 text-center backdrop-blur-sm">
+              <p className="text-lg font-bold text-white">{stat.value}</p>
+              <p className="text-[10px] text-white/50">{stat.label}</p>
             </div>
           ))}
         </div>
 
-        {/* Class overview card */}
         <div className="w-[280px] rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
           <div className="mb-3 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-white">Class 10A — Mathematics</p>
-              <p className="mt-0.5 text-[10px] text-white/45">3 active tests · 28 students</p>
+              <p className="text-xs font-semibold text-white">{t("auth.visual.admin.classCard.title")}</p>
+              <p className="mt-0.5 text-[10px] text-white/45">{t("auth.visual.admin.classCard.meta")}</p>
             </div>
-            <span className="rounded-lg bg-indigo-400/20 px-2 py-1 text-[10px] font-semibold text-indigo-300">Live</span>
+            <span className="rounded-lg bg-indigo-400/20 px-2 py-1 text-[10px] font-semibold text-indigo-300">
+              {t("auth.visual.admin.classCard.status")}
+            </span>
           </div>
           <div className="space-y-2">
-            {[
-              { name: "Algebra Quiz", pct: 88 },
-              { name: "Geometry Final", pct: 72 },
-              { name: "Statistics HW", pct: 95 },
-            ].map((item) => (
+            {tests.map((item) => (
               <div key={item.name}>
                 <div className="mb-1 flex justify-between text-[10px] text-white/55">
                   <span>{item.name}</span>
@@ -68,23 +87,23 @@ export default function AdminPanel() {
           </div>
         </div>
 
-        {/* Feature list */}
         <div className="space-y-3">
-          {features.map((f) => (
-            <div key={f.title} className="flex items-start gap-3">
-              <span className="mt-0.5 text-base">{f.icon}</span>
+          {features.map((feature) => (
+            <div key={feature.title} className="flex items-start gap-3">
+              <span className="mt-0.5 text-base text-white/90">{feature.icon}</span>
               <div>
-                <p className="text-xs font-semibold text-white">{f.title}</p>
-                <p className="text-[11px] text-white/45 leading-relaxed">{f.desc}</p>
+                <p className="text-xs font-semibold text-white">{feature.title}</p>
+                <p className="text-[11px] text-white/45 leading-relaxed">{feature.desc}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Social proof */}
       <p className="text-sm text-white/50">
-        Trusted by <span className="font-semibold text-white">500+ learning centers</span> worldwide
+        {t("auth.visual.admin.trustedPrefix")}{" "}
+        <span className="font-semibold text-white">{t("auth.visual.admin.trustedStrong")}</span>{" "}
+        {t("auth.visual.admin.trustedSuffix")}
       </p>
     </>
   );

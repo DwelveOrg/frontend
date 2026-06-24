@@ -1,17 +1,10 @@
-﻿"use client";
+"use client";
 
 import React from "react";
-import { useTranslation } from "react-i18next";
 
+// The page title is rendered by <RouteHeader> in the (root) layout.
 const Dashboard = () => {
-  const { t } = useTranslation();
-
-  return (
-    <div>
-      <h1>{t("root.pages.dashboard")}</h1>
-    </div>
-  );
+  return <div className="min-h-[40vh]" />;
 };
 
 export default Dashboard;
-

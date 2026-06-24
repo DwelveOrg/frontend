@@ -9,10 +9,12 @@ import DwelveLogo from "@/components/Custom/DwelveLogo";
 import BrandButton from "@/components/Custom/BrandButton";
 import { cn } from "@/lib/utils";
 
-/** In-page anchors the nav scrolls to. `target` matches the `id` on each landing section. */
+/** In-page anchors the nav scrolls to, in document order. `target` matches the `id` on each landing section. */
 const NAV_ITEMS = [
+  { key: "landing.nav.aiDrafting", target: "ai-generation" },
   { key: "landing.nav.features", target: "features" },
   { key: "landing.nav.howItWorks", target: "how-it-works" },
+  { key: "landing.nav.analytics", target: "analytics" },
   { key: "landing.nav.accordion", target: "accordion" },
 ] as const;
 
@@ -104,9 +106,9 @@ export default function Navbar() {
           </div>
 
           {/* Section links — hidden on narrow screens (no menu fallback, by design) */}
-          <nav className="hidden md:flex md:justify-center" aria-label={t("landing.footer.quickLinks")}>
+          <nav className="hidden lg:flex lg:justify-center" aria-label={t("landing.footer.quickLinks")}>
             <LayoutGroup>
-              <ul className="flex items-center gap-9">
+              <ul className="flex items-center gap-7">
                 {NAV_ITEMS.map((item) => {
                   const isActive = active === item.target;
                   return (

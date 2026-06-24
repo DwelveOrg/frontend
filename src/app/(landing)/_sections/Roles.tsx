@@ -51,7 +51,6 @@ export default function Roles() {
     <section id="roles" className="w-full scroll-mt-24 py-20 md:py-28">
       <div className="mx-auto w-full max-w-6xl px-4">
         <SectionHeading
-          label={t("landing.roles.label")}
           title={t("landing.roles.title")}
           subtitle={t("landing.roles.subtitle")}
         />
@@ -71,8 +70,8 @@ export default function Roles() {
                 variants={card}
                 className={
                   role.featured
-                    ? "relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#7A5CFF] to-[#6A4FF0] p-7 text-white shadow-[0_24px_50px_-12px_rgba(106,79,240,0.55)] lg:-translate-y-3"
-                    : "rounded-2xl border border-slate-200/70 bg-white p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#111726]"
+                    ? "relative overflow-hidden rounded-2xl bg-gradient-to-b from-brand-violet-300 to-brand-violet-600 p-7 text-white shadow-[0_24px_50px_-12px_rgba(106,79,240,0.55)] lg:-translate-y-3"
+                    : "rounded-2xl border border-border bg-card p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_40px_rgba(15,23,42,0.08)]"
                 }
               >
                 {role.featured ? (
@@ -85,19 +84,19 @@ export default function Roles() {
                   className={`flex h-12 w-12 items-center justify-center rounded-xl ${
                     role.featured
                       ? "bg-white/15 text-white"
-                      : "bg-indigo-100 text-[#4F46E5] dark:bg-indigo-500/15 dark:text-indigo-300"
+                      : "bg-accent text-accent-foreground"
                   }`}
                 >
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3
-                  className={`mt-5 text-lg font-bold ${role.featured ? "text-white" : "text-[#1a1a2e] dark:text-white"}`}
+                  className={`mt-5 text-lg font-bold ${role.featured ? "text-white" : "text-foreground"}`}
                 >
                   {role.title}
                 </h3>
                 <p
                   className={`mt-2 text-sm leading-relaxed ${
-                    role.featured ? "text-white/85" : "text-[#64748b] dark:text-slate-300"
+                    role.featured ? "text-white/85" : "text-muted-foreground"
                   }`}
                 >
                   {role.description}

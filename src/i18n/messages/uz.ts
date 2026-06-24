@@ -9,6 +9,9 @@ translation: {
       },
       root: {
         navbarTitle: "Dwelve",
+        breadcrumb: {
+          home: "Bosh sahifa",
+        },
         empty: {
           title: "Hozircha bo'sh",
           description: "Bitta amal bilan boshlang.",
@@ -359,11 +362,15 @@ translation: {
         collapse: "Yon panelni yopish",
         toggleAssignments: "Topshiriqlar variantlarini ochish",
         toggleMore: "Qo'shimcha menyuni ochish",
+        comingSoon: "Tez kunda",
+        primaryNav: "Asosiy navigatsiya",
       },
       landing: {
         nav: {
-          features: "Features",
+          aiDrafting: "AI generatsiya",
+          features: "Imkoniyatlar",
           howItWorks: "Qanday ishlaydi",
+          analytics: "Tahlillar",
           accordion: "FAQ",
           login: "Kirish",
           signup: "Boshlash",
@@ -390,6 +397,7 @@ translation: {
             tagDocument: "Dars PDF",
             tagDraft: "AI qoralama",
             tagReady: "Ko'rib chiqishga tayyor",
+            tagEditable: "Tahrirlanadigan savollar",
           },
         },
         ai: {
@@ -405,7 +413,9 @@ translation: {
           mock: {
             file: "biology-chapter-4.pdf",
             meta: "Yuklandi · 4 sahifa",
+            analyzing: "Hujjat tahlil qilinmoqda",
             drafting: "Savollar tuzilmoqda",
+            ready: "Qoralama tayyor",
             heading: "Qoralama savollar",
             q1: "Qaysi jarayon yorug'lik energiyasini kimyoviy energiyaga aylantiradi?",
             q2: "Fotosintez sodir bo'ladigan organellani ayting.",
@@ -559,6 +569,84 @@ translation: {
         common: {
           backToLanding: "Landing sahifaga qaytish",
           backToLogin: "Kirishga qaytish",
+        },
+        visual: {
+          login: {
+            badge: "500+ sinfda faol ishlatiladi",
+            titleLine1: "O'quvchilaringiz",
+            titleLine2: "tezkor fikrga loyiq.",
+            subtitleLine1: "Avtomatik tekshiriladigan testlar. Real vaqt tahlili.",
+            subtitleLine2: "Qog'ozsiz jarayon.",
+            card: {
+              subject: "Algebra · 5-bob",
+              meta: "Avtomatik tekshirildi · 2 daqiqa oldin",
+              done: "Tayyor",
+              students: "24 o'quvchi",
+              average: "83% o'rtacha ball",
+            },
+            activityStrong: "5 ta test",
+            activityRest: "oxirgi soatda tekshirildi",
+            socialTitle: "2 400+ o'qituvchi",
+            socialSubtitle: "har kuni Dwelve'ga ishonadi",
+          },
+          signup: {
+            titleLine1: "Bugunoq aqlliroq",
+            titleLine2: "o'qishni boshlang.",
+            subtitle: "Haqiqiy natija istaydigan o'quvchi va o'qituvchilar uchun yaratilgan platforma.",
+            features: {
+              grading: "Tezkor avtomatik baholash",
+              analytics: "Rivojlanish tahlili",
+              pdf: "PDF'dan test yaratish",
+              device: "Har qanday qurilmada ishlaydi",
+            },
+            score: {
+              subject: "Fizika · 4-bo'lim",
+              title: "So'nggi natijangiz",
+              caption: "So'nggi 5 fan",
+            },
+            socialTitle: "12 000+ o'quvchi",
+            socialSubtitle: "allaqachon Dwelve'da",
+          },
+          admin: {
+            titleLine1: "Butun markazingiz uchun",
+            titleLine2: "yagona platforma.",
+            subtitle: "Test yaratishdan baholash va tahlilgacha — maktab yoki o'quv markazingizga kerak bo'lgan hammasi bir joyda.",
+            stats: {
+              setupValue: "3 daq",
+              setup: "o'rtacha sozlash",
+              centersValue: "500+",
+              centers: "markaz",
+              paperValue: "0",
+              paper: "qog'oz isrofi",
+            },
+            classCard: {
+              title: "10A-sinf — Matematika",
+              meta: "3 ta faol test · 28 o'quvchi",
+              status: "Jonli",
+              tests: {
+                algebra: "Algebra testi",
+                geometry: "Geometriya yakuni",
+                statistics: "Statistika uy ishi",
+              },
+            },
+            features: {
+              classes: {
+                title: "Sinf boshqaruvi",
+                desc: "O'qituvchi, o'quvchi va sinflarni bitta joydan boshqaring.",
+              },
+              pdf: {
+                title: "PDF test importi",
+                desc: "PDF yuklang, Dwelve esa darhol test qoralamasini yaratadi.",
+              },
+              analytics: {
+                title: "Markaz tahlili",
+                desc: "Barcha sinflar bo'yicha ballar, trendlar va rivojlanishni kuzating.",
+              },
+            },
+            trustedPrefix: "Bizga",
+            trustedStrong: "500+ o'quv markazi",
+            trustedSuffix: "ishonadi",
+          },
         },
         login: {
           access: "Dwelve kirishi",
