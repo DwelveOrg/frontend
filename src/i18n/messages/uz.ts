@@ -29,9 +29,37 @@ translation: {
             description: "Hisobingiz yaratildi. Maktab yoki o'quv markazi yarating, taklifni qabul qiling yoki ruxsat olganingizda o'quvchi sifatida qo'shiling.",
             actions: {
               createWorkspace: "Workspace yaratish",
+              createWorkspaceHint: "Maktabni sozlash",
               redeemInvite: "Taklifni qabul qilish",
               joinStudent: "O'quvchi bo'lib qo'shilish",
               comingSoon: "Tez orada",
+            },
+          },
+          workspaceModal: {
+            title: "Workspace yaratish",
+            description: "Maktab yoki o'quv markazini yarating va egasi bo'ling.",
+            close: "Workspace formasini yopish",
+            cancel: "Bekor qilish",
+            submit: "Workspace yaratish",
+            success: "Workspace yaratildi",
+            fields: {
+              name: {
+                label: "Workspace nomi",
+                placeholder: "Bright Future Learning Center",
+              },
+              slug: {
+                label: "Workspace slug",
+                placeholder: "bright-future",
+                help: "Kichik lotin harflari, raqamlar va defisdan foydalaning.",
+              },
+              phone: {
+                label: "Telefon",
+                placeholder: "+998 90 123 45 67",
+              },
+              address: {
+                label: "Manzil",
+                placeholder: "Toshkent, O'zbekiston",
+              },
             },
           },
         },

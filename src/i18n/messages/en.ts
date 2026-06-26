@@ -29,9 +29,37 @@ translation: {
             description: "Your account is set up. Create a school or learning center, redeem an invitation, or join as a student when you receive access.",
             actions: {
               createWorkspace: "Create workspace",
+              createWorkspaceHint: "Set up your school",
               redeemInvite: "Redeem invite",
               joinStudent: "Join as student",
               comingSoon: "Coming soon",
+            },
+          },
+          workspaceModal: {
+            title: "Create workspace",
+            description: "Set up a school or learning center and become its owner.",
+            close: "Close workspace form",
+            cancel: "Cancel",
+            submit: "Create workspace",
+            success: "Workspace created",
+            fields: {
+              name: {
+                label: "Workspace name",
+                placeholder: "Bright Future Learning Center",
+              },
+              slug: {
+                label: "Workspace slug",
+                placeholder: "bright-future",
+                help: "Use lowercase letters, numbers, and hyphens.",
+              },
+              phone: {
+                label: "Phone",
+                placeholder: "+998 90 123 45 67",
+              },
+              address: {
+                label: "Address",
+                placeholder: "Tashkent, Uzbekistan",
+              },
             },
           },
         },

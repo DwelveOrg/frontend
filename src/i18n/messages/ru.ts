@@ -29,9 +29,37 @@ translation: {
             description: "Ваш аккаунт создан. Создайте школу или учебный центр, примите приглашение или присоединитесь как ученик, когда получите доступ.",
             actions: {
               createWorkspace: "Создать пространство",
+              createWorkspaceHint: "Настроить школу",
               redeemInvite: "Принять приглашение",
               joinStudent: "Войти как ученик",
               comingSoon: "Скоро",
+            },
+          },
+          workspaceModal: {
+            title: "Создать пространство",
+            description: "Создайте школу или учебный центр и станьте владельцем.",
+            close: "Закрыть форму пространства",
+            cancel: "Отмена",
+            submit: "Создать пространство",
+            success: "Пространство создано",
+            fields: {
+              name: {
+                label: "Название пространства",
+                placeholder: "Bright Future Learning Center",
+              },
+              slug: {
+                label: "Slug пространства",
+                placeholder: "bright-future",
+                help: "Используйте строчные латинские буквы, цифры и дефисы.",
+              },
+              phone: {
+                label: "Телефон",
+                placeholder: "+998 90 123 45 67",
+              },
+              address: {
+                label: "Адрес",
+                placeholder: "Ташкент, Узбекистан",
+              },
             },
           },
         },

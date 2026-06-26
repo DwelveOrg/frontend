@@ -16,6 +16,14 @@ export type BackendUser = {
   email: string;
 };
 
+export type BackendWorkspace = {
+  id: string;
+  name: string;
+  slug: string;
+  phone?: string | null;
+  address?: string | null;
+};
+
 export type BackendMember = {
   id: string;
   userId: string;
@@ -25,9 +33,7 @@ export type BackendMember = {
 
 export type AuthResponse = {
   user: BackendUser;
-  workspace?: {
-    id: string;
-  };
+  workspace?: BackendWorkspace;
   member?: BackendMember;
   memberships?: Array<BackendMember & { workspace?: { id: string } }>;
   tokens: {
@@ -38,6 +44,16 @@ export type AuthResponse = {
 
 export type SignupResponse = {
   user: BackendUser;
+};
+
+export type CreateWorkspaceResponse = {
+  workspace: BackendWorkspace;
+  membership?: BackendMember;
+  member?: BackendMember;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+  };
 };
 
 export class BackendApiError extends Error {

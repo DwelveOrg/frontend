@@ -21,6 +21,25 @@ export const regularSignupSchema = z.object({
 
 export type RegularSignupFormField = z.infer<typeof regularSignupSchema>;
 
+export const createWorkspaceSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, "Workspace name must be at least 2 characters.")
+    .max(120, "Workspace name must be at most 120 characters."),
+  slug: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(2, "Slug must be at least 2 characters.")
+    .max(80, "Slug must be at most 80 characters.")
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and hyphens only."),
+  phone: z.string().trim().max(40, "Phone must be at most 40 characters.").optional(),
+  address: z.string().trim().max(255, "Address must be at most 255 characters.").optional(),
+});
+
+export type CreateWorkspaceFormField = z.infer<typeof createWorkspaceSchema>;
+
 export const centerTypes = [
   "tutoring",
   "privateSchool",

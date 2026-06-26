@@ -1,14 +1,11 @@
 "use client";
 
-import { Building2, GraduationCap, TicketCheck } from "lucide-react";
+import { GraduationCap, TicketCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
+import CreateWorkspaceModal from "./CreateWorkspaceModal";
 
 const actions = [
-  {
-    key: "createWorkspace",
-    icon: Building2,
-  },
   {
     key: "redeemInvite",
     icon: TicketCheck,
@@ -36,6 +33,7 @@ export default function NoMembershipState() {
         </p>
 
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          <CreateWorkspaceModal />
           {actions.map(({ key, icon: Icon }) => (
             <Button
               key={key}
