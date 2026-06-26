@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 
 import i18n from "@/i18n";
 import { defaultLanguage, supportedLanguages, type AppLanguage } from "@/i18n/resources";
+import QueryProvider from "@/lib/query/QueryProvider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system">
-      {children}
+      <QueryProvider>{children}</QueryProvider>
     </ThemeProvider>
   );
 }

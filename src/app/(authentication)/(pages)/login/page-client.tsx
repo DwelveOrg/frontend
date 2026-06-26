@@ -5,26 +5,23 @@ import { useRouter } from "next/navigation";
 import Input from "@/components/ui/Input";
 import Btn from "@/components/Custom/CustomButton";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
-import React, { startTransition, useActionState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { loginSchema, LoginFormField } from "@/app/(authentication)/_types/_schemas/index";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import type { LoginPageClientProps } from "@/app/(authentication)/_types/ui";
-import { login, type LoginActionState } from "../../_lib/actions";
 import AuthSplitLayout from "../../_components/AuthSplitLayout";
 import DwelveLogo from "@/components/Custom/DwelveLogo";
 import LoginPanel from "./_sections/LoginPanel";
+import { useLoginMutation } from "../../_hooks/useAuthMutations";
 
 export default function LoginPageClient({ logout }: Readonly<LoginPageClientProps>) {
   const { t } = useTranslation();
   const router = useRouter();
   const logoutToastShownRef = React.useRef(false);
-  const [state, loginAction, isActionPending] = useActionState<LoginActionState, FormData>(
-    login,
-    { error: null, success: false }
-  );
+  const loginMutation = useLoginMutation();
   const [showPassword, setShowPassword] = React.useState(false);
   const {
     register,
@@ -38,17 +35,6 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
   });
 
   React.useEffect(() => {
-    if (state.error) {
-      setError("root", { message: state.error });
-      toast.error(state.error);
-    } else if (state.success) {
-      clearErrors("root");
-      toast.success(t("auth.login.success"));
-      router.push(state.redirectTo ?? "/dashboard");
-    }
-  }, [state, setError, clearErrors, router, t]);
-
-  React.useEffect(() => {
     if (logout !== "1" || logoutToastShownRef.current) return;
     logoutToastShownRef.current = true;
     toast.success(t("auth.login.logoutSuccess"));
@@ -57,13 +43,20 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
 
   const onSubmit: SubmitHandler<LoginFormField> = async (data) => {
     clearErrors("root");
-    const formData = new FormData();
-    formData.set("identifier", data.identifier);
-    formData.set("password", data.password);
-    startTransition(() => { loginAction(formData); });
+
+    try {
+      const result = await loginMutation.mutateAsync(data);
+      clearErrors("root");
+      toast.success(t("auth.login.success"));
+      router.push(result.redirectTo);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Invalid email or password.";
+      setError("root", { message });
+      toast.error(message);
+    }
   };
 
-  const isBusy = isSubmitting || isActionPending;
+  const isBusy = isSubmitting || loginMutation.isPending;
 
   return (
     <AuthSplitLayout variant="login" panelContent={<LoginPanel />}>

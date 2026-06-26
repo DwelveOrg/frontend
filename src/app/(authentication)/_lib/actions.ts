@@ -1,10 +1,14 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { actionClient } from "@/lib/safe-action";
 import {
   createWorkspaceSchema,
   loginSchema,
   regularSignupSchema,
+  type CreateWorkspaceFormField,
+  type LoginFormField,
+  type RegularSignupFormField,
 } from "@/app/(authentication)/_types/_schemas";
 import {
   backendJson,
@@ -37,6 +41,10 @@ const INVALID_SIGNUP_ERROR = "Please check the form and try again.";
 const INVALID_WORKSPACE_ERROR = "Please check the workspace details and try again.";
 const NETWORK_ERROR = "Unable to reach Dwelve API. Please try again.";
 
+export type AuthMutationResult = {
+  redirectTo: string;
+};
+
 function getActionError(error: unknown, fallback: string) {
   if (error instanceof BackendApiError) {
     return error.message;
@@ -44,6 +52,10 @@ function getActionError(error: unknown, fallback: string) {
 
   if (error instanceof TypeError) {
     return NETWORK_ERROR;
+  }
+
+  if (error instanceof Error && error.message) {
+    return error.message;
   }
 
   return fallback;
@@ -84,6 +96,80 @@ async function createSessionFromWorkspaceResponse(response: CreateWorkspaceRespo
   });
 }
 
+async function loginWithInput(input: LoginFormField): Promise<AuthMutationResult> {
+  try {
+    const response = await backendJson<AuthResponse>("/auth/login", {
+      method: "POST",
+      body: input,
+    });
+
+    await createSessionFromAuthResponse(response);
+
+    return { redirectTo: "/dashboard" };
+  } catch (error) {
+    throw new Error(getActionError(error, INVALID_LOGIN_ERROR));
+  }
+}
+
+async function signupWithInput(input: RegularSignupFormField): Promise<AuthMutationResult> {
+  try {
+    await backendJson<SignupResponse>("/auth/signup", {
+      method: "POST",
+      body: input,
+    });
+
+    const response = await backendJson<AuthResponse>("/auth/login", {
+      method: "POST",
+      body: {
+        email: input.email,
+        password: input.password,
+      },
+    });
+
+    await createSessionFromAuthResponse(response);
+
+    return { redirectTo: "/dashboard" };
+  } catch (error) {
+    throw new Error(getActionError(error, INVALID_SIGNUP_ERROR));
+  }
+}
+
+async function createWorkspaceWithInput(input: CreateWorkspaceFormField) {
+  const session = await getSession();
+
+  if (!session?.accessToken) {
+    throw new Error("Please log in again to create a workspace.");
+  }
+
+  try {
+    const response = await backendJson<CreateWorkspaceResponse>("/workspaces", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      body: input,
+    });
+
+    await createSessionFromWorkspaceResponse(response);
+
+    return { workspaceId: response.workspace.id };
+  } catch (error) {
+    throw new Error(getActionError(error, INVALID_WORKSPACE_ERROR));
+  }
+}
+
+export const loginAction = actionClient
+  .inputSchema(loginSchema)
+  .action(async ({ parsedInput }) => loginWithInput(parsedInput));
+
+export const signupAction = actionClient
+  .inputSchema(regularSignupSchema)
+  .action(async ({ parsedInput }) => signupWithInput(parsedInput));
+
+export const createWorkspaceAction = actionClient
+  .inputSchema(createWorkspaceSchema)
+  .action(async ({ parsedInput }) => createWorkspaceWithInput(parsedInput));
+
 export async function login(
   _prevState: LoginActionState,
   formData: FormData,
@@ -98,14 +184,8 @@ export async function login(
   }
 
   try {
-    const response = await backendJson<AuthResponse>("/auth/login", {
-      method: "POST",
-      body: parsed.data,
-    });
-
-    await createSessionFromAuthResponse(response);
-
-    return { error: null, success: true, redirectTo: "/dashboard" };
+    const result = await loginWithInput(parsed.data);
+    return { error: null, success: true, redirectTo: result.redirectTo };
   } catch (error) {
     return { error: getActionError(error, INVALID_LOGIN_ERROR), success: false };
   }
@@ -126,22 +206,8 @@ export async function signup(
   }
 
   try {
-    await backendJson<SignupResponse>("/auth/signup", {
-      method: "POST",
-      body: parsed.data,
-    });
-
-    const response = await backendJson<AuthResponse>("/auth/login", {
-      method: "POST",
-      body: {
-        email: parsed.data.email,
-        password: parsed.data.password,
-      },
-    });
-
-    await createSessionFromAuthResponse(response);
-
-    return { error: null, success: true, redirectTo: "/dashboard" };
+    const result = await signupWithInput(parsed.data);
+    return { error: null, success: true, redirectTo: result.redirectTo };
   } catch (error) {
     return { error: getActionError(error, INVALID_SIGNUP_ERROR), success: false };
   }
@@ -162,23 +228,8 @@ export async function createWorkspace(
     return { error: INVALID_WORKSPACE_ERROR, success: false };
   }
 
-  const session = await getSession();
-
-  if (!session?.accessToken) {
-    return { error: "Please log in again to create a workspace.", success: false };
-  }
-
   try {
-    const response = await backendJson<CreateWorkspaceResponse>("/workspaces", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`,
-      },
-      body: parsed.data,
-    });
-
-    await createSessionFromWorkspaceResponse(response);
-
+    await createWorkspaceWithInput(parsed.data);
     return { error: null, success: true };
   } catch (error) {
     return { error: getActionError(error, INVALID_WORKSPACE_ERROR), success: false };

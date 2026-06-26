@@ -1,10 +1,8 @@
 import { z } from "zod";
 
 /**
- * Regular learner signup — kept deliberately short (name, email, password)
- * so it converts fast. Terms are accepted inline, and "Continue with Google"
- * offers a one-click path. Self-service signups are always learners; teacher
- * and admin access never come from this screen.
+ * Regular account signup is role-free. Workspace roles are granted later by
+ * creating a workspace, redeeming an invite, or joining through a student code.
  */
 export const regularSignupSchema = z.object({
   fullName: z
@@ -55,9 +53,8 @@ export type CenterType = (typeof centerTypes)[number];
 export type CenterSize = (typeof centerSizes)[number];
 
 /**
- * Admin / center registration — a heavier, multi-step flow reached from a
- * separate link, not shown side-by-side with the learner signup. Grouped into
- * account details, center details, and a review step.
+ * Admin / center registration is a heavier, multi-step flow kept separate from
+ * account signup. Creating an organization grants the role through membership.
  */
 export const adminSignupSchema = z
   .object({

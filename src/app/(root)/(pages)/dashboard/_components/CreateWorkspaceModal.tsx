@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useTransition } from "react";
+import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Building2, LoaderCircle, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
-import { createWorkspace } from "@/app/(authentication)/_lib/actions";
 import {
   createWorkspaceSchema,
   type CreateWorkspaceFormField,
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import { useCreateWorkspaceMutation } from "../_hooks/useCreateWorkspaceMutation";
 
 function slugify(value: string) {
   return value
@@ -40,7 +40,7 @@ export default function CreateWorkspaceModal() {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [slugTouched, setSlugTouched] = React.useState(false);
-  const [isActionPending, startActionTransition] = useTransition();
+  const createWorkspaceMutation = useCreateWorkspaceMutation();
 
   const {
     register,
@@ -63,32 +63,25 @@ export default function CreateWorkspaceModal() {
   const onSubmit: SubmitHandler<CreateWorkspaceFormField> = (data) => {
     clearErrors("root");
 
-    const formData = new FormData();
-    formData.set("name", data.name);
-    formData.set("slug", data.slug);
-
-    if (data.phone) formData.set("phone", data.phone);
-    if (data.address) formData.set("address", data.address);
-
-    startActionTransition(async () => {
-      const result = await createWorkspace({ error: null, success: false }, formData);
-
-      if (result.error) {
-        setError("root", { message: result.error });
-        toast.error(result.error);
-        return;
-      }
-
-      clearErrors("root");
-      toast.success(t("root.dashboard.workspaceModal.success"));
-      reset();
-      setSlugTouched(false);
-      setOpen(false);
-      router.refresh();
+    createWorkspaceMutation.mutate(data, {
+      onSuccess: () => {
+        clearErrors("root");
+        toast.success(t("root.dashboard.workspaceModal.success"));
+        reset();
+        setSlugTouched(false);
+        setOpen(false);
+        router.refresh();
+      },
+      onError: (error) => {
+        const message =
+          error instanceof Error ? error.message : "Please check the workspace details and try again.";
+        setError("root", { message });
+        toast.error(message);
+      },
     });
   };
 
-  const isBusy = isSubmitting || isActionPending;
+  const isBusy = isSubmitting || createWorkspaceMutation.isPending;
 
   return (
     <AlertDialog
