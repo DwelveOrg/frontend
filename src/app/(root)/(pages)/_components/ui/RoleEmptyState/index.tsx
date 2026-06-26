@@ -2,17 +2,18 @@
 
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
+import type { WorkspaceRole } from "@/app/(authentication)/_types/auth";
 import Empty from "../Empty";
 
 type RoleEmptyStateProps = {
-  role?: string | null;
+  role?: WorkspaceRole | null;
   entity: "class" | "school";
 };
 
 export default function RoleEmptyState({ role, entity }: RoleEmptyStateProps) {
   const { t } = useTranslation();
 
-  const canCreate = role === "teacher" || role === "admin";
+  const canCreate = role === "OWNER" || role === "DIRECTOR" || role === "ADMIN";
 
   const actionKey = canCreate
     ? entity === "school"

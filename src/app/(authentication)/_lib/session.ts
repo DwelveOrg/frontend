@@ -10,12 +10,12 @@ import {
     encryptSession,
 } from './session-token';
 
-type SessionProfile = Pick<SessionPayload, 'name' | 'role' | 'identifier'>;
+type SessionProfile = Omit<SessionPayload, 'expiresAt'>;
 
-export async function createSession(userId: string, profile?: SessionProfile) {
+export async function createSession(profile: SessionProfile) {
     const cookieStore = await cookies()
     const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
-    const session = await encrypt({ userId, expiresAt: expiresAt.toISOString(), ...profile });
+    const session = await encrypt({ ...profile, expiresAt: expiresAt.toISOString() });
 
     cookieStore.set(SESSION_COOKIE_NAME, session, {
         httpOnly: true,
@@ -29,6 +29,11 @@ export async function createSession(userId: string, profile?: SessionProfile) {
 export async function deleteSession(){
     const cookieStore = await cookies()
     cookieStore.delete(SESSION_COOKIE_NAME)
+}
+
+export async function getSession() {
+    const cookieStore = await cookies();
+    return decrypt(cookieStore.get(SESSION_COOKIE_NAME)?.value);
 }
 
 export async function encrypt(payload: SessionPayload){

@@ -1,20 +1,24 @@
-export type UserRole = "student" | "teacher" | "admin";
-
 export type AuthUser = {
   id: string;
-  identifier: string;
-  name: string;
-  role: UserRole;
+  email: string;
+  fullName: string;
+  workspaceId?: string;
+  memberId?: string;
+  workspaceRole?: WorkspaceRole;
+  membershipCount: number;
 };
 
-export type DemoUser = AuthUser & {
-  password: string;
-};
+export type WorkspaceRole = "OWNER" | "DIRECTOR" | "ADMIN" | "TEACHER" | "STUDENT";
 
 export type SessionPayload = {
   userId: string;
   expiresAt: string;
-  name?: string;
-  role?: UserRole;
-  identifier?: string;
+  email: string;
+  fullName: string;
+  accessToken: string;
+  refreshToken?: string;
+  workspaceId?: string;
+  memberId?: string;
+  workspaceRole?: WorkspaceRole;
+  membershipCount?: number;
 };

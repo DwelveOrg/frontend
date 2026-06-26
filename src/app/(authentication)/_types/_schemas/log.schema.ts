@@ -5,7 +5,7 @@ export const loginSchema = z.object({
   password: z
     .string()
     .min(5, "Password must be at least 5 characters.")
-    .max(128, "Password must be at most 128 characters."),
+    .max(72, "Password must be at most 72 characters."),
 });
 
 export type LoginFormField = z.infer<typeof loginSchema>;

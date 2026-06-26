@@ -22,6 +22,19 @@ translation: {
             createSchool: "Maktab yaratish",
           },
         },
+        dashboard: {
+          empty: {
+            eyebrow: "Hisob tayyor",
+            title: "Workspace'ga qanday kirishni tanlang",
+            description: "Hisobingiz yaratildi. Maktab yoki o'quv markazi yarating, taklifni qabul qiling yoki ruxsat olganingizda o'quvchi sifatida qo'shiling.",
+            actions: {
+              createWorkspace: "Workspace yaratish",
+              redeemInvite: "Taklifni qabul qilish",
+              joinStudent: "O'quvchi bo'lib qo'shilish",
+              comingSoon: "Tez orada",
+            },
+          },
+        },
         settings: {
           title: "Ish usulingizga mos sozlamalar",
           description: "Ko'rinish, xavfsizlik va yordam bo'limlarini bitta joydan boshqaring. Sahifa yirik platformalardagi kabi tuzildi: ma'noga ko'ra bo'limlar, qisqa izohlar va xavfli amallarni alohida ajratish.",

@@ -1,13 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createSession, deleteSession } from "./session";
-import {
-  adminSignupSchema,
-  loginSchema,
-  regularSignupSchema,
-} from "@/app/(authentication)/_types/_schemas";
-import { findDemoUserByIdentifier, isPrototypeAuthEnabled } from "./demo-users";
+import { loginSchema, regularSignupSchema } from "@/app/(authentication)/_types/_schemas";
+import { backendJson, BackendApiError, type AuthResponse, type SignupResponse } from "./api";
+import { createSession, deleteSession, getSession } from "./session";
 
 export type LoginActionState = {
   error: string | null;
@@ -21,55 +17,67 @@ export type SignupActionState = {
   redirectTo?: string;
 };
 
-const AUTH_NOT_CONFIGURED_ERROR =
-  "Authentication is not configured for this environment yet.";
+const INVALID_LOGIN_ERROR = "Invalid email or password.";
+const INVALID_SIGNUP_ERROR = "Please check the form and try again.";
+const NETWORK_ERROR = "Unable to reach Dwelve API. Please try again.";
 
-export async function login(
-  prevState: LoginActionState,
-  formData: FormData,
-): Promise<LoginActionState> {
-  if (!isPrototypeAuthEnabled()) {
-    return { error: AUTH_NOT_CONFIGURED_ERROR, success: false };
+function getActionError(error: unknown, fallback: string) {
+  if (error instanceof BackendApiError) {
+    return error.message;
   }
 
+  if (error instanceof TypeError) {
+    return NETWORK_ERROR;
+  }
+
+  return fallback;
+}
+
+async function createSessionFromAuthResponse(response: AuthResponse) {
+  await createSession({
+    userId: response.user.id,
+    email: response.user.email,
+    fullName: response.user.fullName,
+    accessToken: response.tokens.accessToken,
+    refreshToken: response.tokens.refreshToken,
+    workspaceId: response.member?.workspaceId ?? response.workspace?.id,
+    memberId: response.member?.id,
+    workspaceRole: response.member?.role,
+    membershipCount: response.memberships?.length ?? (response.member ? 1 : 0),
+  });
+}
+
+export async function login(
+  _prevState: LoginActionState,
+  formData: FormData,
+): Promise<LoginActionState> {
   const parsed = loginSchema.safeParse({
     identifier: formData.get("identifier"),
     password: formData.get("password"),
   });
 
   if (!parsed.success) {
-    return { error: "Invalid username/email or password.", success: false };
+    return { error: INVALID_LOGIN_ERROR, success: false };
   }
 
-  const { identifier, password } = parsed.data;
+  try {
+    const response = await backendJson<AuthResponse>("/auth/login", {
+      method: "POST",
+      body: parsed.data,
+    });
 
-  const matchedUser = findDemoUserByIdentifier(identifier);
-  if (!matchedUser) {
-    return { error: "Invalid username/email or password.", success: false };
+    await createSessionFromAuthResponse(response);
+
+    return { error: null, success: true, redirectTo: "/dashboard" };
+  } catch (error) {
+    return { error: getActionError(error, INVALID_LOGIN_ERROR), success: false };
   }
-
-  if(matchedUser.password !== password){
-    return { error: "Invalid username/email or password.", success: false };
-  }
-
-  await createSession(matchedUser.id, {
-    name: matchedUser.name,
-    role: matchedUser.role,
-    identifier: matchedUser.identifier,
-  });
-  return { error: null, success: true, redirectTo: "/dashboard" };
 }
 
-// Regular learner signup — the fast, default path. Role is always "student";
-// teacher/admin access never originates here.
 export async function signup(
-  prevState: SignupActionState,
+  _prevState: SignupActionState,
   formData: FormData,
 ): Promise<SignupActionState> {
-  if (!isPrototypeAuthEnabled()) {
-    return { error: AUTH_NOT_CONFIGURED_ERROR, success: false };
-  }
-
   const parsed = regularSignupSchema.safeParse({
     fullName: formData.get("fullName"),
     email: formData.get("email"),
@@ -77,76 +85,41 @@ export async function signup(
   });
 
   if (!parsed.success) {
-    return { error: "Please check the form and try again.", success: false };
+    return { error: INVALID_SIGNUP_ERROR, success: false };
   }
 
-  const { fullName, email } = parsed.data;
+  try {
+    await backendJson<SignupResponse>("/auth/signup", {
+      method: "POST",
+      body: parsed.data,
+    });
 
-  // No backend yet: key the prototype session on the email so the new account
-  // can land in the dashboard without exposing credentials to client bundles.
-  await createSession(`account:${email.toLowerCase()}`, {
-    name: fullName,
-    role: "student",
-    identifier: email,
-  });
+    const response = await backendJson<AuthResponse>("/auth/login", {
+      method: "POST",
+      body: {
+        email: parsed.data.email,
+        password: parsed.data.password,
+      },
+    });
 
-  return { error: null, success: true, redirectTo: "/dashboard" };
-}
+    await createSessionFromAuthResponse(response);
 
-// One-click learner signup. Placeholder for real Google OAuth: there is no
-// backend yet, so this just opens a demo learner session to keep the fast
-// path working end-to-end. Wire to a real OAuth provider when available.
-export async function googleSignup(): Promise<SignupActionState> {
-  if (!isPrototypeAuthEnabled()) {
-    return { error: AUTH_NOT_CONFIGURED_ERROR, success: false };
+    return { error: null, success: true, redirectTo: "/dashboard" };
+  } catch (error) {
+    return { error: getActionError(error, INVALID_SIGNUP_ERROR), success: false };
   }
-
-  await createSession("account:google-demo", {
-    name: "",
-    role: "student",
-    identifier: "google-demo",
-  });
-
-  return { error: null, success: true, redirectTo: "/dashboard" };
-}
-
-// Admin / center registration — the heavier, multi-step flow. Creating a
-// center grants the "admin" role.
-export async function adminSignup(
-  prevState: SignupActionState,
-  formData: FormData,
-): Promise<SignupActionState> {
-  if (!isPrototypeAuthEnabled()) {
-    return { error: AUTH_NOT_CONFIGURED_ERROR, success: false };
-  }
-
-  const parsed = adminSignupSchema.safeParse({
-    fullName: formData.get("fullName"),
-    email: formData.get("email"),
-    password: formData.get("password"),
-    confirmPassword: formData.get("confirmPassword"),
-    centerName: formData.get("centerName"),
-    centerType: formData.get("centerType"),
-    centerSize: formData.get("centerSize"),
-    termsAccepted: formData.get("termsAccepted") === "true",
-  });
-
-  if (!parsed.success) {
-    return { error: "Please check the form and try again.", success: false };
-  }
-
-  const { fullName, email } = parsed.data;
-
-  await createSession(`center:${email.toLowerCase()}`, {
-    name: fullName,
-    role: "admin",
-    identifier: email,
-  });
-
-  return { error: null, success: true, redirectTo: "/dashboard" };
 }
 
 export async function logout() {
+  const session = await getSession();
+
+  if (session?.refreshToken) {
+    await backendJson("/auth/logout", {
+      method: "POST",
+      body: { refreshToken: session.refreshToken },
+    }).catch(() => undefined);
+  }
+
   await deleteSession();
   redirect("/login?logout=1");
 }

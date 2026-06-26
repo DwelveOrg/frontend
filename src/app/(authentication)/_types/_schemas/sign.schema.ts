@@ -7,12 +7,16 @@ import { z } from "zod";
  * and admin access never come from this screen.
  */
 export const regularSignupSchema = z.object({
-  fullName: z.string().trim().min(5, "Full name must be at least 5 characters."),
+  fullName: z
+    .string()
+    .trim()
+    .min(5, "Full name must be at least 5 characters.")
+    .max(120, "Full name must be at most 120 characters."),
   email: z.string().email("Please enter a valid email address."),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters.")
-    .max(32, "Password must be at most 32 characters."),
+    .max(72, "Password must be at most 72 characters."),
 });
 
 export type RegularSignupFormField = z.infer<typeof regularSignupSchema>;

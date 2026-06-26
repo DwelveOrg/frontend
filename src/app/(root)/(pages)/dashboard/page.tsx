@@ -1,10 +1,12 @@
-"use client";
+import { getUser } from "../../_utils/getUser";
+import NoMembershipState from "./_components/NoMembershipState";
 
-import React from "react";
+export default async function Dashboard() {
+  const user = await getUser();
 
-// The page title is rendered by <RouteHeader> in the (root) layout.
-const Dashboard = () => {
+  if (!user?.membershipCount) {
+    return <NoMembershipState />;
+  }
+
   return <div className="min-h-[40vh]" />;
-};
-
-export default Dashboard;
+}

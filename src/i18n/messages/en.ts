@@ -22,6 +22,19 @@ translation: {
             createSchool: "Create school",
           },
         },
+        dashboard: {
+          empty: {
+            eyebrow: "Account ready",
+            title: "Choose how you want to enter a workspace",
+            description: "Your account is set up. Create a school or learning center, redeem an invitation, or join as a student when you receive access.",
+            actions: {
+              createWorkspace: "Create workspace",
+              redeemInvite: "Redeem invite",
+              joinStudent: "Join as student",
+              comingSoon: "Coming soon",
+            },
+          },
+        },
         settings: {
           title: "Preferences that fit the way you work",
           description: "Manage appearance, security, and support options from one place. The layout follows grouped settings patterns used by major platforms: clear sections, short descriptions, and safe separation of destructive actions.",
