@@ -8,6 +8,7 @@ import type {
   RegularSignupFormField,
 } from "@/app/(authentication)/_types/_schemas";
 import {
+  googleAuthAction,
   loginAction,
   signupAction,
   type AuthMutationResult,
@@ -27,6 +28,15 @@ export function useSignupMutation() {
     mutationFn: async (input: RegularSignupFormField): Promise<AuthMutationResult> => {
       const result = await signupAction(input);
       return readSafeActionData(result, "Please check the form and try again.");
+    },
+  });
+}
+
+export function useGoogleAuthMutation() {
+  return useMutation({
+    mutationFn: async (idToken: string): Promise<AuthMutationResult> => {
+      const result = await googleAuthAction({ idToken });
+      return readSafeActionData(result, "Google sign-in failed. Please try again.");
     },
   });
 }

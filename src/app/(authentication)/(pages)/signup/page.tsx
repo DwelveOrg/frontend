@@ -18,12 +18,14 @@ import { regularSignupDefaults } from "../../_constants/signup";
 import AuthSplitLayout from "../../_components/AuthSplitLayout";
 import DwelveLogo from "@/components/Custom/DwelveLogo";
 import SignupPanel from "./_sections/SignupPanel";
-import { useSignupMutation } from "../../_hooks/useAuthMutations";
+import { useSignupMutation, useGoogleAuthMutation } from "../../_hooks/useAuthMutations";
+import GoogleAuthButton from "../../_components/GoogleAuthButton";
 
 export default function SignupPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const signupMutation = useSignupMutation();
+  const googleMutation = useGoogleAuthMutation();
   const [showPassword, setShowPassword] = React.useState(false);
 
   const {
@@ -54,6 +56,17 @@ export default function SignupPage() {
 
   const isBusy = isSubmitting || signupMutation.isPending;
 
+  const handleGoogleCredential = React.useCallback(async (idToken: string) => {
+    try {
+      const result = await googleMutation.mutateAsync(idToken);
+      toast.success(t("auth.signup.success"));
+      router.push(result.redirectTo);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Google sign-in failed.";
+      toast.error(message);
+    }
+  }, [googleMutation, router, t]);
+
   return (
     <AuthSplitLayout variant="signup" panelContent={<SignupPanel />}>
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-12">
@@ -74,7 +87,21 @@ export default function SignupPage() {
             </p>
           </div>
 
-          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <div className="space-y-4">
+            <GoogleAuthButton
+              onCredential={handleGoogleCredential}
+              disabled={isBusy || googleMutation.isPending}
+              text={t("auth.signup.google")}
+            />
+
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-[#e2e8f0] dark:bg-white/10" />
+              <span className="text-xs text-[#94a3b8] dark:text-slate-500">{t("auth.signup.or")}</span>
+              <div className="h-px flex-1 bg-[#e2e8f0] dark:bg-white/10" />
+            </div>
+          </div>
+
+          <form className="mt-4 space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-[#1a1a2e] dark:text-white">
                 {t("auth.signup.fullName")}

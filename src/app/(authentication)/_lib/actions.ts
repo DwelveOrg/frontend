@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { actionClient } from "@/lib/safe-action";
 import {
   createWorkspaceSchema,
+  googleAuthSchema,
   loginSchema,
   regularSignupSchema,
   type CreateWorkspaceFormField,
@@ -157,6 +158,24 @@ async function createWorkspaceWithInput(input: CreateWorkspaceFormField) {
     throw new Error(getActionError(error, INVALID_WORKSPACE_ERROR));
   }
 }
+
+async function googleAuthWithToken(idToken: string): Promise<AuthMutationResult> {
+  try {
+    const response = await backendJson<AuthResponse>("/auth/google", {
+      method: "POST",
+      body: { idToken },
+    });
+
+    await createSessionFromAuthResponse(response);
+    return { redirectTo: "/dashboard" };
+  } catch (error) {
+    throw new Error(getActionError(error, "Google sign-in failed. Please try again."));
+  }
+}
+
+export const googleAuthAction = actionClient
+  .inputSchema(googleAuthSchema)
+  .action(async ({ parsedInput }) => googleAuthWithToken(parsedInput.idToken));
 
 export const loginAction = actionClient
   .inputSchema(loginSchema)
