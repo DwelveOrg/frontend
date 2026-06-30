@@ -155,8 +155,8 @@ export default function SideBar() {
   // Primary navigation — order and items mirror the reference design.
   const primaryItems: NavItem[] = [
     { href: "/dashboard", label: t("sidebar.dashboard"), icon: House },
-    { href: "/groups", label: t("sidebar.classes"), icon: GraduationCap },
     { href: "/school", label: t("sidebar.school"), icon: School },
+    { href: "/groups", label: t("sidebar.classes"), icon: GraduationCap },
   ];
   const notificationsItem: NavItem = {
     href: "/notifications",

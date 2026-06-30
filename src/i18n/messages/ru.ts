@@ -693,6 +693,8 @@ translation: {
           access: "Доступ Dwelve",
           title: "С возвращением",
           subtitle: "Присоединяйтесь к Dwelve, чтобы создавать или проходить тесты онлайн.",
+          google: "Продолжить с Google",
+          or: "или",
           loginLabel: "Логин",
           loginPlaceholder: "Введите имя пользователя или email",
           passwordLabel: "Пароль",

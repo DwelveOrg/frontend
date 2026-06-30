@@ -693,6 +693,8 @@ translation: {
           access: "Dwelve Access",
           title: "Welcome back",
           subtitle: "Join Dwelve to create or take tests online.",
+          google: "Continue with Google",
+          or: "or",
           loginLabel: "Login",
           loginPlaceholder: "Enter username or email address",
           passwordLabel: "Password",

@@ -693,6 +693,8 @@ translation: {
           access: "Dwelve kirishi",
           title: "Xush kelibsiz",
           subtitle: "Onlayn test yaratish yoki topshirish uchun Dwelve'ga qo'shiling.",
+          google: "Google bilan davom etish",
+          or: "yoki",
           loginLabel: "Login",
           loginPlaceholder: "Foydalanuvchi nomi yoki email kiriting",
           passwordLabel: "Parol",

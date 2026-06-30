@@ -5,26 +5,25 @@ import { useRouter } from "next/navigation";
 import Input from "@/components/ui/Input";
 import Btn from "@/components/Custom/CustomButton";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
-import React, { startTransition, useActionState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { loginSchema, LoginFormField } from "@/app/(authentication)/_types/_schemas/index";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import type { LoginPageClientProps } from "@/app/(authentication)/_types/ui";
-import { login, type LoginActionState } from "../../_lib/actions";
 import AuthSplitLayout from "../../_components/AuthSplitLayout";
 import DwelveLogo from "@/components/Custom/DwelveLogo";
 import LoginPanel from "./_sections/LoginPanel";
+import { useLoginMutation, useGoogleAuthMutation } from "../../_hooks/useAuthMutations";
+import GoogleAuthButton from "../../_components/GoogleAuthButton";
 
 export default function LoginPageClient({ logout }: Readonly<LoginPageClientProps>) {
   const { t } = useTranslation();
   const router = useRouter();
   const logoutToastShownRef = React.useRef(false);
-  const [state, loginAction, isActionPending] = useActionState<LoginActionState, FormData>(
-    login,
-    { error: null, success: false }
-  );
+  const loginMutation = useLoginMutation();
+  const googleMutation = useGoogleAuthMutation();
   const [showPassword, setShowPassword] = React.useState(false);
   const {
     register,
@@ -38,17 +37,6 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
   });
 
   React.useEffect(() => {
-    if (state.error) {
-      setError("root", { message: state.error });
-      toast.error(state.error);
-    } else if (state.success) {
-      clearErrors("root");
-      toast.success(t("auth.login.success"));
-      router.push(state.redirectTo ?? "/dashboard");
-    }
-  }, [state, setError, clearErrors, router, t]);
-
-  React.useEffect(() => {
     if (logout !== "1" || logoutToastShownRef.current) return;
     logoutToastShownRef.current = true;
     toast.success(t("auth.login.logoutSuccess"));
@@ -57,13 +45,31 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
 
   const onSubmit: SubmitHandler<LoginFormField> = async (data) => {
     clearErrors("root");
-    const formData = new FormData();
-    formData.set("identifier", data.identifier);
-    formData.set("password", data.password);
-    startTransition(() => { loginAction(formData); });
+
+    try {
+      const result = await loginMutation.mutateAsync(data);
+      clearErrors("root");
+      toast.success(t("auth.login.success"));
+      router.push(result.redirectTo);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Invalid email or password.";
+      setError("root", { message });
+      toast.error(message);
+    }
   };
 
-  const isBusy = isSubmitting || isActionPending;
+  const isBusy = isSubmitting || loginMutation.isPending;
+
+  const handleGoogleCredential = React.useCallback(async (idToken: string) => {
+    try {
+      const result = await googleMutation.mutateAsync(idToken);
+      toast.success(t("auth.login.success"));
+      router.push(result.redirectTo);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Google sign-in failed.";
+      toast.error(message);
+    }
+  }, [googleMutation, router, t]);
 
   return (
     <AuthSplitLayout variant="login" panelContent={<LoginPanel />}>
@@ -86,7 +92,21 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
             </p>
           </div>
 
-          <form className="space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <div className="space-y-4">
+            <GoogleAuthButton
+              onCredential={handleGoogleCredential}
+              disabled={isBusy || googleMutation.isPending}
+              text={t("auth.login.google")}
+            />
+
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-[#e2e8f0] dark:bg-white/10" />
+              <span className="text-xs text-[#94a3b8] dark:text-slate-500">{t("auth.login.or")}</span>
+              <div className="h-px flex-1 bg-[#e2e8f0] dark:bg-white/10" />
+            </div>
+          </div>
+
+          <form className="mt-4 space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-[#1a1a2e] dark:text-white">
                 {t("auth.login.loginLabel")}
