@@ -1,7 +1,9 @@
 import { EncryptJWT, jwtDecrypt } from "jose";
 
-import { DEVELOPMENT_SESSION_SECRET } from "../_constants/session";
+import { DEVELOPMENT_SESSION_SECRET, SESSION_DURATION_MS } from "../_constants/session";
 import type { SessionPayload } from "../_types/auth";
+
+const SESSION_DURATION_SECONDS = Math.floor(SESSION_DURATION_MS / 1000);
 
 function getSessionSecret() {
   const secret = process.env.SESSION_SECRET;
@@ -26,7 +28,7 @@ export async function encryptSession(payload: SessionPayload) {
   return new EncryptJWT({ ...payload })
     .setProtectedHeader({ alg: "dir", enc: "A256GCM" })
     .setIssuedAt()
-    .setExpirationTime("1h")
+    .setExpirationTime(`${SESSION_DURATION_SECONDS}s`)
     .encrypt(await getSessionKey());
 }
 

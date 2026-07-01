@@ -3,6 +3,7 @@
 import React from "react";
 import { LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import GoogleIcon from "./GoogleIcon";
 
 declare global {
   interface Window {
@@ -45,7 +46,8 @@ export default function GoogleAuthButton({ onCredential, disabled, text }: Props
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
   const [gisLoading, setGisLoading] = React.useState(!!clientId);
-  const buttonContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const gisRef = React.useRef<HTMLDivElement>(null);
   const initialized = React.useRef(false);
   const onCredentialRef = React.useRef(onCredential);
 
@@ -58,7 +60,8 @@ export default function GoogleAuthButton({ onCredential, disabled, text }: Props
       initialized.current ||
       !window.google?.accounts?.id ||
       !clientId ||
-      !buttonContainerRef.current
+      !gisRef.current ||
+      !wrapperRef.current
     ) {
       return;
     }
@@ -76,15 +79,16 @@ export default function GoogleAuthButton({ onCredential, disabled, text }: Props
       cancel_on_tap_outside: true,
     });
 
-    buttonContainerRef.current.replaceChildren();
-    window.google.accounts.id.renderButton(buttonContainerRef.current, {
+    const width = wrapperRef.current.clientWidth;
+    gisRef.current.replaceChildren();
+    window.google.accounts.id.renderButton(gisRef.current, {
       type: "standard",
       theme: "outline",
       size: "large",
       text: "continue_with",
       shape: "rectangular",
       logo_alignment: "left",
-      width: 400,
+      width: Math.max(width, 200),
     });
 
     setGisLoading(false);
@@ -117,18 +121,17 @@ export default function GoogleAuthButton({ onCredential, disabled, text }: Props
 
   const isDisabled = disabled || gisLoading;
 
+  const baseClasses = cn(
+    "flex w-full items-center justify-center gap-2.5 rounded-xl",
+    "border border-[#e2e8f0] bg-white px-4 py-3",
+    "text-sm font-medium text-[#1a1a2e]",
+    "dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
+  );
+
   if (!clientId) {
     return (
-      <button
-        type="button"
-        disabled
-        className={cn(
-          "flex w-full items-center justify-center gap-2.5 rounded-xl",
-          "border border-[#e2e8f0] bg-white px-4 py-3",
-          "text-sm font-medium text-[#1a1a2e] opacity-60",
-          "dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
-        )}
-      >
+      <button type="button" disabled className={cn(baseClasses, "opacity-60")}>
+        <GoogleIcon />
         <span>{text}</span>
       </button>
     );
@@ -136,26 +139,37 @@ export default function GoogleAuthButton({ onCredential, disabled, text }: Props
 
   return (
     <div
+      ref={wrapperRef}
       className={cn(
-        "relative flex min-h-[44px] w-full items-center justify-center overflow-hidden rounded-xl",
+        "group relative cursor-pointer",
         isDisabled && "pointer-events-none opacity-60"
       )}
       aria-label={text}
     >
-      {gisLoading && (
-        <div
-          className={cn(
-            "flex w-full items-center justify-center gap-2.5 rounded-xl",
-            "border border-[#e2e8f0] bg-white px-4 py-3",
-            "text-sm font-medium text-[#1a1a2e]",
-            "dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
-          )}
-        >
+      {/* Visible custom button — pointer-events disabled so clicks pass through to GIS overlay */}
+      <div
+        className={cn(
+          baseClasses,
+          "pointer-events-none transition-colors",
+          "group-hover:bg-[#f8fafc] dark:group-hover:bg-white/[0.08]"
+        )}
+      >
+        {gisLoading ? (
           <LoaderCircle className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
-          <span>{text}</span>
-        </div>
-      )}
-      <div ref={buttonContainerRef} className={cn("w-full", gisLoading && "hidden")} />
+        ) : (
+          <GoogleIcon />
+        )}
+        <span>{text}</span>
+      </div>
+
+      {/* Invisible GIS-rendered button overlay that captures the actual click */}
+      <div
+        ref={gisRef}
+        className={cn(
+          "absolute inset-0 overflow-hidden rounded-xl opacity-0",
+          gisLoading && "pointer-events-none"
+        )}
+      />
     </div>
   );
 }
