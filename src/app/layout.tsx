@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat, Inter, Manrope, DM_Serif_Display } from "next/font/google";
+import { Manrope, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import Providers from "./providers";
@@ -25,16 +25,6 @@ const dwelveSerif = DM_Serif_Display({
   display: "swap",
 });
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: "Dwelve",
   description: "Dwelve is a digital academic testing and performance management platform built for schools and learning centers. It streamlines the entire assessment workflow — from test creation and submission to automated grading and performance analytics.",
@@ -56,7 +46,7 @@ export default function MainLayout({
   return (
     <html lang="en" suppressHydrationWarning className={cn("font-sans", dwelveSans.variable, dwelveSerif.variable)}>
       <body
-        className={`${montserrat.variable} ${inter.variable} bg-background text-foreground antialiased min-h-screen transition-colors`}
+        className="bg-background text-foreground antialiased min-h-screen transition-colors"
       >
         <Providers>{children}</Providers>
         <Toaster />

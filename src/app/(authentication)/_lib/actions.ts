@@ -18,24 +18,8 @@ import {
   type CreateWorkspaceResponse,
   type SignupResponse,
 } from "./api";
+import { authedBackendJson } from "./backend";
 import { createSession, deleteSession, getSession } from "./session";
-
-export type LoginActionState = {
-  error: string | null;
-  success: boolean;
-  redirectTo?: string;
-};
-
-export type SignupActionState = {
-  error: string | null;
-  success: boolean;
-  redirectTo?: string;
-};
-
-export type CreateWorkspaceActionState = {
-  error: string | null;
-  success: boolean;
-};
 
 const INVALID_LOGIN_ERROR = "Invalid email or password.";
 const INVALID_SIGNUP_ERROR = "Please check the form and try again.";
@@ -136,18 +120,9 @@ async function signupWithInput(input: RegularSignupFormField): Promise<AuthMutat
 }
 
 async function createWorkspaceWithInput(input: CreateWorkspaceFormField) {
-  const session = await getSession();
-
-  if (!session?.accessToken) {
-    throw new Error("Please log in again to create a workspace.");
-  }
-
   try {
-    const response = await backendJson<CreateWorkspaceResponse>("/workspaces", {
+    const response = await authedBackendJson<CreateWorkspaceResponse>("/workspaces", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`,
-      },
       body: input,
     });
 
@@ -188,72 +163,6 @@ export const signupAction = actionClient
 export const createWorkspaceAction = actionClient
   .inputSchema(createWorkspaceSchema)
   .action(async ({ parsedInput }) => createWorkspaceWithInput(parsedInput));
-
-export async function login(
-  _prevState: LoginActionState,
-  formData: FormData,
-): Promise<LoginActionState> {
-  const parsed = loginSchema.safeParse({
-    identifier: formData.get("identifier"),
-    password: formData.get("password"),
-  });
-
-  if (!parsed.success) {
-    return { error: INVALID_LOGIN_ERROR, success: false };
-  }
-
-  try {
-    const result = await loginWithInput(parsed.data);
-    return { error: null, success: true, redirectTo: result.redirectTo };
-  } catch (error) {
-    return { error: getActionError(error, INVALID_LOGIN_ERROR), success: false };
-  }
-}
-
-export async function signup(
-  _prevState: SignupActionState,
-  formData: FormData,
-): Promise<SignupActionState> {
-  const parsed = regularSignupSchema.safeParse({
-    fullName: formData.get("fullName"),
-    email: formData.get("email"),
-    password: formData.get("password"),
-  });
-
-  if (!parsed.success) {
-    return { error: INVALID_SIGNUP_ERROR, success: false };
-  }
-
-  try {
-    const result = await signupWithInput(parsed.data);
-    return { error: null, success: true, redirectTo: result.redirectTo };
-  } catch (error) {
-    return { error: getActionError(error, INVALID_SIGNUP_ERROR), success: false };
-  }
-}
-
-export async function createWorkspace(
-  _prevState: CreateWorkspaceActionState,
-  formData: FormData,
-): Promise<CreateWorkspaceActionState> {
-  const parsed = createWorkspaceSchema.safeParse({
-    name: formData.get("name"),
-    slug: formData.get("slug"),
-    phone: formData.get("phone") || undefined,
-    address: formData.get("address") || undefined,
-  });
-
-  if (!parsed.success) {
-    return { error: INVALID_WORKSPACE_ERROR, success: false };
-  }
-
-  try {
-    await createWorkspaceWithInput(parsed.data);
-    return { error: null, success: true };
-  } catch (error) {
-    return { error: getActionError(error, INVALID_WORKSPACE_ERROR), success: false };
-  }
-}
 
 export async function logout() {
   const session = await getSession();
