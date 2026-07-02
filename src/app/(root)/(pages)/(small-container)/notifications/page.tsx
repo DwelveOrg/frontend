@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useTranslation } from "react-i18next";
 import Empty from "../../_components/ui/Empty";
 import { notificationItems } from "@/app/(root)/_constants";
 import type { NotificationItem } from "@/app/(root)/_types";
@@ -9,6 +10,8 @@ import { NotificationDetailsDialog } from "./_components/NotificationDetailsDial
 import { NotificationSection } from "./_components/NotificationSection";
 
 const Page = () => {
+  const { t } = useTranslation();
+  const reduce = useReducedMotion();
   const [items, setItems] = useState<NotificationItem[]>(notificationItems);
   const [selectedNotificationId, setSelectedNotificationId] = useState<number | null>(null);
   const unreadMessages = useMemo(() => items.filter((item) => item.unread), [items]);
@@ -34,9 +37,9 @@ const Page = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 18 }}
+      initial={reduce ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
       className="flex min-h-[60vh] w-full flex-col"
     >
       <AnimatePresence mode="wait">
@@ -46,7 +49,7 @@ const Page = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.08, duration: 0.24 }}
-            className="space-y-4"
+            className="space-y-7"
           >
             <NotificationSection
               items={unreadMessages}
@@ -68,13 +71,16 @@ const Page = () => {
         ) : (
           <motion.section
             key="notifications-empty"
-            initial={{ opacity: 0, scale: 0.98 }}
+            initial={reduce ? false : { opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.22 }}
             className="flex flex-1 items-center justify-center"
           >
-            <Empty />
+            <Empty
+              title={t("root.notifications.emptyTitle")}
+              description={t("root.notifications.emptyDescription")}
+            />
           </motion.section>
         )}
       </AnimatePresence>

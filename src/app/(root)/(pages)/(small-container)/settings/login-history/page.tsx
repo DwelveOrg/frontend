@@ -16,7 +16,7 @@ export default function LoginHistory() {
         title={t("root.settings.loginHistory.page.title")}
         description={t("root.settings.loginHistory.page.description")}
       >
-        <div className="space-y-3">
+        <div className="-mx-5 -mb-5 mt-1 divide-y divide-[var(--border)] border-t border-[var(--border)]">
           {loginHistoryItems.map((item) => (
             <LoginHistoryRow key={item.id} item={item} />
           ))}

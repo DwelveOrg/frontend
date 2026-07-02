@@ -31,13 +31,13 @@ export function NotificationDetailsDialog({ notification, onClose }: Readonly<No
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-transparent text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+          className="absolute right-4 top-4 inline-flex size-8 cursor-pointer items-center justify-center rounded-lg text-[var(--muted-foreground)] transition hover:bg-[var(--muted)] hover:text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
           aria-label={t("root.notifications.close")}
         >
           <X className="h-4 w-4" />
         </button>
         <AlertDialogHeader>
-          <AlertDialogMedia className="bg-transparent text-slate-500 dark:text-slate-300">
+          <AlertDialogMedia className="bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--primary)]">
             <Bell className="h-5 w-5" />
           </AlertDialogMedia>
           <AlertDialogTitle>{notification ? t(notification.title) : null}</AlertDialogTitle>

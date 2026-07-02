@@ -93,7 +93,7 @@ export default function Navbar() {
             : "border-transparent bg-transparent",
         )}
       >
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-4 sm:px-6">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:grid lg:grid-cols-[1fr_auto_1fr]">
           {/* Brand mark */}
           <div className="flex items-center justify-self-start">
             <Link

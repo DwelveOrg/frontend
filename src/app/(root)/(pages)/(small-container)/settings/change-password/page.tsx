@@ -30,7 +30,7 @@ export default function ChangePassword() {
           <div className="space-y-2">
             <label
               htmlFor="current-password"
-              className="text-sm font-semibold text-slate-900 dark:text-white"
+              className="text-sm font-semibold text-[var(--foreground)]"
             >
               {t("root.settings.security.changePassword.page.fields.current.label")}
             </label>
@@ -51,7 +51,7 @@ export default function ChangePassword() {
           <div className="space-y-2">
             <label
               htmlFor="new-password"
-              className="text-sm font-semibold text-slate-900 dark:text-white"
+              className="text-sm font-semibold text-[var(--foreground)]"
             >
               {t("root.settings.security.changePassword.page.fields.new.label")}
             </label>
@@ -69,7 +69,7 @@ export default function ChangePassword() {
           <div className="space-y-2">
             <label
               htmlFor="confirm-password"
-              className="text-sm font-semibold text-slate-900 dark:text-white"
+              className="text-sm font-semibold text-[var(--foreground)]"
             >
               {t("root.settings.security.changePassword.page.fields.confirm.label")}
             </label>
@@ -87,13 +87,13 @@ export default function ChangePassword() {
             />
           </div>
 
-          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 text-sm text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--muted)] p-4 text-sm text-[var(--muted-foreground)]">
             {t("root.settings.security.changePassword.page.hint")}
           </div>
 
           <button
             type="submit"
-            className="w-full cursor-pointer rounded-xl bg-[#0046FF] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0036d6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0046FF]/60 active:scale-[0.99]"
+            className="w-full cursor-pointer rounded-xl bg-[var(--primary)] px-4 py-3 text-sm font-semibold text-[var(--primary-foreground)] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--card)] active:scale-[0.99]"
           >
             {t("root.settings.security.changePassword.page.actions.submit")}
           </button>

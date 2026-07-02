@@ -13,7 +13,7 @@ export default function Documentation() {
         title={t("root.settings.documentation.page.title")}
         description={t("root.settings.documentation.page.description")}
       >
-        <div className="space-y-4 text-[20px] text-slate-600 dark:text-slate-300">
+        <div className="space-y-4 text-[15px] leading-7 text-[var(--muted-foreground)]">
           <p>{t("root.settings.documentation.page.paragraphs.0")}</p>
           <p>{t("root.settings.documentation.page.paragraphs.1")}</p>
           <p>{t("root.settings.documentation.page.paragraphs.2")}</p>

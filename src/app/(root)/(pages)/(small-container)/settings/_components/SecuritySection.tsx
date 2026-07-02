@@ -1,66 +1,50 @@
 "use client";
 
-import Link from "next/link";
-import { History, KeyRound, ShieldCheck, ShieldEllipsis, Trash2 } from "lucide-react";
+import { History, KeyRound, ShieldEllipsis, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { Row } from "../../../_components/layout/Row";
-import { SectionCard } from "../../../_components/layout/SectionCard";
-import { comingSoonClassName, destructiveActionClassName, settingsActionClassName } from "../_constants";
+import { SettingsGroup } from "./SettingsGroup";
+import { SettingsRow } from "./SettingsRow";
+import { rowDangerActionClassName } from "../_constants";
 
 export function SecuritySection() {
   const { t } = useTranslation();
 
   return (
-    <SectionCard
-      icon={ShieldCheck}
-      title={t("root.settings.security.title")}
-      description={t("root.settings.security.description")}
-    >
-      <Row
+    <SettingsGroup label={t("root.settings.security.title")}>
+      <SettingsRow
         icon={KeyRound}
         title={t("root.settings.security.changePassword.title")}
         description={t("root.settings.security.changePassword.description")}
-        action={
-          <Link href="/settings/change-password" className={settingsActionClassName}>
-            {t("root.settings.actions.change")}
-          </Link>
-        }
+        href="/settings/change-password"
       />
-      <Row
+      <SettingsRow
         icon={ShieldEllipsis}
         title={t("root.settings.security.twoFactor.title")}
         description={t("root.settings.security.twoFactor.description")}
-        action={<span className={comingSoonClassName}>{t("root.settings.actions.comingSoon")}</span>}
+        soon
       />
-      <Row
+      <SettingsRow
         icon={History}
         title={t("root.settings.security.loginHistory.title")}
         description={t("root.settings.security.loginHistory.description")}
-        action={
-          <Link href="/settings/login-history" className={settingsActionClassName}>
-            {t("root.settings.actions.open")}
-          </Link>
-        }
+        href="/settings/login-history"
       />
-      <Row
+      <SettingsRow
         icon={Trash2}
         danger
         title={t("root.settings.security.deleteAccount.title")}
         description={t("root.settings.security.deleteAccount.description")}
         action={
           <button
-            onClick={(event) => {
-              event.preventDefault();
-              toast.error(t("root.settings.security.deleteAccount.unavailable"));
-            }}
             type="button"
-            className={destructiveActionClassName}
+            onClick={() => toast.error(t("root.settings.security.deleteAccount.unavailable"))}
+            className={rowDangerActionClassName}
           >
             {t("root.settings.actions.delete")}
           </button>
         }
       />
-    </SectionCard>
+    </SettingsGroup>
   );
 }

@@ -1,22 +1,12 @@
-import type { FeedbackModalKind, SwitcherClassNames } from "../_types";
+import type { FeedbackModalKind } from "../_types";
 
-export const switcherClassNames: SwitcherClassNames = {
-  trigger:
-    "border-slate-200/80 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-white/10 dark:bg-[#262626] dark:text-slate-200 dark:hover:bg-white/15",
-  content:
-    "border-slate-200/80 bg-slate-50 text-slate-700 dark:border-white/10 dark:bg-[#1b1b1b] dark:text-slate-100",
-  item:
-    "text-slate-600 data-[highlighted]:bg-slate-100 data-[highlighted]:text-slate-900 dark:text-slate-200 dark:data-[highlighted]:bg-white/10 dark:data-[highlighted]:text-white",
-};
+/** Compact trailing button for rows that perform an action (send, contact, ...). */
+export const rowActionClassName =
+  "inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-[13px] font-semibold text-[var(--foreground)] transition-colors hover:bg-[var(--muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]";
 
-export const settingsActionClassName =
-  "cursor-pointer rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10";
-
-export const destructiveActionClassName =
-  "cursor-pointer rounded-xl bg-red-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-700";
-
-export const comingSoonClassName =
-  "rounded-full bg-[#eaf1ff] px-3 py-1 text-xs font-semibold text-[#0046FF] dark:bg-[#1b2a4a] dark:text-[#9fb8ff]";
+/** Compact trailing button for destructive actions (delete account). */
+export const rowDangerActionClassName =
+  "inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-[color-mix(in_srgb,var(--destructive)_12%,transparent)] px-3 py-1.5 text-[13px] font-semibold text-[var(--destructive)] transition-colors hover:bg-[color-mix(in_srgb,var(--destructive)_20%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color-mix(in_srgb,var(--destructive)_45%,transparent)]";
 
 export const supportEmail = "support@gradeflow.app";
 

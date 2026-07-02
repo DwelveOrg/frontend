@@ -4,6 +4,7 @@ export interface NotificationItem {
   id: number;
   title: string;
   description: string;
+  /** ISO 8601 timestamp; rendered as a live relative time via <RelativeTime />. */
   timestamp: string;
   unread: boolean;
 }
