@@ -460,7 +460,8 @@ translation: {
           badge: "Hozir erta foydalanishda",
           primaryCta: "Bepul boshlash",
           secondaryCta: "Kirish",
-          socialProof: "Haqiqiy o'qituvchi va repetitorlar fikri asosida yaratilgan",
+          socialProofTitle: "O'qituvchilar fikri bilan yaratilgan",
+          socialProofSubtitle: "Haqiqiy o'qituvchi va repetitorlarning test qoralamalarini ko'rish jarayoniga tayangan",
           teacherSignal: {
             quote: "Jarayon o'qituvchilar saqlab qolishni so'ragan bosqichlarga tayanadi: ko'rib chiqish, tuzatish va keyin e'lon qilish.",
             review: "Har bir qoralama ko'rib chiqiladi",
