@@ -29,7 +29,7 @@ export default function RoleEmptyState({ role, entity }: RoleEmptyStateProps) {
         <Button
           type="button"
           size="lg"
-          className="h-11 w-full cursor-pointer rounded-2xl bg-[#0046FF] px-5 text-white hover:bg-[#0036c4]"
+          className="h-11 w-full cursor-pointer rounded-xl bg-[var(--primary)] px-5 text-[var(--primary-foreground)] hover:bg-[var(--primary-hover)]"
         >
           {t(actionKey)}
         </Button>

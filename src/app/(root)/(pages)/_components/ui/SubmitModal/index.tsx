@@ -38,17 +38,17 @@ export function SubmitModal({
     >
       <div className="space-y-3">
         <div className="space-y-2">
-          <p className="text-sm font-semibold text-slate-900 dark:text-white">{messageLabel}</p>
+          <p className="text-sm font-semibold text-[var(--foreground)]">{messageLabel}</p>
           <Textarea
             placeholder={placeholder}
-            className="min-h-[140px] resize-y bg-slate-50 dark:bg-white/10"
+            className="min-h-[140px] resize-y bg-[var(--muted)]"
           />
         </div>
         <div className="space-y-2">
-          <p className="text-sm font-semibold text-slate-900 dark:text-white">{attachmentLabel}</p>
+          <p className="text-sm font-semibold text-[var(--foreground)]">{attachmentLabel}</p>
           <input
             type="file"
-            className="w-full rounded-xl border border-black/10 bg-transparent px-4 py-3 text-sm text-slate-600 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-slate-700 hover:file:bg-slate-200 dark:border-white/10 dark:bg-transparent dark:text-slate-300 dark:file:bg-white/10 dark:file:text-slate-200 dark:hover:file:bg-white/15"
+            className="w-full rounded-xl border border-[var(--border)] bg-transparent px-4 py-3 text-sm text-[var(--muted-foreground)] outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[var(--muted)] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-[var(--foreground)] hover:file:bg-[color-mix(in_srgb,var(--primary)_14%,var(--muted))]"
           />
         </div>
       </div>

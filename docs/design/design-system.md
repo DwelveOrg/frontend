@@ -279,9 +279,8 @@ The active treatment is a **soft brand tint** (`color-mix(in srgb, var(--primary
 - **Right:** a notification icon button (square, `rounded-xl`, `--border`), showing a `--destructive` dot when there are unread items, and a circular **avatar menu**.
 - **Avatar menu** (`_components/Navbar/_components/Profile`): a `--accent` circle showing the user's initial (or a fallback icon) that opens a dropdown with Profile, Settings, and Log out.
 
-### 7.4 Content page header (`_components/PageHeader` + `_components/RouteHeader`)
+### 7.4 Content page header (`_components/PageHeader`)
 
-Because the top bar no longer carries the title, every view names itself in the content area:
+> **Changelog — 1 July 2026:** The always-on content-area page title (`RouteHeader`, mounted once in the shell layout) was **removed**. It duplicated the breadcrumb's trailing crumb, which already names the current page in the top bar (§7.3). Content now starts directly under the top bar. `RouteHeader` is no longer rendered; the breadcrumb is the single source of the page's identity.
 
-- `PageHeader` — reusable presentational header: `title` (≈28px bold), optional `subtitle` (`--muted-foreground`), optional right-aligned `actions`.
-- `RouteHeader` — derives the title from the current route and renders `PageHeader`; mounted once in the shell layout so all pages get a consistent heading. Pages needing a subtitle or action buttons should compose `PageHeader` directly.
+- `PageHeader` — reusable presentational header (`title` ≈28px bold, optional `subtitle` in `--muted-foreground`, optional right-aligned `actions`). Kept for the occasional view that genuinely needs an in-content heading with a subtitle or action buttons; **compose it explicitly per page**, do not re-mount it globally. Most pages should rely on the breadcrumb alone.
