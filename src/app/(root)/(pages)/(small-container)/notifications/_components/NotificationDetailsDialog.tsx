@@ -40,8 +40,8 @@ export function NotificationDetailsDialog({ notification, onClose }: Readonly<No
           <AlertDialogMedia className="bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--primary)]">
             <Bell className="h-5 w-5" />
           </AlertDialogMedia>
-          <AlertDialogTitle>{notification ? t(notification.title) : null}</AlertDialogTitle>
-          <AlertDialogDescription>{notification ? t(notification.description) : null}</AlertDialogDescription>
+          <AlertDialogTitle>{notification ? t(notification.titleKey) : null}</AlertDialogTitle>
+          <AlertDialogDescription>{notification ? t(notification.bodyKey) : null}</AlertDialogDescription>
         </AlertDialogHeader>
       </AlertDialogContent>
     </AlertDialog>

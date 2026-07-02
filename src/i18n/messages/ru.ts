@@ -351,14 +351,34 @@ translation: {
             some: "{{count}} непрочитанных",
             none: "Вы всё просмотрели",
           },
+          tabs: {
+            all: "Все",
+            unread: "Непрочитанные",
+          },
+          dateGroups: {
+            today: "Сегодня",
+            yesterday: "Вчера",
+          },
           markAllRead: "Отметить все",
           emptyTitle: "Уведомлений нет",
           emptyDescription: "Здесь появятся новые события по классам, тестам и аккаунту.",
+          errorTitle: "Не удалось загрузить уведомления",
+          errorDescription: "Попробуйте ещё раз через несколько секунд.",
+          loading: "Загрузка...",
+          loadMore: "Показать ещё",
           delete: "Удалить уведомление",
           unread: "Непрочитанные",
           read: "Ранее",
           close: "Закрыть",
           items: {
+            signupGreeting: {
+              title: "Добро пожаловать в Dwelve",
+              description: "Ваш аккаунт готов. Рады видеть вас здесь.",
+            },
+            loginGreeting: {
+              title: "С возвращением",
+              description: "Вы успешно вошли в Dwelve.",
+            },
             newMessage: {
               title: "Новое сообщение",
               description: "Вы получили новое сообщение от Джона.",

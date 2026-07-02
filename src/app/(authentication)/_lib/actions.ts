@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { actionClient } from "@/lib/safe-action";
+import { actionClient, ActionError } from "@/lib/safe-action";
 import {
   createSchoolSchema,
   googleAuthSchema,
@@ -19,7 +19,6 @@ import {
   type AuthResponse,
   type CreateSchoolResponse,
   type JoinSchoolResponse,
-  type SignupResponse,
 } from "./api";
 import { authedBackendJson } from "./backend";
 import { createSession, deleteSession, getSession } from "./session";
@@ -34,6 +33,12 @@ export type AuthMutationResult = {
   redirectTo: string;
 };
 
+/**
+ * Maps an unknown thrown error to a safe, user-facing message. Only
+ * {@link BackendApiError} messages (which the backend intends to be shown) and a
+ * couple of known network cases are surfaced; anything else is logged and
+ * collapsed to `fallback` so internal error details never reach the client.
+ */
 function getActionError(error: unknown, fallback: string) {
   if (error instanceof BackendApiError) {
     return error.message;
@@ -43,10 +48,7 @@ function getActionError(error: unknown, fallback: string) {
     return NETWORK_ERROR;
   }
 
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-
+  console.error("Auth action error:", error);
   return fallback;
 }
 
@@ -96,30 +98,22 @@ async function loginWithInput(input: LoginFormField): Promise<AuthMutationResult
 
     return { redirectTo: "/dashboard" };
   } catch (error) {
-    throw new Error(getActionError(error, INVALID_LOGIN_ERROR));
+    throw new ActionError(getActionError(error, INVALID_LOGIN_ERROR));
   }
 }
 
 async function signupWithInput(input: RegularSignupFormField): Promise<AuthMutationResult> {
   try {
-    await backendJson<SignupResponse>("/auth/signup", {
+    const response = await backendJson<AuthResponse>("/auth/signup", {
       method: "POST",
       body: input,
-    });
-
-    const response = await backendJson<AuthResponse>("/auth/login", {
-      method: "POST",
-      body: {
-        email: input.email,
-        password: input.password,
-      },
     });
 
     await createSessionFromAuthResponse(response);
 
     return { redirectTo: "/dashboard" };
   } catch (error) {
-    throw new Error(getActionError(error, INVALID_SIGNUP_ERROR));
+    throw new ActionError(getActionError(error, INVALID_SIGNUP_ERROR));
   }
 }
 
@@ -143,7 +137,7 @@ async function createSchoolWithInput(input: CreateSchoolFormField) {
 
     return { schoolId: response.school.id };
   } catch (error) {
-    throw new Error(getActionError(error, INVALID_SCHOOL_ERROR));
+    throw new ActionError(getActionError(error, INVALID_SCHOOL_ERROR));
   }
 }
 
@@ -174,7 +168,7 @@ async function joinSchoolWithInput(input: JoinSchoolFormField) {
 
     return { schoolId: response.school.id };
   } catch (error) {
-    throw new Error(getActionError(error, INVALID_JOIN_ERROR));
+    throw new ActionError(getActionError(error, INVALID_JOIN_ERROR));
   }
 }
 
@@ -188,7 +182,7 @@ async function googleAuthWithToken(idToken: string): Promise<AuthMutationResult>
     await createSessionFromAuthResponse(response);
     return { redirectTo: "/dashboard" };
   } catch (error) {
-    throw new Error(getActionError(error, "Google sign-in failed. Please try again."));
+    throw new ActionError(getActionError(error, "Google sign-in failed. Please try again."));
   }
 }
 

@@ -45,10 +45,6 @@ export type AuthResponse = {
   };
 };
 
-export type SignupResponse = {
-  user: BackendUser;
-};
-
 export type CreateSchoolResponse = {
   school: BackendSchool;
   membership?: BackendMember;

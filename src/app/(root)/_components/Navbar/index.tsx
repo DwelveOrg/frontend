@@ -7,7 +7,8 @@ import { useTranslation } from "react-i18next";
 import { Bell } from "lucide-react";
 import Notifications from "./_components/Notifications";
 import Profile from "./_components/Profile";
-import { getRouteLabelKey, notificationItems } from "@/app/(root)/_constants";
+import { getRouteLabelKey } from "@/app/(root)/_constants";
+import { useNotificationStatus } from "@/app/(root)/_hooks/useNotifications";
 
 import {
   Breadcrumb,
@@ -21,11 +22,10 @@ const Navbar = ({ userName }: { userName?: string | null }) => {
   const pathname = usePathname();
   const { t } = useTranslation();
   const notificationsRef = useRef<HTMLDivElement | null>(null);
+  const { data: notificationStatus, refetch: refetchNotificationStatus } =
+    useNotificationStatus();
 
-  const unreadCount = useMemo(
-    () => notificationItems.filter((item) => item.unread).length,
-    []
-  );
+  const unreadCount = notificationStatus?.unreadCount ?? 0;
 
   // Breadcrumb always opens with "Home" → dashboard, then the active route trail.
   const crumbs = useMemo(() => {
@@ -46,6 +46,10 @@ const Navbar = ({ userName }: { userName?: string | null }) => {
   }, [pathname, t]);
 
   const [showNotifications, setShowNotifications] = useState(false);
+
+  useEffect(() => {
+    void refetchNotificationStatus();
+  }, [pathname, refetchNotificationStatus]);
 
   useEffect(() => {
     if (!showNotifications) return;

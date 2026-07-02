@@ -351,14 +351,34 @@ translation: {
             some: "{{count}} unread",
             none: "You're all caught up",
           },
+          tabs: {
+            all: "All",
+            unread: "Unread",
+          },
+          dateGroups: {
+            today: "Today",
+            yesterday: "Yesterday",
+          },
           markAllRead: "Mark all read",
           emptyTitle: "No notifications",
           emptyDescription: "New updates about your classes, tests, and account will appear here.",
+          errorTitle: "Could not load notifications",
+          errorDescription: "Please try again in a moment.",
+          loading: "Loading...",
+          loadMore: "Load more",
           delete: "Delete notification",
           unread: "Unread",
           read: "Earlier",
           close: "Close",
           items: {
+            signupGreeting: {
+              title: "Welcome to Dwelve",
+              description: "Your account is ready. We're glad to have you here.",
+            },
+            loginGreeting: {
+              title: "Welcome back",
+              description: "You have successfully signed in to Dwelve.",
+            },
             newMessage: {
               title: "New message",
               description: "You have received a new message from John.",
