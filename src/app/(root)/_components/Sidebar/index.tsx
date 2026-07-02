@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { logout } from "@/app/(authentication)/_lib/actions";
+import { useNotificationStatus } from "@/app/(root)/_hooks/useNotifications";
 import {
   Bell,
   GraduationCap,
@@ -18,7 +19,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { NavItem } from "../../_types/index";
-import { isRouteActive, notificationItems } from "../../_constants";
+import { isRouteActive } from "../../_constants";
 import DwelveLogo from "@/components/Custom/DwelveLogo";
 import {
   DropdownMenu,
@@ -146,11 +147,8 @@ export default function SideBar() {
   const { t } = useTranslation();
   const pathname = usePathname();
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
-
-  const unreadCount = useMemo(
-    () => notificationItems.filter((item) => item.unread).length,
-    []
-  );
+  const { data: notificationStatus } = useNotificationStatus();
+  const unreadCount = notificationStatus?.unreadCount ?? 0;
 
   // Primary navigation — order and items mirror the reference design.
   const primaryItems: NavItem[] = [

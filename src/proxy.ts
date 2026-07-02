@@ -25,3 +25,11 @@ export default async function proxy(req: NextRequest){
 
     return NextResponse.next();
 }
+
+/**
+ * Skip the proxy for static assets and Next internals so session decryption only
+ * runs on real navigations. Keeps request handling cheap and reduces surface.
+ */
+export const config = {
+    matcher: ["/((?!_next/static|_next/image|favicon.ico|images|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)"],
+};

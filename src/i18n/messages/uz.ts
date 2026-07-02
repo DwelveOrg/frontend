@@ -351,14 +351,34 @@ translation: {
             some: "{{count}} ta o'qilmagan",
             none: "Hammasini ko'rib chiqdingiz",
           },
+          tabs: {
+            all: "Hammasi",
+            unread: "O'qilmagan",
+          },
+          dateGroups: {
+            today: "Bugun",
+            yesterday: "Kecha",
+          },
           markAllRead: "Barchasini o'qilgan deb belgilash",
           emptyTitle: "Bildirishnomalar yo'q",
           emptyDescription: "Sinflar, testlar va hisobingiz bo'yicha yangi xabarlar shu yerda ko'rinadi.",
+          errorTitle: "Bildirishnomalarni yuklab bo'lmadi",
+          errorDescription: "Bir ozdan keyin qayta urinib ko'ring.",
+          loading: "Yuklanmoqda...",
+          loadMore: "Yana yuklash",
           delete: "Bildirishnomani o'chirish",
           unread: "O'qilmagan",
           read: "Avvalgi",
           close: "Yopish",
           items: {
+            signupGreeting: {
+              title: "Dwelve'ga xush kelibsiz",
+              description: "Hisobingiz tayyor. Sizni ko'rganimizdan xursandmiz.",
+            },
+            loginGreeting: {
+              title: "Qaytganingiz bilan",
+              description: "Dwelve hisobingizga muvaffaqiyatli kirdingiz.",
+            },
             newMessage: {
               title: "Yangi xabar",
               description: "Siz Jondan yangi xabar oldingiz.",

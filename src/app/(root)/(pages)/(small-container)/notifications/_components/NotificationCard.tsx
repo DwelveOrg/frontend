@@ -5,25 +5,23 @@ import { useTranslation } from "react-i18next";
 import { RelativeTime } from "@/components/Custom/RelativeTime";
 import { cn } from "@/lib/utils";
 import type { NotificationItem } from "@/app/(root)/_types";
-import type { NotificationTone } from "../_types";
 
 type NotificationCardProps = {
   item: NotificationItem;
-  tone: NotificationTone;
   onOpen: (item: NotificationItem) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 };
 
-export function NotificationCard({ item, tone, onOpen, onDelete }: Readonly<NotificationCardProps>) {
+export function NotificationCard({ item, onOpen, onDelete }: Readonly<NotificationCardProps>) {
   const { t } = useTranslation();
-  const unread = tone === "unread";
+  const unread = item.unread;
 
   return (
     <article className="group relative flex items-start gap-3.5 px-4 py-3.5 transition-colors hover:bg-[var(--muted)] sm:px-5">
       <button
         type="button"
         onClick={() => onOpen(item)}
-        aria-label={t(item.title)}
+        aria-label={t(item.titleKey)}
         className="absolute inset-0 focus-visible:outline-none focus-visible:-outline-offset-2 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--ring)]"
       />
 
@@ -46,14 +44,14 @@ export function NotificationCard({ item, tone, onOpen, onDelete }: Readonly<Noti
               unread ? "font-semibold" : "font-medium"
             )}
           >
-            {t(item.title)}
+            {t(item.titleKey)}
           </h3>
           {item.unread ? <span aria-hidden className="size-2 shrink-0 rounded-full bg-[var(--primary)]" /> : null}
         </div>
         <p className="mt-0.5 truncate text-[13px] leading-5 text-[var(--muted-foreground)]">
-          {t(item.description)}
+          {t(item.bodyKey)}
         </p>
-        <RelativeTime date={item.timestamp} className="mt-1.5 block text-xs text-[var(--muted-foreground)]" />
+        <RelativeTime date={item.createdAt} className="mt-1.5 block text-xs text-[var(--muted-foreground)]" />
       </div>
 
       <button

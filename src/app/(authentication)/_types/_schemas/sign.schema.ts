@@ -33,6 +33,12 @@ export const createSchoolSchema = z.object({
     .trim()
     .max(500, "Logo URL must be at most 500 characters.")
     .url("Enter a full URL including https://")
+    // Only allow web URLs — blocks javascript:/data: and other schemes from
+    // ever being stored and later rendered as an image source.
+    .refine(
+      (value) => /^https?:\/\//i.test(value),
+      "Logo URL must start with http:// or https://",
+    )
     .optional()
     .or(z.literal("")),
 });

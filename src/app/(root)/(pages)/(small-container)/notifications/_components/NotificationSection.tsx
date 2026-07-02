@@ -1,34 +1,28 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useTranslation } from "react-i18next";
 import type { NotificationItem } from "@/app/(root)/_types";
 import { cn } from "@/lib/utils";
-import type { NotificationTone } from "../_types";
 import { NotificationCard } from "./NotificationCard";
 
 type NotificationSectionProps = {
   items: NotificationItem[];
-  tone: NotificationTone;
-  labelKey: string;
+  label: string;
   delay: number;
   onOpen: (item: NotificationItem) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 };
 
 export function NotificationSection({
   items,
-  tone,
-  labelKey,
+  label,
   delay,
   onOpen,
   onDelete,
 }: Readonly<NotificationSectionProps>) {
-  const { t } = useTranslation();
-
   if (items.length === 0) return null;
 
-  const isUnread = tone === "unread";
+  const hasUnread = items.some((item) => item.unread);
 
   return (
     <motion.div
@@ -44,10 +38,10 @@ export function NotificationSection({
           transition={{ delay: delay + 0.06, duration: 0.22 }}
           className={cn(
             "text-[13px] font-semibold",
-            isUnread ? "text-[var(--primary)]" : "text-[var(--muted-foreground)]"
+            hasUnread ? "text-[var(--primary)]" : "text-[var(--muted-foreground)]"
           )}
         >
-          {t(labelKey)}
+          {label}
         </motion.span>
         <span className="rounded-full bg-[var(--muted)] px-2.5 py-1 text-xs font-semibold text-[var(--muted-foreground)]">
           {items.length}
@@ -55,7 +49,7 @@ export function NotificationSection({
       </div>
       <div className="divide-y divide-[var(--border)] overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)]">
         {items.map((item) => (
-          <NotificationCard key={item.id} item={item} tone={tone} onOpen={onOpen} onDelete={onDelete} />
+          <NotificationCard key={item.id} item={item} onOpen={onOpen} onDelete={onDelete} />
         ))}
       </div>
     </motion.div>
