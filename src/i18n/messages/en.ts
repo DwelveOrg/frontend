@@ -25,43 +25,70 @@ translation: {
         dashboard: {
           empty: {
             eyebrow: "Account ready",
-            title: "Choose how you want to enter a workspace",
+            title: "Choose how you want to enter a school",
             description: "Your account is set up. Create a school or learning center, redeem an invitation, or join as a student when you receive access.",
             actions: {
-              createWorkspace: "Create workspace",
-              createWorkspaceHint: "Set up your school",
+              createSchool: "Create school",
+              createSchoolHint: "Set up your school",
               redeemInvite: "Redeem invite",
               joinStudent: "Join as student",
               comingSoon: "Coming soon",
             },
           },
-          workspaceModal: {
-            title: "Create workspace",
-            description: "Set up a school or learning center and become its owner.",
-            close: "Close workspace form",
+          schoolForm: {
+            title: "Create your school",
+            subtitle: "Set up a school or learning center. You'll become its admin.",
             cancel: "Cancel",
-            submit: "Create workspace",
-            success: "Workspace created",
+            submit: "Create school",
+            success: "School created",
+            error: "Please check the school details and try again.",
             fields: {
               name: {
-                label: "Workspace name",
+                label: "School name",
                 placeholder: "Bright Future Learning Center",
               },
-              slug: {
-                label: "Workspace slug",
-                placeholder: "bright-future",
-                help: "Use lowercase letters, numbers, and hyphens.",
+              description: {
+                label: "Description",
+                placeholder: "A short description of your school (optional)",
               },
-              phone: {
-                label: "Phone",
-                placeholder: "+998 90 123 45 67",
+              country: {
+                label: "Country",
+                placeholder: "Uzbekistan",
               },
-              address: {
-                label: "Address",
-                placeholder: "Tashkent, Uzbekistan",
+              city: {
+                label: "City",
+                placeholder: "Tashkent",
+              },
+              logoUrl: {
+                label: "Logo URL",
+                placeholder: "https://example.com/logo.png",
+                help: "Optional. Full URL including https://",
               },
             },
           },
+          school: {
+            eyebrow: "Your school",
+            joinCodeLabel: "Student join code",
+            copyJoinCode: "Copy student join code",
+            joinCodeCopied: "Join code copied",
+            joinCodeCopyError: "Could not copy the join code",
+          },
+          stats: {
+            totalStudents: "Total students",
+            totalClasses: "Classes",
+            totalExams: "Exams created",
+            avgScore: "Avg. score",
+          },
+        },
+        joinSchool: {
+          title: "Join a school",
+          description: "Enter the student join code provided by your school or teacher.",
+          codeLabel: "Join code",
+          codePlaceholder: "e.g. ABC123",
+          cancel: "Cancel",
+          submit: "Join school",
+          success: "Joined school successfully",
+          error: "Invalid join code. Please check and try again.",
         },
         settings: {
           title: "Preferences that fit the way you work",
@@ -260,6 +287,10 @@ translation: {
           homework: "Homework",
           exams: "Exams",
         },
+        schoolPage: {
+          active: "Active",
+          inactive: "Inactive",
+        },
         profile: {
           page: {
             title: "Profile",
@@ -430,6 +461,12 @@ translation: {
           primaryCta: "Start for free",
           secondaryCta: "Log in",
           socialProof: "Built with feedback from real teachers and tutors",
+          teacherSignal: {
+            quote: "The workflow reflects the moments teachers asked us to protect: review, adjust, then publish.",
+            review: "Every draft reviewed",
+            edit: "Answer keys adjusted",
+            publish: "Only approved tests go live",
+          },
           schoolsTitle: "Made for schools and private learning centers",
           useCases: {
             quizzes: "Weekly quizzes",

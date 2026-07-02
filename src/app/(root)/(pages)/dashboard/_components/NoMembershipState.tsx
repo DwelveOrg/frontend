@@ -1,9 +1,9 @@
 "use client";
 
-import { GraduationCap, TicketCheck } from "lucide-react";
+import { GraduationCap, School, TicketCheck } from "lucide-react";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
-import CreateWorkspaceModal from "./CreateWorkspaceModal";
 
 const actions = [
   {
@@ -33,7 +33,22 @@ export default function NoMembershipState() {
         </p>
 
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
-          <CreateWorkspaceModal />
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="h-auto min-h-24 flex-col gap-2 whitespace-normal rounded-xl px-4 py-4 text-center"
+          >
+            <Link href="/schools/new">
+              <School className="h-5 w-5" />
+              <span className="text-sm font-semibold">
+                {t("root.dashboard.empty.actions.createSchool")}
+              </span>
+              <span className="text-xs font-normal text-[var(--muted-foreground)]">
+                {t("root.dashboard.empty.actions.createSchoolHint")}
+              </span>
+            </Link>
+          </Button>
           {actions.map(({ key, icon: Icon }) => (
             <Button
               key={key}

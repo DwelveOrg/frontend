@@ -25,43 +25,70 @@ translation: {
         dashboard: {
           empty: {
             eyebrow: "Аккаунт готов",
-            title: "Выберите, как войти в рабочее пространство",
+            title: "Выберите, как войти в школу",
             description: "Ваш аккаунт создан. Создайте школу или учебный центр, примите приглашение или присоединитесь как ученик, когда получите доступ.",
             actions: {
-              createWorkspace: "Создать пространство",
-              createWorkspaceHint: "Настроить школу",
+              createSchool: "Создать школу",
+              createSchoolHint: "Настроить школу",
               redeemInvite: "Принять приглашение",
               joinStudent: "Войти как ученик",
               comingSoon: "Скоро",
             },
           },
-          workspaceModal: {
-            title: "Создать пространство",
-            description: "Создайте школу или учебный центр и станьте владельцем.",
-            close: "Закрыть форму пространства",
+          schoolForm: {
+            title: "Создайте свою школу",
+            subtitle: "Создайте школу или учебный центр. Вы станете её администратором.",
             cancel: "Отмена",
-            submit: "Создать пространство",
-            success: "Пространство создано",
+            submit: "Создать школу",
+            success: "Школа создана",
+            error: "Проверьте данные школы и попробуйте ещё раз.",
             fields: {
               name: {
-                label: "Название пространства",
+                label: "Название школы",
                 placeholder: "Bright Future Learning Center",
               },
-              slug: {
-                label: "Slug пространства",
-                placeholder: "bright-future",
-                help: "Используйте строчные латинские буквы, цифры и дефисы.",
+              description: {
+                label: "Описание",
+                placeholder: "Краткое описание вашей школы (необязательно)",
               },
-              phone: {
-                label: "Телефон",
-                placeholder: "+998 90 123 45 67",
+              country: {
+                label: "Страна",
+                placeholder: "Узбекистан",
               },
-              address: {
-                label: "Адрес",
-                placeholder: "Ташкент, Узбекистан",
+              city: {
+                label: "Город",
+                placeholder: "Ташкент",
+              },
+              logoUrl: {
+                label: "URL логотипа",
+                placeholder: "https://example.com/logo.png",
+                help: "Необязательно. Полный URL, включая https://",
               },
             },
           },
+          school: {
+            eyebrow: "Ваша школа",
+            joinCodeLabel: "Код для учеников",
+            copyJoinCode: "Скопировать код для учеников",
+            joinCodeCopied: "Код скопирован",
+            joinCodeCopyError: "Не удалось скопировать код",
+          },
+          stats: {
+            totalStudents: "Всего учеников",
+            totalClasses: "Классы",
+            totalExams: "Создано экзаменов",
+            avgScore: "Ср. балл",
+          },
+        },
+        joinSchool: {
+          title: "Присоединиться к школе",
+          description: "Введите код, который вам предоставила школа или учитель.",
+          codeLabel: "Код доступа",
+          codePlaceholder: "напр. ABC123",
+          cancel: "Отмена",
+          submit: "Присоединиться",
+          success: "Вы присоединились к школе",
+          error: "Неверный код. Проверьте и попробуйте снова.",
         },
         settings: {
           title: "Настройки под ваш рабочий процесс",
@@ -260,6 +287,10 @@ translation: {
           homework: "Домашние задания",
           exams: "Экзамены",
         },
+        schoolPage: {
+          active: "Активна",
+          inactive: "Неактивна",
+        },
         profile: {
           page: {
             title: "Профиль",
@@ -430,6 +461,12 @@ translation: {
           primaryCta: "Начать бесплатно",
           secondaryCta: "Войти",
           socialProof: "Создано с участием реальных учителей и репетиторов",
+          teacherSignal: {
+            quote: "Рабочий процесс сохраняет то, что учителя просили защитить: проверку, правку и только потом публикацию.",
+            review: "Каждый черновик проверяется",
+            edit: "Ключи ответов уточняются",
+            publish: "Публикуются только одобренные тесты",
+          },
           schoolsTitle: "Создано для школ и частных учебных центров",
           useCases: {
             quizzes: "Еженедельные квизы",

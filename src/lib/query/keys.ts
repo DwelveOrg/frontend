@@ -6,7 +6,7 @@ export const queryKeys = {
   dashboard: {
     all: ["dashboard"] as const,
   },
-  workspaces: {
-    all: ["workspaces"] as const,
+  schools: {
+    all: ["schools"] as const,
   },
 };

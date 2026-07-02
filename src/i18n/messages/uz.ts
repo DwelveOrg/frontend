@@ -25,43 +25,70 @@ translation: {
         dashboard: {
           empty: {
             eyebrow: "Hisob tayyor",
-            title: "Workspace'ga qanday kirishni tanlang",
+            title: "Maktabga qanday kirishni tanlang",
             description: "Hisobingiz yaratildi. Maktab yoki o'quv markazi yarating, taklifni qabul qiling yoki ruxsat olganingizda o'quvchi sifatida qo'shiling.",
             actions: {
-              createWorkspace: "Workspace yaratish",
-              createWorkspaceHint: "Maktabni sozlash",
+              createSchool: "Maktab yaratish",
+              createSchoolHint: "Maktabni sozlash",
               redeemInvite: "Taklifni qabul qilish",
               joinStudent: "O'quvchi bo'lib qo'shilish",
               comingSoon: "Tez orada",
             },
           },
-          workspaceModal: {
-            title: "Workspace yaratish",
-            description: "Maktab yoki o'quv markazini yarating va egasi bo'ling.",
-            close: "Workspace formasini yopish",
+          schoolForm: {
+            title: "Maktabingizni yarating",
+            subtitle: "Maktab yoki o'quv markazini yarating. Siz uning administratori bo'lasiz.",
             cancel: "Bekor qilish",
-            submit: "Workspace yaratish",
-            success: "Workspace yaratildi",
+            submit: "Maktab yaratish",
+            success: "Maktab yaratildi",
+            error: "Maktab ma'lumotlarini tekshirib, qayta urinib ko'ring.",
             fields: {
               name: {
-                label: "Workspace nomi",
+                label: "Maktab nomi",
                 placeholder: "Bright Future Learning Center",
               },
-              slug: {
-                label: "Workspace slug",
-                placeholder: "bright-future",
-                help: "Kichik lotin harflari, raqamlar va defisdan foydalaning.",
+              description: {
+                label: "Tavsif",
+                placeholder: "Maktabingizning qisqa tavsifi (ixtiyoriy)",
               },
-              phone: {
-                label: "Telefon",
-                placeholder: "+998 90 123 45 67",
+              country: {
+                label: "Mamlakat",
+                placeholder: "O'zbekiston",
               },
-              address: {
-                label: "Manzil",
-                placeholder: "Toshkent, O'zbekiston",
+              city: {
+                label: "Shahar",
+                placeholder: "Toshkent",
+              },
+              logoUrl: {
+                label: "Logotip URL manzili",
+                placeholder: "https://example.com/logo.png",
+                help: "Ixtiyoriy. https:// bilan to'liq URL manzil",
               },
             },
           },
+          school: {
+            eyebrow: "Sizning maktabingiz",
+            joinCodeLabel: "O'quvchi qo'shilish kodi",
+            copyJoinCode: "O'quvchi qo'shilish kodini nusxalash",
+            joinCodeCopied: "Kod nusxalandi",
+            joinCodeCopyError: "Kodni nusxalab bo'lmadi",
+          },
+          stats: {
+            totalStudents: "Jami o'quvchilar",
+            totalClasses: "Sinflar",
+            totalExams: "Yaratilgan imtihonlar",
+            avgScore: "O'rtacha ball",
+          },
+        },
+        joinSchool: {
+          title: "Maktabga qo'shilish",
+          description: "Maktab yoki o'qituvchi bergan qo'shilish kodini kiriting.",
+          codeLabel: "Qo'shilish kodi",
+          codePlaceholder: "masalan, ABC123",
+          cancel: "Bekor qilish",
+          submit: "Qo'shilish",
+          success: "Maktabga muvaffaqiyatli qo'shildingiz",
+          error: "Noto'g'ri kod. Tekshirib, qayta urinib ko'ring.",
         },
         settings: {
           title: "Ish usulingizga mos sozlamalar",
@@ -260,6 +287,10 @@ translation: {
           homework: "Uy vazifalari",
           exams: "Imtihonlar",
         },
+        schoolPage: {
+          active: "Faol",
+          inactive: "Nofaol",
+        },
         profile: {
           page: {
             title: "Profil",
@@ -430,6 +461,12 @@ translation: {
           primaryCta: "Bepul boshlash",
           secondaryCta: "Kirish",
           socialProof: "Haqiqiy o'qituvchi va repetitorlar fikri asosida yaratilgan",
+          teacherSignal: {
+            quote: "Jarayon o'qituvchilar saqlab qolishni so'ragan bosqichlarga tayanadi: ko'rib chiqish, tuzatish va keyin e'lon qilish.",
+            review: "Har bir qoralama ko'rib chiqiladi",
+            edit: "Javob kalitlari aniqlashtiriladi",
+            publish: "Faqat tasdiqlangan testlar e'lon qilinadi",
+          },
           schoolsTitle: "Maktablar va xususiy o'quv markazlari uchun yaratilgan",
           useCases: {
             quizzes: "Haftalik quizlar",
