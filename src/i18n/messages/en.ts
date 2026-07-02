@@ -460,7 +460,8 @@ translation: {
           badge: "Now in early access",
           primaryCta: "Start for free",
           secondaryCta: "Log in",
-          socialProof: "Built with feedback from real teachers and tutors",
+          socialProofTitle: "Built with teacher feedback",
+          socialProofSubtitle: "Shaped by real teachers and tutors reviewing draft tests",
           teacherSignal: {
             quote: "The workflow reflects the moments teachers asked us to protect: review, adjust, then publish.",
             review: "Every draft reviewed",
