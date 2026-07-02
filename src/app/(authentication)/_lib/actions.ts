@@ -3,11 +3,13 @@
 import { redirect } from "next/navigation";
 import { actionClient } from "@/lib/safe-action";
 import {
-  createWorkspaceSchema,
+  createSchoolSchema,
   googleAuthSchema,
+  joinSchoolSchema,
   loginSchema,
   regularSignupSchema,
-  type CreateWorkspaceFormField,
+  type CreateSchoolFormField,
+  type JoinSchoolFormField,
   type LoginFormField,
   type RegularSignupFormField,
 } from "@/app/(authentication)/_types/_schemas";
@@ -15,7 +17,8 @@ import {
   backendJson,
   BackendApiError,
   type AuthResponse,
-  type CreateWorkspaceResponse,
+  type CreateSchoolResponse,
+  type JoinSchoolResponse,
   type SignupResponse,
 } from "./api";
 import { authedBackendJson } from "./backend";
@@ -23,7 +26,8 @@ import { createSession, deleteSession, getSession } from "./session";
 
 const INVALID_LOGIN_ERROR = "Invalid email or password.";
 const INVALID_SIGNUP_ERROR = "Please check the form and try again.";
-const INVALID_WORKSPACE_ERROR = "Please check the workspace details and try again.";
+const INVALID_SCHOOL_ERROR = "Please check the school details and try again.";
+const INVALID_JOIN_ERROR = "Invalid join code. Please check and try again.";
 const NETWORK_ERROR = "Unable to reach Dwelve API. Please try again.";
 
 export type AuthMutationResult = {
@@ -53,14 +57,14 @@ async function createSessionFromAuthResponse(response: AuthResponse) {
     fullName: response.user.fullName,
     accessToken: response.tokens.accessToken,
     refreshToken: response.tokens.refreshToken,
-    workspaceId: response.member?.workspaceId ?? response.workspace?.id,
+    schoolId: response.member?.schoolId ?? response.school?.id,
     memberId: response.member?.id,
-    workspaceRole: response.member?.role,
+    schoolRole: response.member?.role,
     membershipCount: response.memberships?.length ?? (response.member ? 1 : 0),
   });
 }
 
-async function createSessionFromWorkspaceResponse(response: CreateWorkspaceResponse) {
+async function createSessionFromSchoolResponse(response: CreateSchoolResponse) {
   const session = await getSession();
   const membership = response.membership ?? response.member;
 
@@ -74,9 +78,9 @@ async function createSessionFromWorkspaceResponse(response: CreateWorkspaceRespo
     fullName: session.fullName,
     accessToken: response.tokens.accessToken,
     refreshToken: response.tokens.refreshToken,
-    workspaceId: membership.workspaceId,
+    schoolId: membership.schoolId,
     memberId: membership.id,
-    workspaceRole: membership.role,
+    schoolRole: membership.role,
     membershipCount: Math.max(session.membershipCount ?? 0, 1),
   });
 }
@@ -119,18 +123,58 @@ async function signupWithInput(input: RegularSignupFormField): Promise<AuthMutat
   }
 }
 
-async function createWorkspaceWithInput(input: CreateWorkspaceFormField) {
+async function createSchoolWithInput(input: CreateSchoolFormField) {
   try {
-    const response = await authedBackendJson<CreateWorkspaceResponse>("/workspaces", {
+    // Drop empty optional fields so the backend receives only meaningful values.
+    const body: Record<string, string> = { name: input.name };
+    for (const key of ["description", "country", "city", "logoUrl"] as const) {
+      const value = input[key]?.trim();
+      if (value) {
+        body[key] = value;
+      }
+    }
+
+    const response = await authedBackendJson<CreateSchoolResponse>("/schools", {
       method: "POST",
-      body: input,
+      body,
     });
 
-    await createSessionFromWorkspaceResponse(response);
+    await createSessionFromSchoolResponse(response);
 
-    return { workspaceId: response.workspace.id };
+    return { schoolId: response.school.id };
   } catch (error) {
-    throw new Error(getActionError(error, INVALID_WORKSPACE_ERROR));
+    throw new Error(getActionError(error, INVALID_SCHOOL_ERROR));
+  }
+}
+
+async function joinSchoolWithInput(input: JoinSchoolFormField) {
+  try {
+    const response = await authedBackendJson<JoinSchoolResponse>("/schools/join", {
+      method: "POST",
+      body: { code: input.code.trim() },
+    });
+
+    const session = await getSession();
+
+    if (!session?.userId || !session.email || !session.fullName) {
+      throw new BackendApiError("Your session expired. Please log in again.");
+    }
+
+    await createSession({
+      userId: session.userId,
+      email: session.email,
+      fullName: session.fullName,
+      accessToken: response.tokens.accessToken,
+      refreshToken: response.tokens.refreshToken,
+      schoolId: response.membership.schoolId,
+      memberId: response.membership.id,
+      schoolRole: response.membership.role,
+      membershipCount: Math.max(session.membershipCount ?? 0, 1),
+    });
+
+    return { schoolId: response.school.id };
+  } catch (error) {
+    throw new Error(getActionError(error, INVALID_JOIN_ERROR));
   }
 }
 
@@ -160,9 +204,13 @@ export const signupAction = actionClient
   .inputSchema(regularSignupSchema)
   .action(async ({ parsedInput }) => signupWithInput(parsedInput));
 
-export const createWorkspaceAction = actionClient
-  .inputSchema(createWorkspaceSchema)
-  .action(async ({ parsedInput }) => createWorkspaceWithInput(parsedInput));
+export const createSchoolAction = actionClient
+  .inputSchema(createSchoolSchema)
+  .action(async ({ parsedInput }) => createSchoolWithInput(parsedInput));
+
+export const joinSchoolAction = actionClient
+  .inputSchema(joinSchoolSchema)
+  .action(async ({ parsedInput }) => joinSchoolWithInput(parsedInput));
 
 export async function logout() {
   const session = await getSession();

@@ -19,9 +19,9 @@ export async function getUser(): Promise<SessionUser | null> {
       id: String(session.userId),
       email: session.email,
       fullName: session.fullName,
-      workspaceId: session.workspaceId,
+      schoolId: session.schoolId,
       memberId: session.memberId,
-      workspaceRole: session.workspaceRole,
+      schoolRole: session.schoolRole,
       membershipCount: session.membershipCount ?? 0,
     };
   } catch {

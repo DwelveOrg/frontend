@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { WorkspaceRole } from "../_types/auth";
+import type { SchoolRole } from "../_types/auth";
 
 const DEFAULT_API_BASE_URL = "http://localhost:5000/api/v1";
 
@@ -16,26 +16,29 @@ export type BackendUser = {
   email: string;
 };
 
-export type BackendWorkspace = {
+export type BackendSchool = {
   id: string;
   name: string;
-  slug: string;
-  phone?: string | null;
-  address?: string | null;
+  description?: string | null;
+  country?: string | null;
+  city?: string | null;
+  logoUrl?: string | null;
+  isActive?: boolean;
+  studentJoinCode?: string | null;
 };
 
 export type BackendMember = {
   id: string;
   userId: string;
-  workspaceId: string;
-  role: WorkspaceRole;
+  schoolId: string;
+  role: SchoolRole;
 };
 
 export type AuthResponse = {
   user: BackendUser;
-  workspace?: BackendWorkspace;
+  school?: BackendSchool;
   member?: BackendMember;
-  memberships?: Array<BackendMember & { workspace?: { id: string } }>;
+  memberships?: Array<BackendMember & { school?: { id: string } }>;
   tokens: {
     accessToken: string;
     refreshToken: string;
@@ -46,10 +49,25 @@ export type SignupResponse = {
   user: BackendUser;
 };
 
-export type CreateWorkspaceResponse = {
-  workspace: BackendWorkspace;
+export type CreateSchoolResponse = {
+  school: BackendSchool;
   membership?: BackendMember;
   member?: BackendMember;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+  };
+};
+
+export type SchoolDetailResponse = {
+  school: BackendSchool;
+  currentUserRole: SchoolRole;
+  membership: BackendMember;
+};
+
+export type JoinSchoolResponse = {
+  school: BackendSchool;
+  membership: BackendMember;
   tokens: {
     accessToken: string;
     refreshToken: string;

@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 /**
- * Regular account signup is role-free. Workspace roles are granted later by
- * creating a workspace, redeeming an invite, or joining through a student code.
+ * Regular account signup is role-free. School roles are granted later by
+ * creating a school, redeeming an invite, or joining through a student code.
  */
 export const regularSignupSchema = z.object({
   fullName: z
@@ -19,24 +19,25 @@ export const regularSignupSchema = z.object({
 
 export type RegularSignupFormField = z.infer<typeof regularSignupSchema>;
 
-export const createWorkspaceSchema = z.object({
+export const createSchoolSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(2, "Workspace name must be at least 2 characters.")
-    .max(120, "Workspace name must be at most 120 characters."),
-  slug: z
+    .min(1, "School name is required.")
+    .max(120, "School name must be at most 120 characters."),
+  description: z.string().trim().max(500, "Description must be at most 500 characters.").optional(),
+  country: z.string().trim().max(80, "Country must be at most 80 characters.").optional(),
+  city: z.string().trim().max(80, "City must be at most 80 characters.").optional(),
+  logoUrl: z
     .string()
     .trim()
-    .toLowerCase()
-    .min(2, "Slug must be at least 2 characters.")
-    .max(80, "Slug must be at most 80 characters.")
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and hyphens only."),
-  phone: z.string().trim().max(40, "Phone must be at most 40 characters.").optional(),
-  address: z.string().trim().max(255, "Address must be at most 255 characters.").optional(),
+    .max(500, "Logo URL must be at most 500 characters.")
+    .url("Enter a full URL including https://")
+    .optional()
+    .or(z.literal("")),
 });
 
-export type CreateWorkspaceFormField = z.infer<typeof createWorkspaceSchema>;
+export type CreateSchoolFormField = z.infer<typeof createSchoolSchema>;
 
 export const centerTypes = [
   "tutoring",
@@ -78,6 +79,16 @@ export const adminSignupSchema = z
   });
 
 export type AdminSignupFormField = z.infer<typeof adminSignupSchema>;
+
+export const joinSchoolSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(1, "Join code is required.")
+    .max(20, "Join code must be at most 20 characters."),
+});
+
+export type JoinSchoolFormField = z.infer<typeof joinSchoolSchema>;
 
 export const googleAuthSchema = z.object({
   idToken: z.string().min(1, "Google ID token is required."),

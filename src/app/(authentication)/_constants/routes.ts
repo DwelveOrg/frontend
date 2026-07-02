@@ -5,6 +5,7 @@ export const protectedRoutes = [
   "/notifications",
   "/groups",
   "/school",
+  "/schools",
   "/assignments",
 ] as const;
 

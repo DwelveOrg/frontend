@@ -2,13 +2,13 @@ export type AuthUser = {
   id: string;
   email: string;
   fullName: string;
-  workspaceId?: string;
+  schoolId?: string;
   memberId?: string;
-  workspaceRole?: WorkspaceRole;
+  schoolRole?: SchoolRole;
   membershipCount: number;
 };
 
-export type WorkspaceRole = "OWNER" | "DIRECTOR" | "ADMIN" | "TEACHER" | "STUDENT";
+export type SchoolRole = "OWNER" | "DIRECTOR" | "ADMIN" | "TEACHER" | "STUDENT";
 
 export type SessionPayload = {
   userId: string;
@@ -17,8 +17,8 @@ export type SessionPayload = {
   fullName: string;
   accessToken: string;
   refreshToken?: string;
-  workspaceId?: string;
+  schoolId?: string;
   memberId?: string;
-  workspaceRole?: WorkspaceRole;
+  schoolRole?: SchoolRole;
   membershipCount?: number;
 };

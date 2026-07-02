@@ -6,7 +6,7 @@ export default async function Page() {
 
   return (
     <div className="flex min-h-[calc(100dvh-12rem)] w-full items-center justify-center">
-      <RoleEmptyState role={user?.workspaceRole} entity="class" />
+      <RoleEmptyState role={user?.schoolRole} entity="class" />
     </div>
   );
 }
