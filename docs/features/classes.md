@@ -34,7 +34,12 @@ POST   /classes/:classId/students
 DELETE /classes/:classId/students/:studentId
 POST   /classes/:classId/teachers
 DELETE /classes/:classId/teachers/:teacherId
+GET    /schools/:schoolId/members
 ```
+
+`GET /schools/:schoolId/members` is used for School page counts and admin class
+assignment pickers. Counts are visible to active school members. Roster rows,
+including `email`, `teacherProfileId`, and `studentProfileId`, are admin-only.
 
 ## Frontend Rules
 
@@ -42,6 +47,8 @@ DELETE /classes/:classId/teachers/:teacherId
 - Use selected school context from the session/backend.
 - Hide admin-only class mutation controls for non-admin members.
 - Still rely on the backend to enforce permissions.
+- Use `teacherProfileId` and `studentProfileId`, not `userId`, when assigning
+  teachers/students to classes.
 - Add all visible copy to `en`, `ru`, and `uz` catalogs.
 - Validate all backend class responses with Zod before rendering.
 

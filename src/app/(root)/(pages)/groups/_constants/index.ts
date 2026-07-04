@@ -1,4 +1,4 @@
-import type { ClassFilter, ClassItem } from "../_types";
+import type { ClassFilter } from "../_types";
 
 export const classFilters: ClassFilter[] = ["all", "active", "archived"];
 
@@ -23,22 +23,14 @@ export const classAccents = [
 ] as const;
 
 /**
- * Placeholder classes. Standing in for `GET /classes` until that endpoint
- * exists — shaped like the eventual API response so the view swaps cleanly.
- * Mirrors the existing mock pattern (DashboardStats, examItems).
+ * Deterministic accent for a class from its id, so a class keeps the same colour
+ * across filters and page loads (the real ids are opaque, so we hash them into
+ * the palette rather than relying on array position).
  */
-export const mockClasses: ClassItem[] = [
-  { id: "cls-math", name: "Mathematics", course: "Algebra II", teacher: "Mr. Robert Chen", studentCount: 32, status: "active" },
-  { id: "cls-phys", name: "Physics", course: "Mechanics", teacher: "Dr. Emily Park", studentCount: 28, status: "active" },
-  { id: "cls-bio", name: "Biology", course: "Molecular Bio", teacher: "Ms. Lisa Wong", studentCount: 35, status: "active" },
-  { id: "cls-eng", name: "English Lit", course: "American Novel", teacher: "Mrs. Jane Foster", studentCount: 24, status: "active" },
-  { id: "cls-hist", name: "History", course: "World History", teacher: "Mr. David Kim", studentCount: 30, status: "active" },
-  { id: "cls-chem", name: "Chemistry", course: "Organic Chem", teacher: "Dr. Alan Rivera", studentCount: 27, status: "active" },
-  { id: "cls-art", name: "Visual Arts", course: "Studio I", teacher: "Ms. Nadia Petrov", studentCount: 19, status: "archived" },
-  { id: "cls-cs", name: "Computer Science", course: "Intro to CS", teacher: "Mr. Omar Haddad", studentCount: 41, status: "archived" },
-];
-
-/** Stable class-id → accent map so colours don't reshuffle when filtering. */
-export const classAccentById: Record<string, string> = Object.fromEntries(
-  mockClasses.map((item, index) => [item.id, classAccents[index % classAccents.length]]),
-);
+export function classAccent(id: string): string {
+  let hash = 0;
+  for (let i = 0; i < id.length; i += 1) {
+    hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  }
+  return classAccents[hash % classAccents.length];
+}

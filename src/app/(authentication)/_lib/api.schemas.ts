@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const schoolRoleSchema = z.enum(["OWNER", "DIRECTOR", "ADMIN", "TEACHER", "STUDENT"]);
+export const schoolRoleSchema = z.enum(["ADMIN", "TEACHER", "STUDENT"]);
 
 export const backendUserSchema = z
   .object({
@@ -73,11 +73,56 @@ export const schoolDetailResponseSchema = z
   })
   .passthrough();
 
+export const schoolMemberCountsSchema = z
+  .object({
+    total: z.number(),
+    admins: z.number(),
+    teachers: z.number(),
+    students: z.number(),
+  })
+  .passthrough();
+
+export const schoolRosterMemberSchema = z
+  .object({
+    memberId: z.string(),
+    userId: z.string(),
+    role: schoolRoleSchema,
+    isActive: z.boolean(),
+    fullName: z.string(),
+    email: z.string(),
+    teacherProfileId: z.string().nullable(),
+    studentProfileId: z.string().nullable(),
+    createdAt: z.union([z.string(), z.date()]).optional(),
+    updatedAt: z.union([z.string(), z.date()]).optional(),
+  })
+  .passthrough();
+
+export const schoolMembersResponseSchema = z
+  .object({
+    counts: schoolMemberCountsSchema,
+    members: z.array(schoolRosterMemberSchema),
+  })
+  .passthrough();
+
 export const joinSchoolResponseSchema = z
   .object({
     school: backendSchoolSchema,
     membership: backendMemberSchema,
     tokens: authTokensSchema,
+  })
+  .passthrough();
+
+export const teacherInviteResponseSchema = z
+  .object({
+    invite: z
+      .object({
+        id: z.string(),
+        invitedEmail: z.string(),
+        role: schoolRoleSchema,
+        inviteUrl: z.string(),
+        expiresAt: z.union([z.string(), z.date()]),
+      })
+      .passthrough(),
   })
   .passthrough();
 
@@ -88,4 +133,6 @@ export type AuthTokens = z.infer<typeof authTokensSchema>;
 export type AuthResponse = z.infer<typeof authResponseSchema>;
 export type CreateSchoolResponse = z.infer<typeof createSchoolResponseSchema>;
 export type SchoolDetailResponse = z.infer<typeof schoolDetailResponseSchema>;
+export type SchoolMembersResponse = z.infer<typeof schoolMembersResponseSchema>;
 export type JoinSchoolResponse = z.infer<typeof joinSchoolResponseSchema>;
+export type TeacherInviteResponse = z.infer<typeof teacherInviteResponseSchema>;

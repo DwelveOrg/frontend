@@ -15,7 +15,7 @@ type RoleEmptyStateProps = {
 export default function RoleEmptyState({ role, entity }: RoleEmptyStateProps) {
   const { t } = useTranslation();
 
-  const canCreate = role === "OWNER" || role === "DIRECTOR" || role === "ADMIN";
+  const canCreate = role === "ADMIN";
 
   if (entity === "school" && canCreate) {
     return (

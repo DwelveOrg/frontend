@@ -1,7 +1,8 @@
 import RoleEmptyState from "../_components/ui/RoleEmptyState";
 import { getUser } from "../../_utils/getUser";
-import { getSchool } from "../../_utils/getSchool";
+import { getClasses } from "../../_utils/getClasses";
 import ClassesView from "./_components/ClassesView";
+import { toClassCardItem } from "./_lib/mapClass";
 
 export default async function Page() {
   const user = await getUser();
@@ -15,17 +16,10 @@ export default async function Page() {
     );
   }
 
-  const detail = user.schoolId ? await getSchool(user.schoolId) : null;
-  const school = detail?.school;
-  const role = detail?.currentUserRole ?? user.schoolRole ?? null;
-  const isAdmin = role === "ADMIN" || role === "OWNER" || role === "DIRECTOR";
+  // The backend scopes `GET /classes` by role, so this is already the viewer's
+  // personal list (enrolled/led) — never the whole school directory.
+  const classes = await getClasses();
+  const items = classes.map((item) => toClassCardItem(item, user.memberId));
 
-  return (
-    <ClassesView
-      schoolName={school?.name ?? ""}
-      schoolDescription={school?.description}
-      isAdmin={isAdmin}
-      studentJoinCode={school?.studentJoinCode}
-    />
-  );
+  return <ClassesView items={items} role={user.schoolRole ?? null} />;
 }

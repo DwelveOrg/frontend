@@ -8,7 +8,7 @@ export type AuthUser = {
   membershipCount: number;
 };
 
-export type SchoolRole = "OWNER" | "DIRECTOR" | "ADMIN" | "TEACHER" | "STUDENT";
+export type SchoolRole = "ADMIN" | "TEACHER" | "STUDENT";
 
 export type SessionPayload = {
   userId: string;
