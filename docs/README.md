@@ -25,6 +25,7 @@ docs/
     MVP_PLAN.md
   design/
     design-system.md
+    brand-assets.md
 ```
 
 ## Reading Order
@@ -47,7 +48,6 @@ docs/
 - Update feature docs when user flows, route behavior, or backend dependencies change.
 - Put temporary analysis in issues or PR notes, not permanent docs.
 
-## Legacy Files
-
-Some root-level or old `docs/*.md` files remain for compatibility while links are
-updated. New documentation should use the structured folders above.
+New documentation should use the structured folders above. Avoid adding loose
+markdown files directly under `docs/` unless they are index files such as this
+one.

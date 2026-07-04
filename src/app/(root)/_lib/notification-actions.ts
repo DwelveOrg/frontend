@@ -80,7 +80,7 @@ export async function deleteNotificationAction(notificationId: string) {
  * Marks every unread notification as read in one call.
  *
  * Prefers the dedicated bulk endpoint (`PATCH /notifications/read-all`, see
- * docs/BACKEND_NOTIFICATIONS_EXTENSIONS.md). Until the backend ships it, this
+ * docs/features/notifications.md). Until the backend ships it, this
  * falls back to reading each known unread id so the feature works today.
  */
 export async function markAllNotificationsReadAction(ids: string[] = []) {

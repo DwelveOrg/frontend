@@ -15,13 +15,9 @@ src/app/(landing)
 - Keep marketing components route-local until they are reused elsewhere.
 - Preserve responsive layout for English, Russian, and Uzbek Latin.
 
-## Related Legacy Notes
-
-Older landing notes remain in:
+## Related Files
 
 ```txt
-docs/landing-page.md
-docs/dwelve_additional_landing_content.md
+src/app/(landing)
+docs/design/design-system.md
 ```
-
-Use those as content references, but keep canonical feature guidance here.

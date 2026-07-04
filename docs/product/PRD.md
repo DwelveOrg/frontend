@@ -6,14 +6,6 @@ The concise product source for this frontend is currently:
 ../../PRODUCT.md
 ```
 
-Historical product notes also exist in:
-
-```txt
-../Dwelve_PRD_v1.md
-../dwelve-v1-frontend.md
-../dwelve-v1-backend.md
-```
-
 ## Frontend Product Summary
 
 Dwelve is a digital academic testing and performance-management platform for

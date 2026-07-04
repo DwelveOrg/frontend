@@ -17,7 +17,7 @@ export interface NotificationItem {
 /**
  * Structured payload on invitation-type notifications, used to render the
  * inline Accept / Decline actions and to resolve the invite on the backend.
- * See docs/BACKEND_NOTIFICATIONS_EXTENSIONS.md.
+ * See docs/features/notifications.md.
  */
 export type NotificationInvitationData = {
   invitationId?: string;
@@ -35,7 +35,7 @@ export type NotificationCategory = "system" | "payments" | "invitations";
 /**
  * The active filter pill on the notifications page. `all`/`unread` are backed by
  * the `tab` query param; the category filters run client-side over the `all`
- * result set (see docs/BACKEND_NOTIFICATIONS_EXTENSIONS.md for the intended
+ * result set (see docs/features/notifications.md for the intended
  * server-side `category` param).
  */
 export type NotificationFilter = NotificationTab | NotificationCategory;

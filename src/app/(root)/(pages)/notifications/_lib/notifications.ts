@@ -11,7 +11,7 @@ const PAYMENT_TYPES = /payment|billing|fee|invoice|subscription/i;
 /**
  * Derives the category tab a notification belongs to from its `type`. Runs on
  * the client over the `all` result set; the backend is expected to eventually
- * accept a `category` query param (see docs/BACKEND_NOTIFICATIONS_EXTENSIONS.md).
+ * accept a `category` query param (see docs/features/notifications.md).
  */
 export function getNotificationCategory(type: string): NotificationCategory {
   if (INVITATION_TYPES.test(type)) return "invitations";
