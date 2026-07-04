@@ -71,6 +71,24 @@ The backend returns a `STUDENT` membership and fresh school-aware tokens.
 Creating a school grants `ADMIN` inside that school only. The user is not
 globally an admin.
 
+Admins can edit school profile fields through:
+
+```txt
+PATCH /schools/:schoolId
+```
+
+Editable fields are `name`, `description`, `country`, `city`, and `logoUrl`.
+This endpoint does not update `isActive`.
+
+School member counts and admin roster data are available through:
+
+```txt
+GET /schools/:schoolId/members
+```
+
+Counts are visible to active school members. Full roster rows are admin-only and
+provide `teacherProfileId` / `studentProfileId` for class assignment requests.
+
 ## Related Files
 
 ```txt

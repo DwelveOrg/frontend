@@ -60,6 +60,8 @@ All school routes require authentication.
 POST /schools
 GET  /schools
 GET  /schools/:schoolId
+PATCH /schools/:schoolId
+GET  /schools/:schoolId/members
 POST /schools/join
 POST /schools/invites/teacher/accept
 POST /schools/:schoolId/invites/teacher
@@ -72,6 +74,10 @@ createSchoolAction -> createSchoolRequest -> authedBackendJson
 joinSchoolAction   -> joinSchoolRequest   -> authedBackendJson
 getSchool          -> getSchoolRequest    -> authedBackendJson
 ```
+
+`PATCH /schools/:schoolId` updates admin-only school profile fields. It does not
+update `isActive`. `GET /schools/:schoolId/members` returns member counts to any
+active school member and full roster rows only to admins.
 
 ## Notifications
 

@@ -19,6 +19,8 @@ import {
   createSchoolResponseSchema,
   joinSchoolResponseSchema,
   schoolDetailResponseSchema,
+  schoolMembersResponseSchema,
+  teacherInviteResponseSchema,
   type AuthResponse,
   type AuthTokens,
   type BackendMember,
@@ -27,6 +29,8 @@ import {
   type CreateSchoolResponse,
   type JoinSchoolResponse,
   type SchoolDetailResponse,
+  type SchoolMembersResponse,
+  type TeacherInviteResponse,
 } from "./api.schemas";
 
 type BackendRequester = <TSchema extends z.ZodTypeAny>(
@@ -44,6 +48,8 @@ export type {
   CreateSchoolResponse,
   JoinSchoolResponse,
   SchoolDetailResponse,
+  SchoolMembersResponse,
+  TeacherInviteResponse,
 };
 
 export type CreateSchoolRequestBody = Pick<
@@ -115,5 +121,47 @@ export function joinSchoolRequest(
 export function getSchoolRequest(schoolId: string, requestJson: BackendRequester = backendJson) {
   return requestJson(`/schools/${schoolId}`, {
     responseSchema: schoolDetailResponseSchema,
+  });
+}
+
+export type UpdateSchoolRequestBody = Partial<
+  Pick<CreateSchoolRequestBody, "name"> & {
+    description: string | null;
+    country: string | null;
+    city: string | null;
+    logoUrl: string | null;
+  }
+>;
+
+export function updateSchoolRequest(
+  schoolId: string,
+  body: UpdateSchoolRequestBody,
+  requestJson: BackendRequester = backendJson,
+) {
+  return requestJson(`/schools/${schoolId}`, {
+    method: "PATCH",
+    body,
+    responseSchema: schoolDetailResponseSchema,
+  });
+}
+
+export function getSchoolMembersRequest(
+  schoolId: string,
+  requestJson: BackendRequester = backendJson,
+) {
+  return requestJson(`/schools/${schoolId}/members`, {
+    responseSchema: schoolMembersResponseSchema,
+  });
+}
+
+export function createTeacherInviteRequest(
+  schoolId: string,
+  body: { email: string },
+  requestJson: BackendRequester = backendJson,
+) {
+  return requestJson(`/schools/${schoolId}/invites/teacher`, {
+    method: "POST",
+    body,
+    responseSchema: teacherInviteResponseSchema,
   });
 }

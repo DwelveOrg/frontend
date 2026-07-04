@@ -3,6 +3,7 @@ import { getSchool } from "../../_utils/getSchool";
 import NoMembershipState from "./_components/NoMembershipState";
 import SchoolDashboardHeader from "./_components/SchoolDashboardHeader";
 import DashboardStats from "./_components/DashboardStats";
+import { WelcomeGreeting } from "./_components/WelcomeGreeting";
 
 export default async function Dashboard() {
   const user = await getUser();
@@ -22,6 +23,7 @@ export default async function Dashboard() {
 
   return (
     <div className="space-y-6">
+      <WelcomeGreeting fullName={user.fullName ?? null} />
       <SchoolDashboardHeader
         name={school.name}
         description={school.description}

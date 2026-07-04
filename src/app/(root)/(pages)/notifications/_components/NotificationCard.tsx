@@ -115,7 +115,7 @@ export function NotificationCard({
             <button
               type="button"
               onClick={() => onMarkRead(item.id)}
-              className="inline-flex size-8 cursor-pointer items-center justify-center rounded-lg border border-[var(--border)] text-[var(--muted-foreground)] transition hover:border-[var(--primary)] hover:bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] hover:text-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+              className="inline-flex size-8 cursor-pointer items-center justify-center rounded-lg border border-[var(--border)] text-[var(--muted-foreground)] opacity-0 transition-all hover:border-[var(--primary)] hover:bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] hover:text-[var(--primary)] focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] group-hover:opacity-100 max-sm:opacity-100"
               aria-label={t("root.notifications.actions.markRead")}
               title={t("root.notifications.actions.markRead")}
             >
