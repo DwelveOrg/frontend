@@ -48,7 +48,19 @@ export class BackendResponseValidationError extends Error {
 }
 
 function getApiBaseUrl() {
-  return (process.env.DWELVE_API_BASE_URL ?? DEFAULT_API_BASE_URL).replace(/\/+$/, "");
+  const configuredBaseUrl = process.env.DWELVE_API_BASE_URL;
+
+  if (configuredBaseUrl) {
+    return configuredBaseUrl.replace(/\/+$/, "");
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    return DEFAULT_API_BASE_URL.replace(/\/+$/, "");
+  }
+
+  throw new Error(
+    "DWELVE_API_BASE_URL is not set. Refusing to fall back to localhost outside development.",
+  );
 }
 
 function withQuery(path: string, query?: QueryParams) {
