@@ -1,7 +1,8 @@
 import "server-only";
 
-import { backendJson, type AuthResponse } from "./api";
+import { backendJson } from "./api";
 import { createSession, getSession } from "./session";
+import type { SessionPayload } from "../_types/auth";
 
 /** Thrown when an authenticated request has no usable session / access token. */
 export class SessionExpiredError extends Error {
@@ -11,25 +12,40 @@ export class SessionExpiredError extends Error {
   }
 }
 
-async function refreshAccessToken(refreshToken: string) {
-  const response = await backendJson<AuthResponse>("/auth/refresh", {
+/** `/auth/refresh` returns only a fresh token pair — no user/membership payload. */
+type RefreshResponse = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+/**
+ * Exchanges the refresh token for a new access token and rewrites the session.
+ * The refresh endpoint does not return the user or memberships, so the existing
+ * session's identity is preserved and only the tokens are rotated.
+ */
+async function refreshAccessToken(current: SessionPayload) {
+  if (!current.refreshToken) {
+    throw new SessionExpiredError();
+  }
+
+  const tokens = await backendJson<RefreshResponse>("/auth/refresh", {
     method: "POST",
-    body: { refreshToken },
+    body: { refreshToken: current.refreshToken },
   });
 
   await createSession({
-    userId: response.user.id,
-    email: response.user.email,
-    fullName: response.user.fullName,
-    accessToken: response.tokens.accessToken,
-    refreshToken: response.tokens.refreshToken,
-    schoolId: response.member?.schoolId ?? response.school?.id,
-    memberId: response.member?.id,
-    schoolRole: response.member?.role,
-    membershipCount: response.memberships?.length ?? (response.member ? 1 : 0),
+    userId: current.userId,
+    email: current.email,
+    fullName: current.fullName,
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+    schoolId: current.schoolId,
+    memberId: current.memberId,
+    schoolRole: current.schoolRole,
+    membershipCount: current.membershipCount,
   });
 
-  return response.tokens.accessToken;
+  return tokens.accessToken;
 }
 
 /**
@@ -66,7 +82,7 @@ export async function authedBackendJson<TResponse>(
       throw error;
     }
 
-    const newAccessToken = await refreshAccessToken(session.refreshToken);
+    const newAccessToken = await refreshAccessToken(session);
 
     return backendJson<TResponse>(path, {
       ...init,
