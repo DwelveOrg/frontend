@@ -3,8 +3,9 @@
 Guidance for Claude Code when working in this repository.
 
 Read `AGENTS.md` first for general repository rules.
-Read `docs/design-system.md` for design-system decisions.
-Read `docs/product-requirements.md` for product scope and priorities.
+Read `docs/architecture/ARCHITECTURE.md` for request, schema, form, and data-fetching rules.
+Read `docs/design/design-system.md` for design-system decisions.
+Read `docs/product/PRD.md` for product scope and priorities.
 
 This file is intentionally root-level because Claude Code uses root project guidance. Do not move it into `docs/`.
 
@@ -117,13 +118,14 @@ Existing guidance says:
 
 - Session is a JWT in an httpOnly cookie named `session`.
 - The session JWT is encrypted (JWE), not merely signed: `jose` `EncryptJWT` with `dir` + `A256GCM`, keyed by a SHA-256 digest of `SESSION_SECRET`. Token lifetime derives from `SESSION_DURATION_MS`.
-- Authenticated server-to-backend calls go through `authedBackendJson` in `src/app/(authentication)/_lib/backend.ts` (attaches the session Bearer token); unauthenticated calls use `backendJson` in `_lib/api.ts`.
+- Authenticated server-to-backend calls go through `authedBackendJson` in `src/app/(authentication)/_lib/backend.ts` (attaches the session Bearer token); unauthenticated calls use `backendJson` from `src/lib/api/backend.ts` through named endpoint functions.
+- Backend responses used by UI code must be validated with Zod response schemas. See `docs/architecture/ARCHITECTURE.md`.
 - Session code lives in `src/app/(authentication)/_lib/session.ts`.
 - `SESSION_SECRET` should come from the environment.
 - Login/logout server actions live in `src/app/(authentication)/_lib/actions.ts`.
 - Server-side current user is read through `getUser()` in `src/app/(root)/_utils/getUser.ts`.
 - Auth currently uses hard-coded `testUsers` in `src/app/(authentication)/_constants/index.ts`.
-- No real backend is connected yet.
+- The local NestJS backend is expected at `D:\IT\projects\Dwelve\backend_nestJS` and `DWELVE_API_BASE_URL=http://localhost:5000/api/v1`.
 - `protectedRoutes` and `publicRoutes` live in `_constants/routes.ts`. Route protection runs in `src/proxy.ts` — the Next 16 replacement for `middleware.ts` (shown as "Proxy (Middleware)" in build output); it redirects unauthenticated users off protected routes and authenticated users off public ones.
 
 Treat auth/session changes as high-risk. Verify the current code before editing.
@@ -167,7 +169,7 @@ Do not treat `AGENTS.md` as the design-system source of truth.
 
 Use:
 
-- `docs/design-system.md` for design decisions
+- `docs/design/design-system.md` for design decisions
 - `src/app/globals.css`, `src/app/layout.tsx`, and Tailwind theme setup for implementation values
 
 The important correction from the old docs is that there should not be three competing font directions. Do not mix Inter, Geist, Montserrat, DM Sans, and DM Serif without updating the design system.

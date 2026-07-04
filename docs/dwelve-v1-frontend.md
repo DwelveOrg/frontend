@@ -604,3 +604,15 @@ Frontend v1 is ready when:
 - Protected routes work
 - Production build passes
 - The deployed app uses the production API URL
+# Legacy Frontend Notes
+
+This file is historical. For current implementation rules, use
+`docs/README.md`, `docs/architecture/ARCHITECTURE.md`, `AGENTS.md`, and
+`CLAUDE.md`.
+
+Do not copy this file's older `NEXT_PUBLIC_API_URL` or direct browser `fetch`
+examples into current authenticated API code. Current backend requests must use
+the server-side `backendJson` / `authedBackendJson` architecture with named
+endpoint functions and Zod response schemas.
+
+---

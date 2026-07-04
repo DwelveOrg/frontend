@@ -6,6 +6,11 @@ Backend base URL for local development:
 http://localhost:5000/api/v1
 ```
 
+Frontend implementation must follow `docs/architecture/ARCHITECTURE.md`: call
+these endpoints through server-side endpoint functions, `backendJson`, safe
+actions, and Zod response schemas. Do not add browser-side direct fetches or
+authenticated `NEXT_PUBLIC_API_URL` usage.
+
 The backend keeps account signup role-free. Google signup/login creates or authenticates a normal global user only. Workspace roles still come from workspace creation or invitation acceptance.
 
 ## Environment Required

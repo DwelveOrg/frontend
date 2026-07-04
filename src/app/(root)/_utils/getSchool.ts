@@ -1,7 +1,10 @@
 import "server-only";
 
 import { authedBackendJson } from "@/app/(authentication)/_lib/backend";
-import type { SchoolDetailResponse } from "@/app/(authentication)/_lib/api";
+import {
+  getSchoolRequest,
+  type SchoolDetailResponse,
+} from "@/app/(authentication)/_lib/api";
 
 /**
  * Fetches the current school (per doc §"Dashboard After Creation":
@@ -10,7 +13,7 @@ import type { SchoolDetailResponse } from "@/app/(authentication)/_lib/api";
  */
 export async function getSchool(schoolId: string): Promise<SchoolDetailResponse | null> {
   try {
-    return await authedBackendJson<SchoolDetailResponse>(`/schools/${schoolId}`);
+    return await getSchoolRequest(schoolId, authedBackendJson);
   } catch {
     return null;
   }

@@ -1,128 +1,119 @@
 import "server-only";
 
-import type { SchoolRole } from "../_types/auth";
+import {
+  type BackendRequestInit,
+  backendJson,
+  BackendApiError,
+  BackendResponseValidationError,
+} from "@/lib/api/backend";
+import type { z } from "zod";
+import type {
+  CreateSchoolFormField,
+  JoinSchoolFormField,
+  LoginFormField,
+  RegularSignupFormField,
+} from "@/app/(authentication)/_types/_schemas";
+import {
+  authResponseSchema,
+  authTokensSchema,
+  createSchoolResponseSchema,
+  joinSchoolResponseSchema,
+  schoolDetailResponseSchema,
+  type AuthResponse,
+  type AuthTokens,
+  type BackendMember,
+  type BackendSchool,
+  type BackendUser,
+  type CreateSchoolResponse,
+  type JoinSchoolResponse,
+  type SchoolDetailResponse,
+} from "./api.schemas";
 
-const DEFAULT_API_BASE_URL = "http://localhost:5000/api/v1";
-
-type BackendErrorBody = {
-  message?: string | string[];
-  error?: string;
-  statusCode?: number;
-};
-
-export type BackendUser = {
-  id: string;
-  fullName: string;
-  email: string;
-};
-
-export type BackendSchool = {
-  id: string;
-  name: string;
-  description?: string | null;
-  country?: string | null;
-  city?: string | null;
-  logoUrl?: string | null;
-  isActive?: boolean;
-  studentJoinCode?: string | null;
-};
-
-export type BackendMember = {
-  id: string;
-  userId: string;
-  schoolId: string;
-  role: SchoolRole;
-};
-
-export type AuthResponse = {
-  user: BackendUser;
-  school?: BackendSchool;
-  member?: BackendMember;
-  memberships?: Array<BackendMember & { school?: { id: string } }>;
-  tokens: {
-    accessToken: string;
-    refreshToken: string;
-  };
-};
-
-export type CreateSchoolResponse = {
-  school: BackendSchool;
-  membership?: BackendMember;
-  member?: BackendMember;
-  tokens: {
-    accessToken: string;
-    refreshToken: string;
-  };
-};
-
-export type SchoolDetailResponse = {
-  school: BackendSchool;
-  currentUserRole: SchoolRole;
-  membership: BackendMember;
-};
-
-export type JoinSchoolResponse = {
-  school: BackendSchool;
-  membership: BackendMember;
-  tokens: {
-    accessToken: string;
-    refreshToken: string;
-  };
-};
-
-export class BackendApiError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "BackendApiError";
-  }
-}
-
-function getApiBaseUrl() {
-  return (process.env.DWELVE_API_BASE_URL ?? DEFAULT_API_BASE_URL).replace(/\/+$/, "");
-}
-
-function getErrorMessage(body: BackendErrorBody | null) {
-  if (Array.isArray(body?.message)) {
-    return body.message.join(" ");
-  }
-
-  return body?.message ?? body?.error ?? "Something went wrong. Please try again.";
-}
-
-async function readJson<T>(response: Response): Promise<T | null> {
-  const text = await response.text();
-
-  if (!text) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(text) as T;
-  } catch {
-    return null;
-  }
-}
-
-export async function backendJson<TResponse>(
+type BackendRequester = <TSchema extends z.ZodTypeAny>(
   path: string,
-  init: Omit<RequestInit, "body"> & { body?: unknown } = {},
-): Promise<TResponse> {
-  const response = await fetch(`${getApiBaseUrl()}${path}`, {
-    ...init,
-    cache: "no-store",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      ...init.headers,
-    },
-    body: init.body === undefined ? undefined : JSON.stringify(init.body),
+  init: BackendRequestInit<TSchema>,
+) => Promise<z.infer<TSchema>>;
+
+export { backendJson, BackendApiError, BackendResponseValidationError };
+export type {
+  AuthResponse,
+  AuthTokens,
+  BackendMember,
+  BackendSchool,
+  BackendUser,
+  CreateSchoolResponse,
+  JoinSchoolResponse,
+  SchoolDetailResponse,
+};
+
+export type CreateSchoolRequestBody = Pick<
+  CreateSchoolFormField,
+  "name" | "description" | "country" | "city" | "logoUrl"
+>;
+
+export function loginRequest(input: LoginFormField) {
+  return backendJson("/auth/login", {
+    method: "POST",
+    body: input,
+    responseSchema: authResponseSchema,
   });
+}
 
-  const body = await readJson<TResponse | BackendErrorBody>(response);
+export function signupRequest(input: RegularSignupFormField) {
+  return backendJson("/auth/signup", {
+    method: "POST",
+    body: input,
+    responseSchema: authResponseSchema,
+  });
+}
 
-  if (!response.ok) {
-    throw new BackendApiError(getErrorMessage(body as BackendErrorBody | null));
-  }
+export function googleAuthRequest(idToken: string) {
+  return backendJson("/auth/google", {
+    method: "POST",
+    body: { idToken },
+    responseSchema: authResponseSchema,
+  });
+}
 
-  return body as TResponse;
+export function refreshTokensRequest(refreshToken: string) {
+  return backendJson("/auth/refresh", {
+    method: "POST",
+    body: { refreshToken },
+    responseSchema: authTokensSchema,
+  });
+}
+
+export function logoutRequest(refreshToken: string) {
+  return backendJson("/auth/logout", {
+    method: "POST",
+    body: { refreshToken },
+  });
+}
+
+export function createSchoolRequest(
+  body: CreateSchoolRequestBody,
+  requestJson: BackendRequester = backendJson,
+) {
+  return requestJson("/schools", {
+    method: "POST",
+    body,
+    responseSchema: createSchoolResponseSchema,
+  });
+}
+
+export function joinSchoolRequest(
+  input: JoinSchoolFormField,
+  requestJson: BackendRequester = backendJson,
+) {
+  return requestJson("/schools/join", {
+    method: "POST",
+    body: { code: input.code.trim() },
+    responseSchema: joinSchoolResponseSchema,
+  });
+}
+
+export function getSchoolRequest(schoolId: string, requestJson: BackendRequester = backendJson) {
+  return requestJson(`/schools/${schoolId}`, {
+    responseSchema: schoolDetailResponseSchema,
+  });
 }

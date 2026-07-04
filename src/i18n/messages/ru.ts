@@ -291,6 +291,34 @@ translation: {
           active: "Активна",
           inactive: "Неактивна",
         },
+        classes: {
+          title: "Классы",
+          subtitle: "Просматривайте все классы вашей школы.",
+          stats: {
+            classes: "Классы",
+            students: "Ученики",
+            teachers: "Учителя",
+          },
+          actions: {
+            invite: "Пригласить",
+          },
+          filters: {
+            all: "Все",
+            active: "Активные",
+            archived: "В архиве",
+          },
+          status: {
+            active: "Активен",
+            archived: "В архиве",
+          },
+          card: {
+            students: "{{count}} учеников",
+          },
+          empty: {
+            title: "Здесь нет классов",
+            description: "В этом разделе пока нет классов.",
+          },
+        },
         profile: {
           page: {
             title: "Профиль",

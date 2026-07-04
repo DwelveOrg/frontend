@@ -2,6 +2,13 @@
 
 This document explains how the frontend should implement school creation in Dwelve.
 
+Before implementing or changing this flow, read
+`docs/features/school-membership.md` and `docs/architecture/ARCHITECTURE.md`.
+School creation must use the shared server-side
+request stack (`createSchoolAction` -> `createSchoolRequest` ->
+`authedBackendJson` -> `backendJson`) and Zod response schemas. Do not add
+direct `fetch` calls or `NEXT_PUBLIC_API_URL` usage for this authenticated API.
+
 Dwelve uses a multi-school membership model. A user does not sign up as an admin,
 teacher, or student. A user signs up as a normal account, then becomes an `ADMIN`
 only inside a school after creating that school.
@@ -51,7 +58,7 @@ http://localhost:5000/api/v1
 Recommended frontend environment variable:
 
 ```txt
-NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+DWELVE_API_BASE_URL=http://localhost:5000/api/v1
 ```
 
 ## Authentication Requirement
@@ -333,66 +340,28 @@ schoolRole = ADMIN
 The frontend should use the new token immediately after school creation so later
 school-scoped requests have the correct context.
 
-## Frontend API Helper Example
+## Frontend Request Implementation
 
-```ts
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+Use the repository request architecture, not direct fetch:
 
-type CreateSchoolPayload = {
-  name: string;
-  description?: string;
-  country?: string;
-  city?: string;
-  logoUrl?: string;
-};
-
-export async function createSchool(
-  payload: CreateSchoolPayload,
-  accessToken: string,
-) {
-  const response = await fetch(`${API_URL}/schools`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(payload),
-  });
-
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    throw {
-      status: response.status,
-      message: data?.message ?? "Failed to create school",
-    };
-  }
-
-  return data;
-}
+```txt
+src/app/(authentication)/_lib/actions.ts
+createSchoolAction
+  -> createSchoolRequest
+  -> authedBackendJson
+  -> backendJson
+  -> POST /schools
 ```
+
+The response must be validated with `createSchoolResponseSchema` before the
+session is rewritten.
 
 ## Submit Handler Example
 
 ```ts
-async function handleCreateSchool(values: CreateSchoolFormValues) {
-  setIsSubmitting(true);
-  setError(null);
-
-  try {
-    const result = await createSchool(values, auth.accessToken);
-
-    auth.setTokens(result.tokens);
-    auth.setCurrentSchool(result.school);
-    auth.setCurrentMember(result.membership);
-
-    router.push(`/schools/${result.school.id}/dashboard`);
-  } catch (error) {
-    setError(getSchoolCreationErrorMessage(error));
-  } finally {
-    setIsSubmitting(false);
-  }
-}
+const result = await createSchoolAction(values);
+const data = readSafeActionData(result, "Please check the school details and try again.");
+router.push("/dashboard");
 ```
 
 ## Error Handling

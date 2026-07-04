@@ -1,6 +1,9 @@
 import "server-only";
 
-import { backendJson } from "./api";
+import { z } from "zod";
+
+import type { BackendRequestInit } from "@/lib/api/backend";
+import { backendJson, BackendApiError, refreshTokensRequest } from "./api";
 import { createSession, getSession } from "./session";
 import type { SessionPayload } from "../_types/auth";
 
@@ -12,12 +15,6 @@ export class SessionExpiredError extends Error {
   }
 }
 
-/** `/auth/refresh` returns only a fresh token pair — no user/membership payload. */
-type RefreshResponse = {
-  accessToken: string;
-  refreshToken: string;
-};
-
 /**
  * Exchanges the refresh token for a new access token and rewrites the session.
  * The refresh endpoint does not return the user or memberships, so the existing
@@ -28,10 +25,7 @@ async function refreshAccessToken(current: SessionPayload) {
     throw new SessionExpiredError();
   }
 
-  const tokens = await backendJson<RefreshResponse>("/auth/refresh", {
-    method: "POST",
-    body: { refreshToken: current.refreshToken },
-  });
+  const tokens = await refreshTokensRequest(current.refreshToken);
 
   await createSession({
     userId: current.userId,
@@ -48,16 +42,37 @@ async function refreshAccessToken(current: SessionPayload) {
   return tokens.accessToken;
 }
 
+function withAuthHeader<TSchema extends z.ZodTypeAny | undefined>(
+  init: BackendRequestInit<TSchema>,
+  accessToken: string,
+): BackendRequestInit<TSchema> {
+  const headers = new Headers(init.headers);
+  headers.set("Authorization", `Bearer ${accessToken}`);
+
+  return {
+    ...init,
+    headers,
+  };
+}
+
 /**
  * Performs a backend request authenticated with the current session's access token.
  *
  * On a 401 response, attempts to refresh the token using the stored refresh token,
  * updates the session, and retries the request once.
  */
-export async function authedBackendJson<TResponse>(
+export async function authedBackendJson<TSchema extends z.ZodTypeAny>(
   path: string,
-  init: Omit<RequestInit, "body"> & { body?: unknown } = {},
-): Promise<TResponse> {
+  init: BackendRequestInit<TSchema>,
+): Promise<z.infer<TSchema>>;
+export async function authedBackendJson<TResponse = unknown>(
+  path: string,
+  init?: BackendRequestInit,
+): Promise<TResponse>;
+export async function authedBackendJson(
+  path: string,
+  init: BackendRequestInit = {},
+): Promise<unknown> {
   const session = await getSession();
 
   if (!session?.accessToken) {
@@ -65,31 +80,16 @@ export async function authedBackendJson<TResponse>(
   }
 
   try {
-    return await backendJson<TResponse>(path, {
-      ...init,
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`,
-        ...init.headers,
-      },
-    });
+    return await backendJson(path, withAuthHeader(init, session.accessToken));
   } catch (error) {
-    const is401 =
-      error instanceof Error &&
-      (error.message.toLowerCase().includes("unauthorized") ||
-        error.message.toLowerCase().includes("expired"));
+    const isUnauthorized = error instanceof BackendApiError && error.status === 401;
 
-    if (!is401 || !session.refreshToken) {
+    if (!isUnauthorized || !session.refreshToken) {
       throw error;
     }
 
     const newAccessToken = await refreshAccessToken(session);
 
-    return backendJson<TResponse>(path, {
-      ...init,
-      headers: {
-        Authorization: `Bearer ${newAccessToken}`,
-        ...init.headers,
-      },
-    });
+    return backendJson(path, withAuthHeader(init, newAccessToken));
   }
 }

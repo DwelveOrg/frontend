@@ -3,6 +3,12 @@
 This document explains how the Dwelve frontend should implement notifications.
 It is written for frontend agents and developers working in the Next.js app.
 
+Before implementing or changing notification requests, read
+`docs/features/notifications.md` and `docs/architecture/ARCHITECTURE.md`.
+Notification requests must use server-side
+actions/helpers, React Query hooks, stable query keys, and Zod response schemas.
+Do not call the backend directly from client components or hooks.
+
 Notifications are user-scoped. They are not school roles, and they must not be
 used to decide permissions. The backend is the source of truth for notification
 existence, unread state, pagination, and ownership.

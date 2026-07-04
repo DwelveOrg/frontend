@@ -5,6 +5,11 @@ notifications page. It extends `FRONTEND_NOTIFICATIONS.md`; everything in that
 document (status, list, per-item read, delete, greeting notifications) still
 applies unchanged.
 
+Frontend request code must also follow `docs/architecture/ARCHITECTURE.md` and
+`docs/features/notifications.md`: use the server-side backend client, named
+endpoint/action functions, React Query, and Zod response schemas. Do not add
+direct browser fetches for these endpoints.
+
 The notifications page now adds three capabilities the current API does not
 cover:
 

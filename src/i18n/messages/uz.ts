@@ -291,6 +291,34 @@ translation: {
           active: "Faol",
           inactive: "Nofaol",
         },
+        classes: {
+          title: "Sinflar",
+          subtitle: "Maktabingizdagi barcha sinflarni ko'ring.",
+          stats: {
+            classes: "Sinflar",
+            students: "O'quvchilar",
+            teachers: "O'qituvchilar",
+          },
+          actions: {
+            invite: "Taklif qilish",
+          },
+          filters: {
+            all: "Barchasi",
+            active: "Faol",
+            archived: "Arxivda",
+          },
+          status: {
+            active: "Faol",
+            archived: "Arxivda",
+          },
+          card: {
+            students: "{{count}} o'quvchi",
+          },
+          empty: {
+            title: "Bu yerda sinflar yo'q",
+            description: "Bu ko'rinishda hozircha sinflar yo'q.",
+          },
+        },
         profile: {
           page: {
             title: "Profil",

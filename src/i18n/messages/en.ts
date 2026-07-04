@@ -291,6 +291,34 @@ translation: {
           active: "Active",
           inactive: "Inactive",
         },
+        classes: {
+          title: "Classes",
+          subtitle: "Browse every class in your school.",
+          stats: {
+            classes: "Classes",
+            students: "Students",
+            teachers: "Teachers",
+          },
+          actions: {
+            invite: "Invite",
+          },
+          filters: {
+            all: "All",
+            active: "Active",
+            archived: "Archived",
+          },
+          status: {
+            active: "Active",
+            archived: "Archived",
+          },
+          card: {
+            students: "{{count}} students",
+          },
+          empty: {
+            title: "No classes here",
+            description: "There are no classes in this view yet.",
+          },
+        },
         profile: {
           page: {
             title: "Profile",
