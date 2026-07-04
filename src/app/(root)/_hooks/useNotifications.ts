@@ -6,9 +6,11 @@ import {
   deleteNotificationAction,
   getNotificationStatusAction,
   listNotificationsAction,
+  markAllNotificationsReadAction,
   markNotificationReadAction,
+  respondToInvitationAction,
 } from "@/app/(root)/_lib/notification-actions";
-import type { NotificationTab } from "@/app/(root)/_types";
+import type { InvitationResponse, NotificationTab } from "@/app/(root)/_types";
 import { queryKeys } from "@/lib/query/keys";
 
 type UseNotificationsListOptions = {
@@ -39,30 +41,50 @@ export function useNotificationsList({
   });
 }
 
-export function useMarkNotificationReadMutation() {
+/** Invalidates every notification surface (status + all list variants) at once. */
+function useInvalidateNotifications() {
   const queryClient = useQueryClient();
+
+  return () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.status() }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all }),
+    ]);
+}
+
+export function useMarkNotificationReadMutation() {
+  const invalidate = useInvalidateNotifications();
 
   return useMutation({
     mutationFn: markNotificationReadAction,
-    onSettled: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.notifications.status() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all }),
-      ]);
-    },
+    onSettled: invalidate,
+  });
+}
+
+export function useMarkAllNotificationsReadMutation() {
+  const invalidate = useInvalidateNotifications();
+
+  return useMutation({
+    mutationFn: (ids: string[]) => markAllNotificationsReadAction(ids),
+    onSettled: invalidate,
   });
 }
 
 export function useDeleteNotificationMutation() {
-  const queryClient = useQueryClient();
+  const invalidate = useInvalidateNotifications();
 
   return useMutation({
     mutationFn: deleteNotificationAction,
-    onSettled: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.notifications.status() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all }),
-      ]);
-    },
+    onSettled: invalidate,
+  });
+}
+
+export function useRespondToInvitationMutation() {
+  const invalidate = useInvalidateNotifications();
+
+  return useMutation({
+    mutationFn: ({ id, response }: { id: string; response: InvitationResponse }) =>
+      respondToInvitationAction(id, response),
+    onSettled: invalidate,
   });
 }
