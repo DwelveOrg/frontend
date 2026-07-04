@@ -120,9 +120,10 @@ function createTimeoutSignal(signal: AbortSignal | null | undefined, timeoutMs: 
 
   const controller = new AbortController();
   const abort = () => controller.abort();
+  const listenerOptions: AddEventListenerOptions = { once: true, signal: controller.signal };
 
-  signal.addEventListener("abort", abort, { once: true });
-  timeoutSignal.addEventListener("abort", abort, { once: true });
+  signal.addEventListener("abort", abort, listenerOptions);
+  timeoutSignal.addEventListener("abort", abort, listenerOptions);
 
   return controller.signal;
 }
