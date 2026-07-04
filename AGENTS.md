@@ -2,8 +2,9 @@
 
 This file is for coding agents and contributors working in the Dwelve frontend repository.
 
-For product requirements, read `docs/product-requirements.md`.
-For the design system, read `docs/design-system.md`.
+For product requirements, read `docs/product/PRD.md`.
+For frontend architecture and required libraries, read `docs/architecture/ARCHITECTURE.md`.
+For the design system, read `docs/design/design-system.md`.
 Do not duplicate full product or design documentation in this file; keep those documents in `docs/`.
 
 ---
@@ -38,6 +39,28 @@ There is no first-party test framework or `npm test` script currently configured
 3. manual testing in `npm run dev`
 
 When adding tests, colocate them near the code they cover as `*.test.ts` or `*.test.tsx`, and add a package script.
+
+---
+
+## Frontend architecture and backend requests
+
+`docs/architecture/ARCHITECTURE.md` is mandatory for request, form, schema, and data
+fetching work.
+
+Hard rules:
+
+- Do not make direct backend `fetch` calls from components, hooks, or pages.
+- Use `backendJson` from `src/lib/api/backend.ts` as the only low-level backend client.
+- Use named feature endpoint functions, for example `createSchoolRequest`, rather than inline URL strings in feature code.
+- Use `authedBackendJson` for authenticated backend calls; do not duplicate bearer-token or refresh-token logic.
+- Validate backend JSON with `zod` response schemas for every response the UI relies on.
+- Use `next-safe-action` for client-triggered mutations.
+- Use `@tanstack/react-query` for client cache, invalidation, mutations, and pagination.
+- Use `react-hook-form` plus `zod` for forms.
+- Use server-only `DWELVE_API_BASE_URL` for private API calls; do not use browser-visible `NEXT_PUBLIC_API_URL` for authenticated API requests.
+
+Do not add Axios or another request/state/form/schema library unless
+`docs/architecture/ARCHITECTURE.md` is updated in the same change with a clear reason.
 
 ---
 
@@ -102,7 +125,7 @@ Dwelve supports:
 
 Use translation keys instead of hard-coded UI copy. When adding new copy, update all supported language catalogs.
 
-All user-facing components must render Uzbek Latin and Russian Cyrillic correctly. Follow `docs/design-system.md` for font and script rules.
+All user-facing components must render Uzbek Latin and Russian Cyrillic correctly. Follow `docs/design/design-system.md` for font and script rules.
 
 ---
 
@@ -123,7 +146,7 @@ Teacher access must use a targeted invite link or email-bound one-time code, nev
 
 ## Design system usage
 
-The design system lives in `docs/design-system.md`.
+The design system lives in `docs/design/design-system.md`.
 
 Do not copy token tables or font rules into this file. Agents should read the design document before making UI changes.
 

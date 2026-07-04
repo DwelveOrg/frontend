@@ -291,6 +291,34 @@ translation: {
           active: "Активна",
           inactive: "Неактивна",
         },
+        classes: {
+          title: "Классы",
+          subtitle: "Просматривайте все классы вашей школы.",
+          stats: {
+            classes: "Классы",
+            students: "Ученики",
+            teachers: "Учителя",
+          },
+          actions: {
+            invite: "Пригласить",
+          },
+          filters: {
+            all: "Все",
+            active: "Активные",
+            archived: "В архиве",
+          },
+          status: {
+            active: "Активен",
+            archived: "В архиве",
+          },
+          card: {
+            students: "{{count}} учеников",
+          },
+          empty: {
+            title: "Здесь нет классов",
+            description: "В этом разделе пока нет классов.",
+          },
+        },
         profile: {
           page: {
             title: "Профиль",
@@ -348,18 +376,27 @@ translation: {
         notifications: {
           title: "Уведомления",
           summary: {
-            some: "{{count}} непрочитанных",
+            some: "{{count}} непрочитанных уведомлений",
             none: "Вы всё просмотрели",
           },
           tabs: {
             all: "Все",
             unread: "Непрочитанные",
+            system: "Система",
+            payments: "Платежи",
+            invitations: "Приглашения",
           },
           dateGroups: {
             today: "Сегодня",
             yesterday: "Вчера",
+            earlierThisWeek: "Ранее на этой неделе",
           },
-          markAllRead: "Отметить все",
+          actions: {
+            accept: "Принять",
+            decline: "Отклонить",
+            markRead: "Отметить прочитанным",
+          },
+          markAllRead: "Отметить все прочитанными",
           emptyTitle: "Уведомлений нет",
           emptyDescription: "Здесь появятся новые события по классам, тестам и аккаунту.",
           errorTitle: "Не удалось загрузить уведомления",

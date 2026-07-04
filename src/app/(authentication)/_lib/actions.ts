@@ -14,11 +14,17 @@ import {
   type RegularSignupFormField,
 } from "@/app/(authentication)/_types/_schemas";
 import {
-  backendJson,
   BackendApiError,
+  BackendResponseValidationError,
+  createSchoolRequest,
+  googleAuthRequest,
+  joinSchoolRequest,
+  loginRequest,
+  logoutRequest,
+  signupRequest,
   type AuthResponse,
+  type CreateSchoolRequestBody,
   type CreateSchoolResponse,
-  type JoinSchoolResponse,
 } from "./api";
 import { authedBackendJson } from "./backend";
 import { createSession, deleteSession, getSession } from "./session";
@@ -46,6 +52,11 @@ function getActionError(error: unknown, fallback: string) {
 
   if (error instanceof TypeError) {
     return NETWORK_ERROR;
+  }
+
+  if (error instanceof BackendResponseValidationError) {
+    console.error("Backend response validation error:", error);
+    return fallback;
   }
 
   console.error("Auth action error:", error);
@@ -89,10 +100,7 @@ async function createSessionFromSchoolResponse(response: CreateSchoolResponse) {
 
 async function loginWithInput(input: LoginFormField): Promise<AuthMutationResult> {
   try {
-    const response = await backendJson<AuthResponse>("/auth/login", {
-      method: "POST",
-      body: input,
-    });
+    const response = await loginRequest(input);
 
     await createSessionFromAuthResponse(response);
 
@@ -104,10 +112,7 @@ async function loginWithInput(input: LoginFormField): Promise<AuthMutationResult
 
 async function signupWithInput(input: RegularSignupFormField): Promise<AuthMutationResult> {
   try {
-    const response = await backendJson<AuthResponse>("/auth/signup", {
-      method: "POST",
-      body: input,
-    });
+    const response = await signupRequest(input);
 
     await createSessionFromAuthResponse(response);
 
@@ -120,7 +125,7 @@ async function signupWithInput(input: RegularSignupFormField): Promise<AuthMutat
 async function createSchoolWithInput(input: CreateSchoolFormField) {
   try {
     // Drop empty optional fields so the backend receives only meaningful values.
-    const body: Record<string, string> = { name: input.name };
+    const body: CreateSchoolRequestBody = { name: input.name };
     for (const key of ["description", "country", "city", "logoUrl"] as const) {
       const value = input[key]?.trim();
       if (value) {
@@ -128,10 +133,7 @@ async function createSchoolWithInput(input: CreateSchoolFormField) {
       }
     }
 
-    const response = await authedBackendJson<CreateSchoolResponse>("/schools", {
-      method: "POST",
-      body,
-    });
+    const response = await createSchoolRequest(body, authedBackendJson);
 
     await createSessionFromSchoolResponse(response);
 
@@ -143,10 +145,7 @@ async function createSchoolWithInput(input: CreateSchoolFormField) {
 
 async function joinSchoolWithInput(input: JoinSchoolFormField) {
   try {
-    const response = await authedBackendJson<JoinSchoolResponse>("/schools/join", {
-      method: "POST",
-      body: { code: input.code.trim() },
-    });
+    const response = await joinSchoolRequest(input, authedBackendJson);
 
     const session = await getSession();
 
@@ -174,10 +173,7 @@ async function joinSchoolWithInput(input: JoinSchoolFormField) {
 
 async function googleAuthWithToken(idToken: string): Promise<AuthMutationResult> {
   try {
-    const response = await backendJson<AuthResponse>("/auth/google", {
-      method: "POST",
-      body: { idToken },
-    });
+    const response = await googleAuthRequest(idToken);
 
     await createSessionFromAuthResponse(response);
     return { redirectTo: "/dashboard" };
@@ -210,10 +206,7 @@ export async function logout() {
   const session = await getSession();
 
   if (session?.refreshToken) {
-    await backendJson("/auth/logout", {
-      method: "POST",
-      body: { refreshToken: session.refreshToken },
-    }).catch(() => undefined);
+    await logoutRequest(session.refreshToken).catch(() => undefined);
   }
 
   await deleteSession();

@@ -291,6 +291,34 @@ translation: {
           active: "Faol",
           inactive: "Nofaol",
         },
+        classes: {
+          title: "Sinflar",
+          subtitle: "Maktabingizdagi barcha sinflarni ko'ring.",
+          stats: {
+            classes: "Sinflar",
+            students: "O'quvchilar",
+            teachers: "O'qituvchilar",
+          },
+          actions: {
+            invite: "Taklif qilish",
+          },
+          filters: {
+            all: "Barchasi",
+            active: "Faol",
+            archived: "Arxivda",
+          },
+          status: {
+            active: "Faol",
+            archived: "Arxivda",
+          },
+          card: {
+            students: "{{count}} o'quvchi",
+          },
+          empty: {
+            title: "Bu yerda sinflar yo'q",
+            description: "Bu ko'rinishda hozircha sinflar yo'q.",
+          },
+        },
         profile: {
           page: {
             title: "Profil",
@@ -348,16 +376,25 @@ translation: {
         notifications: {
           title: "Bildirishnomalar",
           summary: {
-            some: "{{count}} ta o'qilmagan",
+            some: "{{count}} ta o'qilmagan bildirishnoma",
             none: "Hammasini ko'rib chiqdingiz",
           },
           tabs: {
             all: "Hammasi",
             unread: "O'qilmagan",
+            system: "Tizim",
+            payments: "To'lovlar",
+            invitations: "Takliflar",
           },
           dateGroups: {
             today: "Bugun",
             yesterday: "Kecha",
+            earlierThisWeek: "Shu hafta oldinroq",
+          },
+          actions: {
+            accept: "Qabul qilish",
+            decline: "Rad etish",
+            markRead: "O'qilgan deb belgilash",
           },
           markAllRead: "Barchasini o'qilgan deb belgilash",
           emptyTitle: "Bildirishnomalar yo'q",

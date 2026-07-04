@@ -91,7 +91,7 @@ export const joinSchoolSchema = z.object({
     .string()
     .trim()
     .min(1, "Join code is required.")
-    .max(20, "Join code must be at most 20 characters."),
+    .max(64, "Join code must be at most 64 characters."),
 });
 
 export type JoinSchoolFormField = z.infer<typeof joinSchoolSchema>;

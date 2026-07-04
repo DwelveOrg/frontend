@@ -1,20 +1,22 @@
 # Dwelve Docs
 
-This folder contains stable product and design documentation.
+This repository contains the Dwelve frontend and its stable project guidance.
 
 ## Files
 
-- `product-requirements.md` — product scope, target users, priorities, roadmap, risks.
-- `design-system.md` — typography, color, layout, component, script, and accessibility rules.
+- `docs/README.md` - canonical documentation structure and reading order.
+- `docs/product/PRD.md` - product scope, target users, priorities, roadmap, risks.
+- `docs/architecture/ARCHITECTURE.md` - mandatory frontend architecture, backend request, schema, form, and data-fetching rules.
+- `docs/design/design-system.md` - typography, color, layout, component, script, and accessibility rules.
+- `AGENTS.md` - root-level coding-agent guidance.
+- `CLAUDE.md` - root-level Claude Code guidance.
 
-## What does not belong here
+## What Does Not Belong Here
 
-- `AGENTS.md` — keep at the repository root because coding agents read root-level guidance.
-- `CLAUDE.md` — keep at the repository root because Claude Code uses it as root project context.
 - Generated build output.
 - Local environment files.
 - Temporary notes that are not maintained.
 
-## Maintenance rule
+## Maintenance Rule
 
 When code and docs disagree, update both in the same pull request.

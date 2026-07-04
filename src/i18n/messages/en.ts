@@ -291,6 +291,34 @@ translation: {
           active: "Active",
           inactive: "Inactive",
         },
+        classes: {
+          title: "Classes",
+          subtitle: "Browse every class in your school.",
+          stats: {
+            classes: "Classes",
+            students: "Students",
+            teachers: "Teachers",
+          },
+          actions: {
+            invite: "Invite",
+          },
+          filters: {
+            all: "All",
+            active: "Active",
+            archived: "Archived",
+          },
+          status: {
+            active: "Active",
+            archived: "Archived",
+          },
+          card: {
+            students: "{{count}} students",
+          },
+          empty: {
+            title: "No classes here",
+            description: "There are no classes in this view yet.",
+          },
+        },
         profile: {
           page: {
             title: "Profile",
@@ -348,18 +376,27 @@ translation: {
         notifications: {
           title: "Notifications",
           summary: {
-            some: "{{count}} unread",
+            some: "{{count}} unread notifications",
             none: "You're all caught up",
           },
           tabs: {
             all: "All",
             unread: "Unread",
+            system: "System",
+            payments: "Payments",
+            invitations: "Invitations",
           },
           dateGroups: {
             today: "Today",
             yesterday: "Yesterday",
+            earlierThisWeek: "Earlier this week",
           },
-          markAllRead: "Mark all read",
+          actions: {
+            accept: "Accept",
+            decline: "Decline",
+            markRead: "Mark as read",
+          },
+          markAllRead: "Mark all as read",
           emptyTitle: "No notifications",
           emptyDescription: "New updates about your classes, tests, and account will appear here.",
           errorTitle: "Could not load notifications",
