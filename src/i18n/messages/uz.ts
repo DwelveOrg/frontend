@@ -190,6 +190,11 @@ translation: {
             logoutAllDevices: {
               title: "Barcha qurilmalardan chiqish",
               description: "Boshqa barcha faol sessiyalarni darhol yopib qo'ying.",
+              confirmTitle: "Barcha qurilmalardan chiqasizmi?",
+              confirmDescription:
+                "Bu joriy sessiya bilan birga barcha faol sessiyalarni yopadi. Har bir qurilmada qaytadan kirishingiz kerak bo'ladi.",
+              confirm: "Hamma joydan chiqish",
+              cancel: "Bekor qilish",
             },
             securityAlerts: {
               title: "Xavfsizlik ogohlantirishlari",
@@ -907,6 +912,7 @@ translation: {
           showPassword: "Parolni ko'rsatish",
           success: "Kirish muvaffaqiyatli.",
           logoutSuccess: "Hisobdan muvaffaqiyatli chiqdingiz",
+          logoutAllSuccess: "Barcha qurilmalardan chiqdingiz",
           submit: "Kirish",
           noAccount: "Hisob yo'qmi?",
           signup: "Boshlash",

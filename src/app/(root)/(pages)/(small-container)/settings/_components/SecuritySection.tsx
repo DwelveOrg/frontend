@@ -1,10 +1,11 @@
 "use client";
 
-import { History, KeyRound, ShieldEllipsis, Trash2 } from "lucide-react";
+import { History, KeyRound, LogOut, ShieldEllipsis, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { SettingsGroup } from "./SettingsGroup";
 import { SettingsRow } from "./SettingsRow";
+import { LogoutAllButton } from "./LogoutAllButton";
 import { rowDangerActionClassName } from "../_constants";
 
 export function SecuritySection() {
@@ -29,6 +30,12 @@ export function SecuritySection() {
         title={t("root.settings.security.loginHistory.title")}
         description={t("root.settings.security.loginHistory.description")}
         href="/settings/login-history"
+      />
+      <SettingsRow
+        icon={LogOut}
+        title={t("root.settings.security.logoutAllDevices.title")}
+        description={t("root.settings.security.logoutAllDevices.description")}
+        action={<LogoutAllButton />}
       />
       <SettingsRow
         icon={Trash2}

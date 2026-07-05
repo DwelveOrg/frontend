@@ -20,6 +20,7 @@ import {
   googleAuthRequest,
   joinSchoolRequest,
   loginRequest,
+  logoutAllRequest,
   logoutRequest,
   signupRequest,
   type AuthResponse,
@@ -34,6 +35,7 @@ const INVALID_SIGNUP_ERROR = "Please check the form and try again.";
 const INVALID_SCHOOL_ERROR = "Please check the school details and try again.";
 const INVALID_JOIN_ERROR = "Invalid join code. Please check and try again.";
 const NETWORK_ERROR = "Unable to reach Dwelve API. Please try again.";
+const RATE_LIMITED_ERROR = "Too many attempts. Please wait a moment and try again.";
 
 export type AuthMutationResult = {
   redirectTo: string;
@@ -47,6 +49,13 @@ export type AuthMutationResult = {
  */
 function getActionError(error: unknown, fallback: string) {
   if (error instanceof BackendApiError) {
+    // The backend now rate-limits sensitive auth/onboarding routes with Redis and
+    // returns 429. Surface a calm, intentional message instead of the raw
+    // "Too many attempts" so the limit reads as a deliberate safeguard.
+    if (error.status === 429) {
+      return RATE_LIMITED_ERROR;
+    }
+
     return error.message;
   }
 
@@ -211,4 +220,20 @@ export async function logout() {
 
   await deleteSession();
   redirect("/login?logout=1");
+}
+
+/**
+ * Signs the user out of every device by deleting all of their Redis refresh
+ * sessions, then clears the local session and returns to login. The backend
+ * call is best-effort: even if it fails we still drop this device's session.
+ */
+export async function logoutAll() {
+  const session = await getSession();
+
+  if (session?.accessToken) {
+    await logoutAllRequest(authedBackendJson).catch(() => undefined);
+  }
+
+  await deleteSession();
+  redirect("/login?logout=all");
 }

@@ -15,18 +15,22 @@ import type {
 } from "@/app/(authentication)/_types/_schemas";
 import {
   authResponseSchema,
+  authSuccessSchema,
   authTokensSchema,
   createSchoolResponseSchema,
+  healthResponseSchema,
   joinSchoolResponseSchema,
   schoolDetailResponseSchema,
   schoolMembersResponseSchema,
   teacherInviteResponseSchema,
   type AuthResponse,
+  type AuthSuccess,
   type AuthTokens,
   type BackendMember,
   type BackendSchool,
   type BackendUser,
   type CreateSchoolResponse,
+  type HealthResponse,
   type JoinSchoolResponse,
   type SchoolDetailResponse,
   type SchoolMembersResponse,
@@ -41,11 +45,13 @@ type BackendRequester = <TSchema extends z.ZodTypeAny>(
 export { backendJson, BackendApiError, BackendResponseValidationError };
 export type {
   AuthResponse,
+  AuthSuccess,
   AuthTokens,
   BackendMember,
   BackendSchool,
   BackendUser,
   CreateSchoolResponse,
+  HealthResponse,
   JoinSchoolResponse,
   SchoolDetailResponse,
   SchoolMembersResponse,
@@ -93,6 +99,27 @@ export function logoutRequest(refreshToken: string) {
   return backendJson("/auth/logout", {
     method: "POST",
     body: { refreshToken },
+  });
+}
+
+/**
+ * Deletes every Redis refresh session for the signed-in user. Requires a valid
+ * access token, so it must be called through `authedBackendJson`.
+ */
+export function logoutAllRequest(requestJson: BackendRequester = backendJson) {
+  return requestJson("/auth/logout-all", {
+    method: "POST",
+    responseSchema: authSuccessSchema,
+  });
+}
+
+/**
+ * Reports API, PostgreSQL, and Redis status. Public endpoint intended for
+ * admin/dev diagnostics — do not call this on every user page load.
+ */
+export function healthRequest(requestJson: BackendRequester = backendJson) {
+  return requestJson("/health", {
+    responseSchema: healthResponseSchema,
   });
 }
 

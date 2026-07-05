@@ -190,6 +190,11 @@ translation: {
             logoutAllDevices: {
               title: "Logout from all devices",
               description: "Immediately sign out from every other active session.",
+              confirmTitle: "Log out of all devices?",
+              confirmDescription:
+                "This ends every active session, including this one. You'll need to sign in again on each device.",
+              confirm: "Log out everywhere",
+              cancel: "Cancel",
             },
             securityAlerts: {
               title: "Security alerts",
@@ -907,6 +912,7 @@ translation: {
           showPassword: "Show password",
           success: "Login successful",
           logoutSuccess: "Logged out successfully",
+          logoutAllSuccess: "Signed out of all devices",
           submit: "Login",
           noAccount: "No account yet?",
           signup: "Sign up",

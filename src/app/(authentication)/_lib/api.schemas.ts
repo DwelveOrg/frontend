@@ -37,6 +37,23 @@ export const authTokensSchema = z.object({
   refreshToken: z.string(),
 });
 
+/** Shape returned by `/auth/logout` and `/auth/logout-all` on success. */
+export const authSuccessSchema = z.object({ success: z.boolean() }).passthrough();
+
+/** Shape returned by `GET /health`, reporting API, PostgreSQL, and Redis status. */
+export const healthResponseSchema = z
+  .object({
+    status: z.string(),
+    services: z
+      .object({
+        api: z.string(),
+        postgres: z.string(),
+        redis: z.string(),
+      })
+      .passthrough(),
+  })
+  .passthrough();
+
 const memberWithSchoolSchema = backendMemberSchema.extend({
   school: z
     .object({
@@ -130,6 +147,8 @@ export type BackendUser = z.infer<typeof backendUserSchema>;
 export type BackendSchool = z.infer<typeof backendSchoolSchema>;
 export type BackendMember = z.infer<typeof backendMemberSchema>;
 export type AuthTokens = z.infer<typeof authTokensSchema>;
+export type AuthSuccess = z.infer<typeof authSuccessSchema>;
+export type HealthResponse = z.infer<typeof healthResponseSchema>;
 export type AuthResponse = z.infer<typeof authResponseSchema>;
 export type CreateSchoolResponse = z.infer<typeof createSchoolResponseSchema>;
 export type SchoolDetailResponse = z.infer<typeof schoolDetailResponseSchema>;

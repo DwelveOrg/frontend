@@ -13,26 +13,28 @@ backend infrastructure only; the frontend must not connect to Redis directly.
 - Sensitive auth and school onboarding routes can now return HTTP `429`.
 - `GET /health` was added and reports API, PostgreSQL, and Redis status.
 
-## Frontend Changes To Make
+## Frontend Changes (implemented)
 
-- Keep using `DWELVE_API_BASE_URL=http://localhost:5000/api/v1`. Do not add
-  Redis env vars to the frontend.
-- Keep using `refreshTokensRequest` and `authedBackendJson`; they already match
-  the rotated refresh-token contract because they save the new `refreshToken`
-  returned by `/auth/refresh`.
-- Add `logoutAllRequest` in `src/app/(authentication)/_lib/api.ts`:
-  `POST /auth/logout-all`, called through `authedBackendJson`.
-- Create a server action for logout from all devices near the existing
-  `logout()` action. It should call `logoutAllRequest`, then `deleteSession()`,
-  then redirect to login.
-- Add a UI entry point for logout from all devices in the settings/security
-  area, most likely under
-  `src/app/(root)/(pages)/(small-container)/settings/_components/SecuritySection.tsx`.
-- Treat backend `429` responses as user-safe messages in auth, join-school, and
-  invite-teacher actions. Current `BackendApiError` handling already surfaces
-  backend messages, but UI copy should make rate limiting feel intentional.
-- Optionally add a server-side health request for admin/dev diagnostics:
-  `GET /health`. Do not call health checks from normal user pages on every load.
+- `DWELVE_API_BASE_URL=http://localhost:5000/api/v1` is unchanged. No Redis env
+  vars were added to the frontend.
+- `refreshTokensRequest` and `authedBackendJson` already match the rotated
+  refresh-token contract: `refreshAccessToken` in
+  `src/app/(authentication)/_lib/backend.ts` saves the new `refreshToken`
+  returned by `/auth/refresh`, so a rotated token replaces the used one.
+- `logoutAllRequest` was added in `src/app/(authentication)/_lib/api.ts`:
+  `POST /auth/logout-all`, called through `authedBackendJson` (Bearer auth).
+- A `logoutAll()` server action sits next to `logout()` in
+  `src/app/(authentication)/_lib/actions.ts`. It best-effort calls
+  `logoutAllRequest`, then `deleteSession()`, then redirects to
+  `/login?logout=all` (login shows a distinct confirmation toast).
+- The settings security area exposes "Logout from all devices" via
+  `SecuritySection.tsx` and the `LogoutAllButton` confirm dialog under
+  `src/app/(root)/(pages)/(small-container)/settings/_components/`.
+- Backend `429` responses are surfaced as a calm, intentional message
+  (`getActionError` in `actions.ts` maps status `429` to a dedicated copy)
+  across login, signup, google, create-school, and join-school actions.
+- `healthRequest` (`GET /health`) exists in `api.ts` for admin/dev diagnostics.
+  It is not called on normal user page loads.
 
 ## What Not To Change
 

@@ -37,9 +37,12 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
   });
 
   React.useEffect(() => {
-    if (logout !== "1" || logoutToastShownRef.current) return;
+    if (logoutToastShownRef.current) return;
+    if (logout !== "1" && logout !== "all") return;
     logoutToastShownRef.current = true;
-    toast.success(t("auth.login.logoutSuccess"));
+    toast.success(
+      logout === "all" ? t("auth.login.logoutAllSuccess") : t("auth.login.logoutSuccess"),
+    );
     router.replace("/login");
   }, [logout, router, t]);
 
