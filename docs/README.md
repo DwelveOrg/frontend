@@ -21,6 +21,7 @@ docs/
     notifications.md
     classes.md
     landing.md
+    redis-backend-integration.md
   planning/
     MVP_PLAN.md
   design/
