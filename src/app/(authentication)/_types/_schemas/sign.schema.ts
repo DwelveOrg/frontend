@@ -101,3 +101,51 @@ export const googleAuthSchema = z.object({
 });
 
 export type GoogleAuthInput = z.infer<typeof googleAuthSchema>;
+
+/** Teacher invite acceptance: the raw token comes from the invite link's path. */
+export const acceptTeacherInviteSchema = z.object({
+  token: z.string().trim().min(1, "This invite link is missing its token."),
+});
+
+export type AcceptTeacherInviteInput = z.infer<typeof acceptTeacherInviteSchema>;
+
+/** Forgot-password screen: only an email is collected. */
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Please enter a valid email address."),
+});
+
+export type ForgotPasswordFormField = z.infer<typeof forgotPasswordSchema>;
+
+/**
+ * Reset-password form fields. The token comes from the reset link's query
+ * string, not from the form, so it lives on {@link resetPasswordSchema} instead.
+ */
+export const resetPasswordFormSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters.")
+      .max(72, "Password must be at most 72 characters."),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordFormField = z.infer<typeof resetPasswordFormSchema>;
+
+/**
+ * Server-action input for resetting a password. Presence of the token is checked
+ * here; its length/validity is left to the backend so an invalid link surfaces
+ * as the intended "expired or invalid" message rather than a form error.
+ */
+export const resetPasswordSchema = z.object({
+  token: z.string().trim().min(1, "This reset link is missing its token."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .max(72, "Password must be at most 72 characters."),
+});
+
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

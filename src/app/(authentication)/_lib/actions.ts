@@ -3,25 +3,36 @@
 import { redirect } from "next/navigation";
 import { actionClient, ActionError } from "@/lib/safe-action";
 import {
+  acceptTeacherInviteSchema,
   createSchoolSchema,
+  forgotPasswordSchema,
   googleAuthSchema,
   joinSchoolSchema,
   loginSchema,
   regularSignupSchema,
+  resetPasswordSchema,
+  type AcceptTeacherInviteInput,
   type CreateSchoolFormField,
+  type ForgotPasswordFormField,
   type JoinSchoolFormField,
   type LoginFormField,
   type RegularSignupFormField,
+  type ResetPasswordInput,
 } from "@/app/(authentication)/_types/_schemas";
 import {
+  acceptTeacherInviteRequest,
   BackendApiError,
   BackendResponseValidationError,
   createSchoolRequest,
+  forgotPasswordRequest,
   googleAuthRequest,
   joinSchoolRequest,
   loginRequest,
+  logoutAllRequest,
   logoutRequest,
+  resetPasswordRequest,
   signupRequest,
+  type AcceptTeacherInviteResponse,
   type AuthResponse,
   type CreateSchoolRequestBody,
   type CreateSchoolResponse,
@@ -33,10 +44,21 @@ const INVALID_LOGIN_ERROR = "Invalid email or password.";
 const INVALID_SIGNUP_ERROR = "Please check the form and try again.";
 const INVALID_SCHOOL_ERROR = "Please check the school details and try again.";
 const INVALID_JOIN_ERROR = "Invalid join code. Please check and try again.";
+const INVALID_INVITE_ERROR = "This invite link is invalid or has expired.";
+const FORGOT_PASSWORD_ERROR = "Unable to send the reset link. Please try again.";
+const INVALID_RESET_TOKEN_ERROR = "This reset link is invalid or has expired.";
 const NETWORK_ERROR = "Unable to reach Dwelve API. Please try again.";
+const RATE_LIMITED_ERROR = "Too many attempts. Please wait a moment and try again.";
 
 export type AuthMutationResult = {
   redirectTo: string;
+};
+
+export type ForgotPasswordResult = {
+  /** Always true — the response never reveals whether the account exists. */
+  ok: true;
+  /** Dev-only reset link, present only when the backend debug flag is enabled. */
+  resetUrl?: string;
 };
 
 /**
@@ -47,6 +69,13 @@ export type AuthMutationResult = {
  */
 function getActionError(error: unknown, fallback: string) {
   if (error instanceof BackendApiError) {
+    // The backend now rate-limits sensitive auth/onboarding routes with Redis and
+    // returns 429. Surface a calm, intentional message instead of the raw
+    // "Too many attempts" so the limit reads as a deliberate safeguard.
+    if (error.status === 429) {
+      return RATE_LIMITED_ERROR;
+    }
+
     return error.message;
   }
 
@@ -171,6 +200,41 @@ async function joinSchoolWithInput(input: JoinSchoolFormField) {
   }
 }
 
+async function acceptTeacherInviteWithInput(
+  input: AcceptTeacherInviteInput,
+): Promise<AuthMutationResult> {
+  try {
+    const response: AcceptTeacherInviteResponse = await acceptTeacherInviteRequest(
+      input.token,
+      authedBackendJson,
+    );
+
+    const session = await getSession();
+
+    if (!session?.userId || !session.email || !session.fullName) {
+      throw new BackendApiError("Your session expired. Please log in again.");
+    }
+
+    // Accepting an invite grants a new TEACHER membership and fresh tokens that
+    // carry the school context; rewrite the session so the dashboard opens it.
+    await createSession({
+      userId: session.userId,
+      email: session.email,
+      fullName: session.fullName,
+      accessToken: response.tokens.accessToken,
+      refreshToken: response.tokens.refreshToken,
+      schoolId: response.membership.schoolId,
+      memberId: response.membership.id,
+      schoolRole: response.membership.role,
+      membershipCount: Math.max(session.membershipCount ?? 0, 1),
+    });
+
+    return { redirectTo: "/dashboard" };
+  } catch (error) {
+    throw new ActionError(getActionError(error, INVALID_INVITE_ERROR));
+  }
+}
+
 async function googleAuthWithToken(idToken: string): Promise<AuthMutationResult> {
   try {
     const response = await googleAuthRequest(idToken);
@@ -182,9 +246,48 @@ async function googleAuthWithToken(idToken: string): Promise<AuthMutationResult>
   }
 }
 
+async function forgotPasswordWithInput(
+  input: ForgotPasswordFormField,
+): Promise<ForgotPasswordResult> {
+  try {
+    const response = await forgotPasswordRequest(input);
+
+    // Never disclose whether an account exists; the UI shows the same message
+    // regardless. `resetUrl` is only ever present in local dev debug mode.
+    return { ok: true, resetUrl: response.resetUrl };
+  } catch (error) {
+    // Rate limiting and network failures are safe to surface (they don't reveal
+    // account existence); everything else collapses to a generic message.
+    throw new ActionError(getActionError(error, FORGOT_PASSWORD_ERROR));
+  }
+}
+
+async function resetPasswordWithInput(
+  input: ResetPasswordInput,
+): Promise<AuthMutationResult> {
+  try {
+    await resetPasswordRequest(input);
+
+    // The password changed: drop any local session and return the user to login.
+    await deleteSession();
+
+    return { redirectTo: "/login" };
+  } catch (error) {
+    throw new ActionError(getActionError(error, INVALID_RESET_TOKEN_ERROR));
+  }
+}
+
 export const googleAuthAction = actionClient
   .inputSchema(googleAuthSchema)
   .action(async ({ parsedInput }) => googleAuthWithToken(parsedInput.idToken));
+
+export const forgotPasswordAction = actionClient
+  .inputSchema(forgotPasswordSchema)
+  .action(async ({ parsedInput }) => forgotPasswordWithInput(parsedInput));
+
+export const resetPasswordAction = actionClient
+  .inputSchema(resetPasswordSchema)
+  .action(async ({ parsedInput }) => resetPasswordWithInput(parsedInput));
 
 export const loginAction = actionClient
   .inputSchema(loginSchema)
@@ -202,6 +305,10 @@ export const joinSchoolAction = actionClient
   .inputSchema(joinSchoolSchema)
   .action(async ({ parsedInput }) => joinSchoolWithInput(parsedInput));
 
+export const acceptTeacherInviteAction = actionClient
+  .inputSchema(acceptTeacherInviteSchema)
+  .action(async ({ parsedInput }) => acceptTeacherInviteWithInput(parsedInput));
+
 export async function logout() {
   const session = await getSession();
 
@@ -211,4 +318,20 @@ export async function logout() {
 
   await deleteSession();
   redirect("/login?logout=1");
+}
+
+/**
+ * Signs the user out of every device by deleting all of their Redis refresh
+ * sessions, then clears the local session and returns to login. The backend
+ * call is best-effort: even if it fails we still drop this device's session.
+ */
+export async function logoutAll() {
+  const session = await getSession();
+
+  if (session?.accessToken) {
+    await logoutAllRequest(authedBackendJson).catch(() => undefined);
+  }
+
+  await deleteSession();
+  redirect("/login?logout=all");
 }

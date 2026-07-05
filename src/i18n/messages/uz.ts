@@ -190,6 +190,11 @@ translation: {
             logoutAllDevices: {
               title: "Barcha qurilmalardan chiqish",
               description: "Boshqa barcha faol sessiyalarni darhol yopib qo'ying.",
+              confirmTitle: "Barcha qurilmalardan chiqasizmi?",
+              confirmDescription:
+                "Bu joriy sessiya bilan birga barcha faol sessiyalarni yopadi. Har bir qurilmada qaytadan kirishingiz kerak bo'ladi.",
+              confirm: "Hamma joydan chiqish",
+              cancel: "Bekor qilish",
             },
             securityAlerts: {
               title: "Xavfsizlik ogohlantirishlari",
@@ -907,6 +912,7 @@ translation: {
           showPassword: "Parolni ko'rsatish",
           success: "Kirish muvaffaqiyatli.",
           logoutSuccess: "Hisobdan muvaffaqiyatli chiqdingiz",
+          logoutAllSuccess: "Barcha qurilmalardan chiqdingiz",
           submit: "Kirish",
           noAccount: "Hisob yo'qmi?",
           signup: "Boshlash",
@@ -977,7 +983,54 @@ translation: {
           personalCta: "Oddiy ro'yxatdan o'tish",
         },
         passwordReset: {
-          title: "Parolni tiklash sahifasi",
+          access: "Dwelve kirish",
+          title: "Parolni tiklash",
+          subtitle:
+            "Emailingizni kiriting — parolni tiklash havolasini yuboramiz.",
+          emailLabel: "Email",
+          emailPlaceholder: "Emailingizni kiriting",
+          submit: "Havola yuborish",
+          sentTitle: "Emailingizni tekshiring",
+          sentBody:
+            "Agar ushbu email bilan hisob mavjud bo'lsa, parolni tiklash ko'rsatmalarini yuboramiz.",
+          devLinkNotice: "Dev rejimi: davom etish uchun shu havoladan foydalaning.",
+          devLinkCta: "Tiklash havolasini ochish",
+          backToLogin: "Kirishga qaytish",
+          error: "Havola yuborib bo'lmadi. Qayta urinib ko'ring.",
+        },
+        resetPassword: {
+          access: "Dwelve kirish",
+          title: "Yangi parol o'rnating",
+          subtitle: "Hisobingiz uchun yangi parol tanlang.",
+          passwordLabel: "Yangi parol",
+          passwordPlaceholder: "Yangi parol kiriting",
+          confirmPasswordLabel: "Parolni tasdiqlang",
+          confirmPasswordPlaceholder: "Yangi parolni qayta kiriting",
+          hidePassword: "Parolni yashirish",
+          showPassword: "Parolni ko'rsatish",
+          submit: "Parolni tiklash",
+          success: "Parol yangilandi. Iltimos, tizimga kiring.",
+          invalidTitle: "Havola yaroqsiz yoki muddati o'tgan",
+          invalidBody:
+            "Ushbu parolni tiklash havolasi yaroqsiz yoki muddati o'tgan. Yangisini so'rang.",
+          requestNew: "Yangi havola so'rash",
+          backToLogin: "Kirishga qaytish",
+        },
+        invite: {
+          teacherTitle: "Siz o'qituvchi sifatida taklif qilindingiz",
+          teacherSubtitle:
+            "Maktabga o'qituvchi sifatida qo'shilish uchun taklifni qabul qiling.",
+          authPromptSubtitle:
+            "Ushbu o'qituvchi taklifini qabul qilish uchun tizimga kiring yoki hisob yarating.",
+          signedInAs: "{{email}} sifatida kirdingiz",
+          accept: "Taklifni qabul qilish",
+          login: "Kirish",
+          signup: "Hisob yaratish",
+          emailMismatchNote:
+            "Taklif u yuborilgan email manzil bilan qabul qilinishi kerak.",
+          success: "Taklif qabul qilindi. Xush kelibsiz!",
+          error: "Taklif havolasi yaroqsiz yoki muddati o'tgan.",
+          backToLanding: "Bosh sahifaga",
         },
       },
     },

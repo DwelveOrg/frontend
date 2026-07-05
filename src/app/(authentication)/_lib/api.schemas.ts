@@ -37,6 +37,36 @@ export const authTokensSchema = z.object({
   refreshToken: z.string(),
 });
 
+/** Shape returned by `/auth/logout` and `/auth/logout-all` on success. */
+export const authSuccessSchema = z.object({ success: z.boolean() }).passthrough();
+
+/**
+ * Shape returned by `/auth/forgot-password`. Production returns only
+ * `{ success: true }`; `resetUrl`/`expiresAt` appear solely in dev when the
+ * backend enables `RESET_PASSWORD_DEBUG_TOKEN_ENABLED`.
+ */
+export const forgotPasswordResponseSchema = z
+  .object({
+    success: z.boolean(),
+    resetUrl: z.string().optional(),
+    expiresAt: z.union([z.string(), z.date()]).optional(),
+  })
+  .passthrough();
+
+/** Shape returned by `GET /health`, reporting API, PostgreSQL, and Redis status. */
+export const healthResponseSchema = z
+  .object({
+    status: z.string(),
+    services: z
+      .object({
+        api: z.string(),
+        postgres: z.string(),
+        redis: z.string(),
+      })
+      .passthrough(),
+  })
+  .passthrough();
+
 const memberWithSchoolSchema = backendMemberSchema.extend({
   school: z
     .object({
@@ -112,6 +142,19 @@ export const joinSchoolResponseSchema = z
   })
   .passthrough();
 
+/**
+ * Shape returned by `POST /schools/invites/teacher/accept`. The backend issues a
+ * `TEACHER` membership and fresh tokens carrying the new school context.
+ */
+export const acceptTeacherInviteResponseSchema = z
+  .object({
+    school: backendSchoolSchema,
+    membership: backendMemberSchema,
+    member: backendMemberSchema.optional(),
+    tokens: authTokensSchema,
+  })
+  .passthrough();
+
 export const teacherInviteResponseSchema = z
   .object({
     invite: z
@@ -130,9 +173,13 @@ export type BackendUser = z.infer<typeof backendUserSchema>;
 export type BackendSchool = z.infer<typeof backendSchoolSchema>;
 export type BackendMember = z.infer<typeof backendMemberSchema>;
 export type AuthTokens = z.infer<typeof authTokensSchema>;
+export type AuthSuccess = z.infer<typeof authSuccessSchema>;
+export type ForgotPasswordResponse = z.infer<typeof forgotPasswordResponseSchema>;
+export type HealthResponse = z.infer<typeof healthResponseSchema>;
 export type AuthResponse = z.infer<typeof authResponseSchema>;
 export type CreateSchoolResponse = z.infer<typeof createSchoolResponseSchema>;
 export type SchoolDetailResponse = z.infer<typeof schoolDetailResponseSchema>;
 export type SchoolMembersResponse = z.infer<typeof schoolMembersResponseSchema>;
 export type JoinSchoolResponse = z.infer<typeof joinSchoolResponseSchema>;
+export type AcceptTeacherInviteResponse = z.infer<typeof acceptTeacherInviteResponseSchema>;
 export type TeacherInviteResponse = z.infer<typeof teacherInviteResponseSchema>;

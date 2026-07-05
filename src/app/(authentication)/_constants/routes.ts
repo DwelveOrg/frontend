@@ -9,4 +9,4 @@ export const protectedRoutes = [
   "/assignments",
 ] as const;
 
-export const publicRoutes = ["/login", "/signup", "/password-reset"] as const;
+export const publicRoutes = ["/login", "/signup", "/password-reset", "/reset-password"] as const;

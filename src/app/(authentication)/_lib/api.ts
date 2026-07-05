@@ -14,19 +14,27 @@ import type {
   RegularSignupFormField,
 } from "@/app/(authentication)/_types/_schemas";
 import {
+  acceptTeacherInviteResponseSchema,
   authResponseSchema,
+  authSuccessSchema,
   authTokensSchema,
   createSchoolResponseSchema,
+  forgotPasswordResponseSchema,
+  healthResponseSchema,
   joinSchoolResponseSchema,
   schoolDetailResponseSchema,
   schoolMembersResponseSchema,
   teacherInviteResponseSchema,
+  type AcceptTeacherInviteResponse,
   type AuthResponse,
+  type AuthSuccess,
   type AuthTokens,
   type BackendMember,
   type BackendSchool,
   type BackendUser,
   type CreateSchoolResponse,
+  type ForgotPasswordResponse,
+  type HealthResponse,
   type JoinSchoolResponse,
   type SchoolDetailResponse,
   type SchoolMembersResponse,
@@ -40,12 +48,16 @@ type BackendRequester = <TSchema extends z.ZodTypeAny>(
 
 export { backendJson, BackendApiError, BackendResponseValidationError };
 export type {
+  AcceptTeacherInviteResponse,
   AuthResponse,
+  AuthSuccess,
   AuthTokens,
   BackendMember,
   BackendSchool,
   BackendUser,
   CreateSchoolResponse,
+  ForgotPasswordResponse,
+  HealthResponse,
   JoinSchoolResponse,
   SchoolDetailResponse,
   SchoolMembersResponse,
@@ -81,6 +93,22 @@ export function googleAuthRequest(idToken: string) {
   });
 }
 
+export function forgotPasswordRequest(input: { email: string }) {
+  return backendJson("/auth/forgot-password", {
+    method: "POST",
+    body: { email: input.email.trim() },
+    responseSchema: forgotPasswordResponseSchema,
+  });
+}
+
+export function resetPasswordRequest(input: { token: string; password: string }) {
+  return backendJson("/auth/reset-password", {
+    method: "POST",
+    body: { token: input.token.trim(), password: input.password },
+    responseSchema: authSuccessSchema,
+  });
+}
+
 export function refreshTokensRequest(refreshToken: string) {
   return backendJson("/auth/refresh", {
     method: "POST",
@@ -93,6 +121,27 @@ export function logoutRequest(refreshToken: string) {
   return backendJson("/auth/logout", {
     method: "POST",
     body: { refreshToken },
+  });
+}
+
+/**
+ * Deletes every Redis refresh session for the signed-in user. Requires a valid
+ * access token, so it must be called through `authedBackendJson`.
+ */
+export function logoutAllRequest(requestJson: BackendRequester = backendJson) {
+  return requestJson("/auth/logout-all", {
+    method: "POST",
+    responseSchema: authSuccessSchema,
+  });
+}
+
+/**
+ * Reports API, PostgreSQL, and Redis status. Public endpoint intended for
+ * admin/dev diagnostics — do not call this on every user page load.
+ */
+export function healthRequest(requestJson: BackendRequester = backendJson) {
+  return requestJson("/health", {
+    responseSchema: healthResponseSchema,
   });
 }
 
@@ -115,6 +164,22 @@ export function joinSchoolRequest(
     method: "POST",
     body: { code: input.code.trim() },
     responseSchema: joinSchoolResponseSchema,
+  });
+}
+
+/**
+ * Redeems a teacher invite token for the signed-in user. Requires a valid access
+ * token (the invited email must match the account), so call it through
+ * `authedBackendJson`.
+ */
+export function acceptTeacherInviteRequest(
+  token: string,
+  requestJson: BackendRequester = backendJson,
+) {
+  return requestJson("/schools/invites/teacher/accept", {
+    method: "POST",
+    body: { token: token.trim() },
+    responseSchema: acceptTeacherInviteResponseSchema,
   });
 }
 

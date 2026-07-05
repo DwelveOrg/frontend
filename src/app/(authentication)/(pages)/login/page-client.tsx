@@ -17,10 +17,12 @@ import DwelveLogo from "@/components/Custom/DwelveLogo";
 import LoginPanel from "./_sections/LoginPanel";
 import { useLoginMutation, useGoogleAuthMutation } from "../../_hooks/useAuthMutations";
 import GoogleAuthButton from "../../_components/GoogleAuthButton";
+import { safeNextPath } from "../../_utils/next-path";
 
-export default function LoginPageClient({ logout }: Readonly<LoginPageClientProps>) {
+export default function LoginPageClient({ logout, next }: Readonly<LoginPageClientProps>) {
   const { t } = useTranslation();
   const router = useRouter();
+  const signupHref = next ? `/signup?next=${encodeURIComponent(next)}` : "/signup";
   const logoutToastShownRef = React.useRef(false);
   const loginMutation = useLoginMutation();
   const googleMutation = useGoogleAuthMutation();
@@ -37,9 +39,12 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
   });
 
   React.useEffect(() => {
-    if (logout !== "1" || logoutToastShownRef.current) return;
+    if (logoutToastShownRef.current) return;
+    if (logout !== "1" && logout !== "all") return;
     logoutToastShownRef.current = true;
-    toast.success(t("auth.login.logoutSuccess"));
+    toast.success(
+      logout === "all" ? t("auth.login.logoutAllSuccess") : t("auth.login.logoutSuccess"),
+    );
     router.replace("/login");
   }, [logout, router, t]);
 
@@ -50,7 +55,7 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
       const result = await loginMutation.mutateAsync(data);
       clearErrors("root");
       toast.success(t("auth.login.success"));
-      router.push(result.redirectTo);
+      router.push(safeNextPath(next, result.redirectTo));
     } catch (error) {
       const message = error instanceof Error ? error.message : "Invalid email or password.";
       setError("root", { message });
@@ -64,12 +69,12 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
     try {
       const result = await googleMutation.mutateAsync(idToken);
       toast.success(t("auth.login.success"));
-      router.push(result.redirectTo);
+      router.push(safeNextPath(next, result.redirectTo));
     } catch (error) {
       const message = error instanceof Error ? error.message : "Google sign-in failed.";
       toast.error(message);
     }
-  }, [googleMutation, router, t]);
+  }, [googleMutation, next, router, t]);
 
   return (
     <AuthSplitLayout variant="login" panelContent={<LoginPanel />}>
@@ -169,7 +174,7 @@ export default function LoginPageClient({ logout }: Readonly<LoginPageClientProp
 
           <p className="mt-8 text-center text-sm text-[#64748b] dark:text-slate-400">
             {t("auth.login.noAccount")}{" "}
-            <Link href="/signup" className="font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">
+            <Link href={signupHref} className="font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">
               {t("auth.login.signup")}
             </Link>
           </p>
