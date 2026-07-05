@@ -14,15 +14,18 @@ import type {
   RegularSignupFormField,
 } from "@/app/(authentication)/_types/_schemas";
 import {
+  acceptTeacherInviteResponseSchema,
   authResponseSchema,
   authSuccessSchema,
   authTokensSchema,
   createSchoolResponseSchema,
+  forgotPasswordResponseSchema,
   healthResponseSchema,
   joinSchoolResponseSchema,
   schoolDetailResponseSchema,
   schoolMembersResponseSchema,
   teacherInviteResponseSchema,
+  type AcceptTeacherInviteResponse,
   type AuthResponse,
   type AuthSuccess,
   type AuthTokens,
@@ -30,6 +33,7 @@ import {
   type BackendSchool,
   type BackendUser,
   type CreateSchoolResponse,
+  type ForgotPasswordResponse,
   type HealthResponse,
   type JoinSchoolResponse,
   type SchoolDetailResponse,
@@ -44,6 +48,7 @@ type BackendRequester = <TSchema extends z.ZodTypeAny>(
 
 export { backendJson, BackendApiError, BackendResponseValidationError };
 export type {
+  AcceptTeacherInviteResponse,
   AuthResponse,
   AuthSuccess,
   AuthTokens,
@@ -51,6 +56,7 @@ export type {
   BackendSchool,
   BackendUser,
   CreateSchoolResponse,
+  ForgotPasswordResponse,
   HealthResponse,
   JoinSchoolResponse,
   SchoolDetailResponse,
@@ -84,6 +90,22 @@ export function googleAuthRequest(idToken: string) {
     method: "POST",
     body: { idToken },
     responseSchema: authResponseSchema,
+  });
+}
+
+export function forgotPasswordRequest(input: { email: string }) {
+  return backendJson("/auth/forgot-password", {
+    method: "POST",
+    body: { email: input.email.trim() },
+    responseSchema: forgotPasswordResponseSchema,
+  });
+}
+
+export function resetPasswordRequest(input: { token: string; password: string }) {
+  return backendJson("/auth/reset-password", {
+    method: "POST",
+    body: { token: input.token.trim(), password: input.password },
+    responseSchema: authSuccessSchema,
   });
 }
 
@@ -142,6 +164,22 @@ export function joinSchoolRequest(
     method: "POST",
     body: { code: input.code.trim() },
     responseSchema: joinSchoolResponseSchema,
+  });
+}
+
+/**
+ * Redeems a teacher invite token for the signed-in user. Requires a valid access
+ * token (the invited email must match the account), so call it through
+ * `authedBackendJson`.
+ */
+export function acceptTeacherInviteRequest(
+  token: string,
+  requestJson: BackendRequester = backendJson,
+) {
+  return requestJson("/schools/invites/teacher/accept", {
+    method: "POST",
+    body: { token: token.trim() },
+    responseSchema: acceptTeacherInviteResponseSchema,
   });
 }
 

@@ -1,13 +1,162 @@
-﻿"use client";
+"use client";
 
+import Link from "next/link";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft, LoaderCircle, MailCheck } from "lucide-react";
 
-const PasswordReset = () => {
+import Input from "@/components/ui/Input";
+import Btn from "@/components/Custom/CustomButton";
+import DwelveLogo from "@/components/Custom/DwelveLogo";
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordFormField,
+} from "@/app/(authentication)/_types/_schemas";
+import AuthSplitLayout from "../../_components/AuthSplitLayout";
+import LoginPanel from "../login/_sections/LoginPanel";
+import { useForgotPasswordMutation } from "../../_hooks/useAuthMutations";
+
+export default function PasswordResetPage() {
   const { t } = useTranslation();
+  const forgotMutation = useForgotPasswordMutation();
+  const [sent, setSent] = React.useState(false);
+  const [devResetUrl, setDevResetUrl] = React.useState<string | undefined>();
 
-  return <div>{t("auth.passwordReset.title")}</div>;
-};
+  const {
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
+  } = useForm<ForgotPasswordFormField>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: "" },
+  });
 
-export default PasswordReset;
+  const onSubmit: SubmitHandler<ForgotPasswordFormField> = async (data) => {
+    clearErrors("root");
 
+    try {
+      const result = await forgotMutation.mutateAsync(data);
+      setDevResetUrl(result.resetUrl);
+      setSent(true);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : t("auth.passwordReset.error");
+      setError("root", { message });
+      toast.error(message);
+    }
+  };
+
+  const isBusy = isSubmitting || forgotMutation.isPending;
+
+  return (
+    <AuthSplitLayout variant="login" panelContent={<LoginPanel />}>
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-12">
+        <div className="mb-8 lg:hidden">
+          <DwelveLogo variant="form" />
+        </div>
+
+        <div className="w-full max-w-[400px]">
+          {sent ? (
+            <div className="text-center">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                <MailCheck className="h-7 w-7" />
+              </div>
+              <h1 className="text-2xl font-bold text-[#1a1a2e] dark:text-white">
+                {t("auth.passwordReset.sentTitle")}
+              </h1>
+              <p className="mt-2 text-sm text-[#64748b] dark:text-slate-400">
+                {t("auth.passwordReset.sentBody")}
+              </p>
+
+              {devResetUrl && (
+                <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-left text-xs text-amber-800 dark:border-amber-800/50 dark:bg-amber-900/20 dark:text-amber-300">
+                  <p className="font-semibold">{t("auth.passwordReset.devLinkNotice")}</p>
+                  <Link
+                    href={devResetUrl}
+                    className="mt-1 block break-all font-medium text-indigo-600 underline dark:text-indigo-400"
+                  >
+                    {t("auth.passwordReset.devLinkCta")}
+                  </Link>
+                </div>
+              )}
+
+              <Link
+                href="/login"
+                className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                {t("auth.passwordReset.backToLogin")}
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className="mb-8">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
+                  {t("auth.passwordReset.access")}
+                </p>
+                <h1 className="mt-2 text-3xl font-bold text-[#1a1a2e] dark:text-white">
+                  {t("auth.passwordReset.title")}
+                </h1>
+                <p className="mt-2 text-sm text-[#64748b] dark:text-slate-400">
+                  {t("auth.passwordReset.subtitle")}
+                </p>
+              </div>
+
+              <form className="space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-[#1a1a2e] dark:text-white">
+                    {t("auth.passwordReset.emailLabel")}
+                  </label>
+                  <Input
+                    {...register("email")}
+                    type="email"
+                    placeholder={t("auth.passwordReset.emailPlaceholder")}
+                    className={`w-full py-3 ${errors.email ? "border-red-500 focus:border-red-500" : ""}`}
+                  />
+                  {errors.email && (
+                    <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+
+                {errors.root && (
+                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800/50 dark:bg-red-900/20 dark:text-red-400">
+                    {errors.root.message}
+                  </div>
+                )}
+
+                <Btn
+                  type="submit"
+                  className="w-full flex items-center justify-center py-3 text-sm"
+                  disabled={isBusy}
+                >
+                  {isBusy ? (
+                    <LoaderCircle className="h-5 w-5 animate-spin" />
+                  ) : (
+                    t("auth.passwordReset.submit")
+                  )}
+                </Btn>
+              </form>
+
+              <p className="mt-8 text-center text-sm text-[#64748b] dark:text-slate-400">
+                <Link
+                  href="/login"
+                  className="inline-flex items-center gap-1.5 font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  {t("auth.passwordReset.backToLogin")}
+                </Link>
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+    </AuthSplitLayout>
+  );
+}
