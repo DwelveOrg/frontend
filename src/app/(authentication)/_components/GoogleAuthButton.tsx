@@ -28,6 +28,7 @@ declare global {
               width?: number;
             }
           ) => void;
+          disableAutoSelect?: () => void;
         };
       };
     };
@@ -55,6 +56,26 @@ export default function GoogleAuthButton({ onCredential, disabled, text }: Props
     onCredentialRef.current = onCredential;
   }, [onCredential]);
 
+  // Renders (or re-renders) the GIS button into the overlay. Safe to call
+  // repeatedly — `replaceChildren` clears the previous button first.
+  const renderGisButton = React.useCallback(() => {
+    if (!window.google?.accounts?.id || !gisRef.current || !wrapperRef.current) {
+      return;
+    }
+
+    const width = wrapperRef.current.clientWidth;
+    gisRef.current.replaceChildren();
+    window.google.accounts.id.renderButton(gisRef.current, {
+      type: "standard",
+      theme: "outline",
+      size: "large",
+      text: "continue_with",
+      shape: "rectangular",
+      logo_alignment: "left",
+      width: Math.max(width, 200),
+    });
+  }, []);
+
   const initGIS = React.useCallback(() => {
     if (
       initialized.current ||
@@ -79,20 +100,9 @@ export default function GoogleAuthButton({ onCredential, disabled, text }: Props
       cancel_on_tap_outside: true,
     });
 
-    const width = wrapperRef.current.clientWidth;
-    gisRef.current.replaceChildren();
-    window.google.accounts.id.renderButton(gisRef.current, {
-      type: "standard",
-      theme: "outline",
-      size: "large",
-      text: "continue_with",
-      shape: "rectangular",
-      logo_alignment: "left",
-      width: Math.max(width, 200),
-    });
-
+    renderGisButton();
     setGisLoading(false);
-  }, [clientId]);
+  }, [clientId, renderGisButton]);
 
   React.useEffect(() => {
     if (!clientId) return;
@@ -118,6 +128,20 @@ export default function GoogleAuthButton({ onCredential, disabled, text }: Props
     script.onload = initGIS;
     document.head.appendChild(script);
   }, [clientId, initGIS]);
+
+  // The GIS button is one-shot: after it hands back a credential it won't
+  // re-prompt on later clicks, so a failed attempt (e.g. the backend rejects the
+  // token) would leave an enabled-looking button that does nothing. `disabled`
+  // is driven true while an attempt is in flight; when it falls back to false we
+  // re-render a fresh button so retries keep working.
+  const wasBusy = React.useRef(disabled);
+  React.useEffect(() => {
+    if (wasBusy.current && !disabled && initialized.current) {
+      window.google?.accounts?.id?.disableAutoSelect?.();
+      renderGisButton();
+    }
+    wasBusy.current = disabled;
+  }, [disabled, renderGisButton]);
 
   const isDisabled = disabled || gisLoading;
 
