@@ -84,6 +84,69 @@ translation: {
             afternoon: "Good afternoon",
             evening: "Good evening",
           },
+          welcome: {
+            title: "Welcome back, {{name}}",
+            titleGeneric: "Welcome back",
+            subtitle: "Here's what's happening with your classes today.",
+          },
+          cards: {
+            student: {
+              courses: { label: "Enrolled Courses", hint: "+1 this semester" },
+              pending: { label: "Pending Assignments", hint: "2 due this week" },
+              grade: { label: "Average Grade", hint: "Up from B+" },
+              attendance: { label: "Attendance", hint: "Above average" },
+            },
+            staff: {
+              students: { label: "Total Students", hint: "+12% this term" },
+              classes: { label: "Classes", hint: "Across all grades" },
+              exams: { label: "Exams Created", hint: "+3 this month" },
+              avgScore: { label: "Average Score", hint: "+4% vs last term" },
+            },
+          },
+          trend: {
+            titleStudent: "Grade Trend",
+            titleStaff: "Performance Trend",
+            caption: "Last 6 months",
+            aria: "Bar chart of the monthly grade average from January to June",
+            months: {
+              jan: "Jan",
+              feb: "Feb",
+              mar: "Mar",
+              apr: "Apr",
+              may: "May",
+              jun: "Jun",
+            },
+          },
+          upcoming: {
+            title: "Upcoming",
+            items: {
+              math: { title: "Math Homework Ch.5", due: "Due tomorrow" },
+              physics: { title: "Physics Lab Report", due: "Due in 3 days" },
+              english: { title: "English Essay Draft", due: "Due Friday" },
+              history: { title: "History Reading", due: "Due next Monday" },
+            },
+          },
+          activity: {
+            title: "Recent Activity",
+            items: {
+              quiz: { title: "Chemistry Quiz graded", meta: "Score: 92/100", ago: "2h ago" },
+              material: {
+                title: "New class material uploaded",
+                meta: "Biology — Chapter 12",
+                ago: "5h ago",
+              },
+              assignment: {
+                title: "Algebra assignment submitted",
+                meta: "Submitted on time",
+                ago: "Yesterday",
+              },
+              announcement: {
+                title: "New announcement from Ms. Carter",
+                meta: "Physics 101",
+                ago: "2 days ago",
+              },
+            },
+          },
         },
         joinSchool: {
           title: "Join a school",

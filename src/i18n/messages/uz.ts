@@ -84,6 +84,69 @@ translation: {
             afternoon: "Xayrli kun",
             evening: "Xayrli kech",
           },
+          welcome: {
+            title: "Xush kelibsiz, {{name}}",
+            titleGeneric: "Xush kelibsiz",
+            subtitle: "Bugun sinflaringizda nimalar bo'layotganini ko'ring.",
+          },
+          cards: {
+            student: {
+              courses: { label: "Kurslar", hint: "+1 bu semestrda" },
+              pending: { label: "Kutilayotgan topshiriqlar", hint: "Bu hafta 2 ta" },
+              grade: { label: "O'rtacha baho", hint: "B+ dan o'sdi" },
+              attendance: { label: "Davomat", hint: "O'rtachadan yuqori" },
+            },
+            staff: {
+              students: { label: "Jami o'quvchilar", hint: "Semestrda +12%" },
+              classes: { label: "Sinflar", hint: "Barcha bosqichlar bo'yicha" },
+              exams: { label: "Yaratilgan imtihonlar", hint: "Bu oy +3" },
+              avgScore: { label: "O'rtacha ball", hint: "O'tgan semestrga +4%" },
+            },
+          },
+          trend: {
+            titleStudent: "Baholar dinamikasi",
+            titleStaff: "Natijalar dinamikasi",
+            caption: "So'nggi 6 oy",
+            aria: "Yanvardan iyungacha oylik o'rtacha bahoning ustunli diagrammasi",
+            months: {
+              jan: "Yan",
+              feb: "Fev",
+              mar: "Mar",
+              apr: "Apr",
+              may: "May",
+              jun: "Iyun",
+            },
+          },
+          upcoming: {
+            title: "Rejalashtirilgan",
+            items: {
+              math: { title: "Matematika uy vazifasi, 5-bob", due: "Muddati ertaga" },
+              physics: { title: "Fizika laboratoriya hisoboti", due: "Muddati 3 kundan so'ng" },
+              english: { title: "Ingliz tili inshosi qoralamasi", due: "Muddati juma kuni" },
+              history: { title: "Tarix o'qish topshirig'i", due: "Muddati dushanba kuni" },
+            },
+          },
+          activity: {
+            title: "So'nggi faoliyat",
+            items: {
+              quiz: { title: "Kimyo testi baholandi", meta: "Ball: 92/100", ago: "2 soat oldin" },
+              material: {
+                title: "Yangi o'quv materiali yuklandi",
+                meta: "Biologiya — 12-bob",
+                ago: "5 soat oldin",
+              },
+              assignment: {
+                title: "Algebra topshirig'i topshirildi",
+                meta: "O'z vaqtida topshirildi",
+                ago: "Kecha",
+              },
+              announcement: {
+                title: "Ms. Carterdan yangi e'lon",
+                meta: "Fizika 101",
+                ago: "2 kun oldin",
+              },
+            },
+          },
         },
         joinSchool: {
           title: "Maktabga qo'shilish",
