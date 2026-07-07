@@ -59,10 +59,12 @@ translation: {
                 label: "Shahar",
                 placeholder: "Toshkent",
               },
-              logoUrl: {
-                label: "Logotip URL manzili",
-                placeholder: "https://example.com/logo.png",
-                help: "Ixtiyoriy. https:// bilan to'liq URL manzil",
+              logo: {
+                label: "Maktab logotipi",
+                hint: "PNG, JPEG yoki WebP · 5 MB gacha",
+                choose: "Logotip yuklash",
+                replace: "Almashtirish",
+                remove: "O'chirish",
               },
             },
           },
@@ -83,6 +85,69 @@ translation: {
             morning: "Xayrli tong",
             afternoon: "Xayrli kun",
             evening: "Xayrli kech",
+          },
+          welcome: {
+            title: "Xush kelibsiz, {{name}}",
+            titleGeneric: "Xush kelibsiz",
+            subtitle: "Bugun sinflaringizda nimalar bo'layotganini ko'ring.",
+          },
+          cards: {
+            student: {
+              courses: { label: "Kurslar", hint: "+1 bu semestrda" },
+              pending: { label: "Kutilayotgan topshiriqlar", hint: "Bu hafta 2 ta" },
+              grade: { label: "O'rtacha baho", hint: "B+ dan o'sdi" },
+              attendance: { label: "Davomat", hint: "O'rtachadan yuqori" },
+            },
+            staff: {
+              students: { label: "Jami o'quvchilar", hint: "Semestrda +12%" },
+              classes: { label: "Sinflar", hint: "Barcha bosqichlar bo'yicha" },
+              exams: { label: "Yaratilgan imtihonlar", hint: "Bu oy +3" },
+              avgScore: { label: "O'rtacha ball", hint: "O'tgan semestrga +4%" },
+            },
+          },
+          trend: {
+            titleStudent: "Baholar dinamikasi",
+            titleStaff: "Natijalar dinamikasi",
+            caption: "So'nggi 6 oy",
+            aria: "Yanvardan iyungacha oylik o'rtacha bahoning ustunli diagrammasi",
+            months: {
+              jan: "Yan",
+              feb: "Fev",
+              mar: "Mar",
+              apr: "Apr",
+              may: "May",
+              jun: "Iyun",
+            },
+          },
+          upcoming: {
+            title: "Rejalashtirilgan",
+            items: {
+              math: { title: "Matematika uy vazifasi, 5-bob", due: "Muddati ertaga" },
+              physics: { title: "Fizika laboratoriya hisoboti", due: "Muddati 3 kundan so'ng" },
+              english: { title: "Ingliz tili inshosi qoralamasi", due: "Muddati juma kuni" },
+              history: { title: "Tarix o'qish topshirig'i", due: "Muddati dushanba kuni" },
+            },
+          },
+          activity: {
+            title: "So'nggi faoliyat",
+            items: {
+              quiz: { title: "Kimyo testi baholandi", meta: "Ball: 92/100", ago: "2 soat oldin" },
+              material: {
+                title: "Yangi o'quv materiali yuklandi",
+                meta: "Biologiya — 12-bob",
+                ago: "5 soat oldin",
+              },
+              assignment: {
+                title: "Algebra topshirig'i topshirildi",
+                meta: "O'z vaqtida topshirildi",
+                ago: "Kecha",
+              },
+              announcement: {
+                title: "Ms. Carterdan yangi e'lon",
+                meta: "Fizika 101",
+                ago: "2 kun oldin",
+              },
+            },
           },
         },
         joinSchool: {
@@ -312,6 +377,7 @@ translation: {
           },
           tabs: {
             classes: "Sinflar",
+            students: "O'quvchilar",
             courses: "Kurslar",
             groups: "Guruhlar",
           },
@@ -332,9 +398,11 @@ translation: {
             cityPlaceholder: "masalan, Toshkent",
             countryLabel: "Mamlakat",
             countryPlaceholder: "masalan, O'zbekiston",
-            logoLabel: "Logo URL",
-            logoPlaceholder: "https://example.com/logo.png",
-            logoError: "To'g'ri logo URL manzilini kiriting.",
+            logoLabel: "Maktab logotipi",
+            logoHint: "PNG, JPEG yoki WebP · 5 MB gacha",
+            logoChoose: "Logotip yuklash",
+            logoReplace: "Almashtirish",
+            logoRemove: "O'chirish",
             submit: "Saqlash",
             cancel: "Bekor qilish",
             success: "«{{name}}» yangilandi",
@@ -374,10 +442,13 @@ translation: {
             nameLabel: "Sinf nomi",
             namePlaceholder: "masalan, Matematika",
             nameError: "Sinf nomini kiriting.",
-            gradeLabel: "Sinf / daraja",
-            gradePlaceholder: "masalan, Algebra II",
             descLabel: "Tavsif",
             descPlaceholder: "Ixtiyoriy qisqa tavsif",
+            pictureLabel: "Sinf rasmi",
+            pictureHint: "PNG, JPEG yoki WebP · 5 MB gacha",
+            pictureChoose: "Rasm yuklash",
+            pictureReplace: "Almashtirish",
+            pictureRemove: "O'chirish",
             submit: "Sinf yaratish",
             cancel: "Bekor qilish",
             success: "«{{name}}» sinfi yaratildi",
@@ -387,6 +458,19 @@ translation: {
             emptyTitle: "Hozircha sinflar yo'q",
             emptyAdmin: "Boshlash uchun birinchi sinfingizni yarating.",
             emptyMember: "Sizni sinflarga qo'shishganda ular shu yerda ko'rinadi.",
+          },
+          students: {
+            emptyTitle: "Hozircha o'quvchilar yo'q",
+            emptyDescription: "O'quvchilar maktabga qo'shilishi uchun qo'shilish kodini ulashing.",
+            noClasses: "Sinflar yo'q",
+            classCount_one: "{{count}} ta sinf",
+            classCount_other: "{{count}} ta sinf",
+            columns: {
+              student: "O'quvchi",
+              code: "Kod",
+              classes: "Sinflar",
+              joined: "Qo'shilgan",
+            },
           },
         },
         classes: {
@@ -426,58 +510,137 @@ translation: {
             description: "Bu ko'rinishda hozircha sinflar yo'q.",
           },
         },
+        classDetail: {
+          back: "Sinflarga qaytish",
+          actions: {
+            open: "Sinfni ochish",
+            edit: "Tahrirlash",
+            delete: "O'chirish",
+            more: "Yana",
+            addTest: "Test qo'shish",
+            addExam: "Imtihon qo'shish",
+            comingSoon: "{{action}} — tez orada",
+          },
+          teachers: {
+            title: "O'qituvchilar · {{count}}",
+            empty: "Hali o'qituvchilar tayinlanmagan.",
+          },
+          students: {
+            title: "O'quvchilar · {{count}}",
+            empty: "Hali o'quvchilar qo'shilmagan.",
+          },
+          edit: {
+            title: "Sinfni tahrirlash",
+            description: "Sinf ma'lumotlari, rasmi va holatini yangilang.",
+            submit: "Saqlash",
+            success: "«{{name}}» yangilandi",
+            error: "Sinf ma'lumotlarini tekshirib, qayta urinib ko'ring.",
+          },
+          delete: {
+            title: "«{{name}}» sinfini o'chirasizmi?",
+            description:
+              "Sinf va tayinlovlar maktabdan o'chiriladi. Bu amalni bekor qilib bo'lmaydi.",
+            confirm: "Sinfni o'chirish",
+            cancel: "Bekor qilish",
+            success: "«{{name}}» o'chirildi",
+            error: "Sinfni o'chirib bo'lmadi. Qayta urinib ko'ring.",
+          },
+        },
         profile: {
-          page: {
-            title: "Profil",
-            description: "Shaxsiy ma'lumotlar va profil sozlamalarini yangilang.",
-            summary: {
-              name: "Oysha Karimova",
-              role: "O‘qituvchi • Algebra II",
-              verified: "Tasdiqlangan o‘qituvchi",
+          subtitle: "Hisob, maktab profili va faol seanslarni boshqaring.",
+          roles: {
+            admin: "Administrator",
+            teacher: "O‘qituvchi",
+            student: "O‘quvchi",
+          },
+          form: {
+            save: "O‘zgarishlarni saqlash",
+            updated: "Profil yangilandi",
+            error: "Ma’lumotlarni tekshirib, qayta urinib ko‘ring.",
+          },
+          avatar: {
+            change: "Rasmni o‘zgartirish",
+            remove: "Rasmni olib tashlash",
+            updated: "Rasm yangilandi",
+            removed: "Rasm olib tashlandi",
+            tooLarge: "Fayl 2 MB dan katta bo‘lmasligi kerak.",
+            badType: "JPEG, PNG yoki WebP formatidan foydalaning.",
+            hint: "2 MB gacha bo‘lgan kvadrat JPEG, PNG yoki WebP eng yaxshi ko‘rinadi.",
+          },
+          account: {
+            title: "Hisob",
+            description: "Dwelve hisobingiz uchun asosiy ma’lumotlar.",
+            fullName: {
+              label: "To‘liq ism",
+              placeholder: "To‘liq ismingizni kiriting",
+              error: "Iltimos, ismingizni kiriting.",
             },
-            fields: {
-              fullName: {
-                label: "To‘liq ism",
-                placeholder: "To‘liq ismingizni kiriting",
-              },
-              username: {
-                label: "Foydalanuvchi nomi",
-                placeholder: "@username",
-              },
-              email: {
-                label: "Email",
-                placeholder: "you@school.edu",
-              },
-              phone: {
-                label: "Telefon",
-                placeholder: "+998 90 123 45 67",
-              },
-              school: {
-                label: "Maktab",
-                placeholder: "Dwelve Academy",
-              },
-              location: {
-                label: "Manzil",
-                placeholder: "Toshkent, UZ",
-              },
-              bio: {
-                label: "Qisqa bio",
-                placeholder: "O‘quvchilar va jamoa uchun qisqa ma’lumot yozing.",
-              },
+            email: {
+              label: "Email",
+              hint: "Emailni o‘zgartirish hozircha mavjud emas. Kerak bo‘lsa yordamga murojaat qiling.",
             },
-            meta: {
-              email: "Asosiy email tiklash va bildirishnomalar uchun ishlatiladi.",
-              phone: "Telefon majburiy emas va faqat administratorlarga ko‘rinadi.",
-              school: "Maktab nomi hisobot va sinf ro‘yxatlarida ko‘rinadi.",
-              location: "Manzil muddatlar va jadvalni moslashtirishga yordam beradi.",
-              userId: "Foydalanuvchi ID: {{id}}",
-              role: "Rol: {{role}}",
+          },
+          roleProfile: {
+            teacher: {
+              title: "O‘qituvchi profili",
+              description: "«{{school}}» administrator va o‘quvchilariga ko‘rinadi.",
             },
-            actions: {
-              save: "O‘zgarishlarni saqlash",
-              edit: "Tahrirlash",
-              cancel: "Bekor qilish",
+            student: {
+              title: "O‘quvchi profili",
+              description: "«{{school}}» o‘qituvchi va administratorlariga ko‘rinadi.",
             },
+            phone: {
+              label: "Telefon",
+              placeholder: "+998 90 123 45 67",
+            },
+            bio: {
+              label: "Qisqa bio",
+              placeholder: "O‘quvchilar va jamoa uchun qisqa ma’lumot yozing.",
+              hint: "500 belgigacha. O‘qituvchi kartochkasida ko‘rinadi.",
+            },
+            classes: {
+              title: "Sinflar ({{count}})",
+            },
+          },
+          memberships: {
+            title: "Maktablar",
+            description_one: "Siz {{count}} ta maktabga tegishlisiz.",
+            description_other: "Siz {{count}} ta maktabga tegishlisiz.",
+            description: "Siz {{count}} ta maktabga tegishlisiz.",
+            active: "Faol",
+          },
+          password: {
+            title: "Parol",
+            description: "Email orqali kirish uchun parolni o‘zgartiring.",
+            oauthOnly: "Bu hisob boshqa xizmat orqali kiradi — bu yerda parol yo‘q.",
+            current: {
+              label: "Joriy parol",
+              placeholder: "Joriy parolni kiriting",
+            },
+            new: {
+              label: "Yangi parol",
+              placeholder: "Kamida 8 ta belgi",
+              hint: "Kamida 8 ta belgi. Uzunroq — xavfsizroq.",
+              error: "Kamida 8 ta belgidan foydalaning.",
+            },
+            confirm: {
+              label: "Yangi parolni tasdiqlang",
+              placeholder: "Yangi parolni qaytadan kiriting",
+              error: "Parollar mos kelmaydi.",
+            },
+            submit: "Parolni yangilash",
+            updated: "Parol yangilandi. Boshqa qurilmalar tizimdan chiqarildi.",
+            error: "Parolni almashtirib bo‘lmadi. Qayta urinib ko‘ring.",
+          },
+          sessions: {
+            title: "Faol seanslar",
+            description: "Hisobingizga kirgan qurilmalar.",
+            current: "Ushbu qurilma",
+            revoke: "Bekor qilish",
+            signOut: "Chiqish",
+            revoked: "Seans bekor qilindi.",
+            empty: "Faol seanslar yo‘q.",
+            unknownDevice: "Noma’lum qurilma",
           },
         },
         notifications: {
