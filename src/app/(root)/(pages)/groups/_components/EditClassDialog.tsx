@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -13,18 +14,38 @@ import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/textarea";
 import ImagePicker from "@/components/Custom/ImagePicker";
 import Dialog from "@/app/(root)/_components/Dialog";
-import { createClassSchema, type CreateClassInput } from "@/app/(root)/_lib/actions.schemas";
-import { useCreateClassMutation } from "../_hooks/useCreateClassMutation";
+import { updateClassSchema, type UpdateClassInput } from "@/app/(root)/_lib/actions.schemas";
+import { useUpdateClassMutation } from "@/app/(root)/(pages)/school/_hooks/useUpdateClassMutation";
 
-type CreateClassDialogProps = {
+type EditClassDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  classInfo: {
+    id: string;
+    name: string;
+    description?: string | null;
+    pictureUrl?: string | null;
+  };
 };
 
-export default function CreateClassDialog({ open, onOpenChange }: CreateClassDialogProps) {
+export default function EditClassDialog({
+  open,
+  onOpenChange,
+  classInfo,
+}: EditClassDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const createClass = useCreateClassMutation();
+  const updateClass = useUpdateClassMutation();
+  const [removePicture, setRemovePicture] = useState(false);
+
+  const defaultValues = useMemo(
+    () => ({
+      classId: classInfo.id,
+      name: classInfo.name,
+      description: classInfo.description ?? "",
+    }),
+    [classInfo.id, classInfo.name, classInfo.description],
+  );
 
   const {
     register,
@@ -32,40 +53,56 @@ export default function CreateClassDialog({ open, onOpenChange }: CreateClassDia
     reset,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<CreateClassInput>({
-    resolver: zodResolver(createClassSchema),
-    defaultValues: { name: "", description: "" },
+  } = useForm<UpdateClassInput>({
+    resolver: zodResolver(updateClassSchema),
+    defaultValues,
   });
+
+  useEffect(() => {
+    if (open) {
+      reset(defaultValues);
+      setRemovePicture(false);
+    }
+  }, [defaultValues, open, reset]);
 
   const close = (value: boolean) => {
     onOpenChange(value);
-    if (!value) reset();
+    if (!value) {
+      reset(defaultValues);
+      setRemovePicture(false);
+    }
   };
 
-  const onSubmit: SubmitHandler<CreateClassInput> = (data) => {
-    createClass.mutate(data, {
-      onSuccess: (created) => {
-        toast.success(t("root.schoolPage.createClass.success", { name: created.name }));
-        close(false);
-        // Class data is server-rendered, so refresh to pull the new class in.
-        router.refresh();
+  const onSubmit: SubmitHandler<UpdateClassInput> = (data) => {
+    updateClass.mutate(
+      { ...data, removePicture: removePicture || undefined },
+      {
+        onSuccess: (updated) => {
+          toast.success(t("root.classDetail.edit.success", { name: updated.name }));
+          close(false);
+          router.refresh();
+        },
+        onError: (error) => {
+          toast.error(
+            error instanceof Error ? error.message : t("root.classDetail.edit.error"),
+          );
+        },
       },
-      onError: (error) => {
-        toast.error(error instanceof Error ? error.message : t("root.schoolPage.createClass.error"));
-      },
-    });
+    );
   };
 
-  const isBusy = isSubmitting || createClass.isPending;
+  const isBusy = isSubmitting || updateClass.isPending;
 
   return (
     <Dialog
       open={open}
       onOpenChange={close}
-      title={t("root.schoolPage.createClass.title")}
-      description={t("root.schoolPage.createClass.description")}
+      title={t("root.classDetail.edit.title")}
+      description={t("root.classDetail.edit.description")}
     >
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <input type="hidden" {...register("classId")} />
+
         <div>
           <label className="mb-1.5 block text-sm font-medium text-[var(--foreground)]">
             {t("root.schoolPage.createClass.nameLabel")}
@@ -103,10 +140,18 @@ export default function CreateClassDialog({ open, onOpenChange }: CreateClassDia
             <ImagePicker
               label={t("root.schoolPage.createClass.pictureLabel")}
               hint={t("root.schoolPage.createClass.pictureHint")}
+              currentUrl={removePicture ? null : classInfo.pictureUrl ?? null}
               chooseLabel={t("root.schoolPage.createClass.pictureChoose")}
               replaceLabel={t("root.schoolPage.createClass.pictureReplace")}
               removeLabel={t("root.schoolPage.createClass.pictureRemove")}
-              onChange={(file) => field.onChange(file ?? undefined)}
+              onChange={(file) => {
+                field.onChange(file ?? undefined);
+                if (file) setRemovePicture(false);
+              }}
+              onRemove={() => {
+                field.onChange(undefined);
+                setRemovePicture(true);
+              }}
               errorMessage={fieldState.error?.message ?? null}
             />
           )}
@@ -120,7 +165,7 @@ export default function CreateClassDialog({ open, onOpenChange }: CreateClassDia
           </DialogPrimitive.Close>
           <Button type="submit" disabled={isBusy}>
             {isBusy ? <LoaderCircle className="h-4 w-4 animate-spin" /> : null}
-            {t("root.schoolPage.createClass.submit")}
+            {t("root.classDetail.edit.submit")}
           </Button>
         </div>
       </form>

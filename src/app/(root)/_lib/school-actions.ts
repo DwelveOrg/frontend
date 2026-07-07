@@ -58,9 +58,11 @@ export const inviteTeacherAction = actionClient
     }
   });
 
-function nullableText(value: string | undefined) {
+function appendText(form: FormData, key: string, value: string | undefined | null) {
   const trimmed = value?.trim();
-  return trimmed ? trimmed : null;
+  if (trimmed) {
+    form.append(key, trimmed);
+  }
 }
 
 export const updateSchoolAction = actionClient
@@ -72,15 +74,21 @@ export const updateSchoolAction = actionClient
     }
 
     try {
+      const form = new FormData();
+      form.append("name", parsedInput.name.trim());
+      appendText(form, "description", parsedInput.description);
+      appendText(form, "country", parsedInput.country);
+      appendText(form, "city", parsedInput.city);
+      if (parsedInput.logo) {
+        form.append("logo", parsedInput.logo);
+      }
+      if (parsedInput.removeLogo) {
+        form.append("removeLogo", "true");
+      }
+
       const { school } = await updateSchoolRequest(
         user.schoolId,
-        {
-          name: parsedInput.name.trim(),
-          description: nullableText(parsedInput.description),
-          country: nullableText(parsedInput.country),
-          city: nullableText(parsedInput.city),
-          logoUrl: nullableText(parsedInput.logoUrl),
-        },
+        form,
         authedBackendJson,
       );
 

@@ -8,7 +8,6 @@ import {
 } from "@/lib/api/backend";
 import type { z } from "zod";
 import type {
-  CreateSchoolFormField,
   JoinSchoolFormField,
   LoginFormField,
   RegularSignupFormField,
@@ -63,11 +62,6 @@ export type {
   SchoolMembersResponse,
   TeacherInviteResponse,
 };
-
-export type CreateSchoolRequestBody = Pick<
-  CreateSchoolFormField,
-  "name" | "description" | "country" | "city" | "logoUrl"
->;
 
 export function loginRequest(input: LoginFormField) {
   return backendJson("/auth/login", {
@@ -145,8 +139,13 @@ export function healthRequest(requestJson: BackendRequester = backendJson) {
   });
 }
 
+/**
+ * `POST /schools` accepts multipart/form-data with an optional `logo` file.
+ * The caller builds the FormData so binary uploads are streamed through the
+ * request stack instead of being JSON-encoded.
+ */
 export function createSchoolRequest(
-  body: CreateSchoolRequestBody,
+  body: FormData,
   requestJson: BackendRequester = backendJson,
 ) {
   return requestJson("/schools", {
@@ -189,18 +188,14 @@ export function getSchoolRequest(schoolId: string, requestJson: BackendRequester
   });
 }
 
-export type UpdateSchoolRequestBody = Partial<
-  Pick<CreateSchoolRequestBody, "name"> & {
-    description: string | null;
-    country: string | null;
-    city: string | null;
-    logoUrl: string | null;
-  }
->;
-
+/**
+ * `PATCH /schools/:schoolId` accepts multipart/form-data with optional `logo`
+ * upload or `removeLogo=true`. Text fields (`name`, `description`, ...) travel
+ * in the same FormData.
+ */
 export function updateSchoolRequest(
   schoolId: string,
-  body: UpdateSchoolRequestBody,
+  body: FormData,
   requestJson: BackendRequester = backendJson,
 ) {
   return requestJson(`/schools/${schoolId}`, {

@@ -8,8 +8,10 @@ export type ClassItem = {
   id: string;
   /** Subject / class name, e.g. "Mathematics". */
   name: string;
-  /** Course or level line under the name, e.g. "Algebra II". */
-  course: string;
+  /** Free-form description shown as the card subtitle line. */
+  description: string;
+  /** Backend-served class picture, or `null` when none has been uploaded. */
+  pictureUrl: string | null;
   /** Lead teacher display name (first assigned teacher), or empty. */
   teacher: string;
   studentCount: number;

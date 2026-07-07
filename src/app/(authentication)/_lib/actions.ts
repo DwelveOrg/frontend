@@ -34,7 +34,6 @@ import {
   signupRequest,
   type AcceptTeacherInviteResponse,
   type AuthResponse,
-  type CreateSchoolRequestBody,
   type CreateSchoolResponse,
 } from "./api";
 import { authedBackendJson } from "./backend";
@@ -153,16 +152,19 @@ async function signupWithInput(input: RegularSignupFormField): Promise<AuthMutat
 
 async function createSchoolWithInput(input: CreateSchoolFormField) {
   try {
-    // Drop empty optional fields so the backend receives only meaningful values.
-    const body: CreateSchoolRequestBody = { name: input.name };
-    for (const key of ["description", "country", "city", "logoUrl"] as const) {
+    const form = new FormData();
+    form.append("name", input.name.trim());
+    for (const key of ["description", "country", "city"] as const) {
       const value = input[key]?.trim();
       if (value) {
-        body[key] = value;
+        form.append(key, value);
       }
     }
+    if (input.logo) {
+      form.append("logo", input.logo);
+    }
 
-    const response = await createSchoolRequest(body, authedBackendJson);
+    const response = await createSchoolRequest(form, authedBackendJson);
 
     await createSessionFromSchoolResponse(response);
 

@@ -26,7 +26,7 @@ export const classItemSchema = z
     schoolId: z.string(),
     name: z.string(),
     description: z.string().nullable().optional(),
-    gradeLevel: z.string().nullable().optional(),
+    pictureUrl: z.string().nullable().optional(),
     isActive: z.boolean(),
     teachers: z.array(classPersonSchema).default([]),
     students: z.array(classPersonSchema).default([]),
