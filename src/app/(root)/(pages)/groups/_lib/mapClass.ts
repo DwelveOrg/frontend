@@ -13,7 +13,8 @@ export function toClassCardItem(apiClass: ApiClass, viewerMemberId?: string): Cl
   return {
     id: apiClass.id,
     name: apiClass.name,
-    course: apiClass.gradeLevel ?? apiClass.description ?? "",
+    description: apiClass.description ?? "",
+    pictureUrl: apiClass.pictureUrl ?? null,
     teacher: leadTeacher,
     studentCount,
     status: apiClass.isActive ? "active" : "archived",

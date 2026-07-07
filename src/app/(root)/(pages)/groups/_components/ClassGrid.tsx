@@ -7,11 +7,12 @@ import ClassCard from "./ClassCard";
 
 type ClassGridProps = {
   items: ClassItem[];
+  isAdmin: boolean;
 };
 
 /** Responsive, staggered grid of class cards. Shared by the Classes page and the
  * School page's class directory so both stay visually identical. */
-export default function ClassGrid({ items }: ClassGridProps) {
+export default function ClassGrid({ items, isAdmin }: ClassGridProps) {
   return (
     <motion.div
       variants={containerVariants}
@@ -21,7 +22,7 @@ export default function ClassGrid({ items }: ClassGridProps) {
     >
       {items.map((item) => (
         <motion.div key={item.id} variants={itemVariants}>
-          <ClassCard item={item} />
+          <ClassCard item={item} isAdmin={isAdmin} />
         </motion.div>
       ))}
     </motion.div>

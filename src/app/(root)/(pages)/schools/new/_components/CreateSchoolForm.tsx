@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle, School } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
@@ -12,6 +12,7 @@ import {
   createSchoolSchema,
   type CreateSchoolFormField,
 } from "@/app/(authentication)/_types/_schemas";
+import ImagePicker from "@/components/Custom/ImagePicker";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/textarea";
@@ -27,12 +28,13 @@ export default function CreateSchoolForm() {
   const {
     register,
     handleSubmit,
+    control,
     setError,
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<CreateSchoolFormField>({
     resolver: zodResolver(createSchoolSchema),
-    defaultValues: { name: "", description: "", country: "", city: "", logoUrl: "" },
+    defaultValues: { name: "", description: "", country: "", city: "" },
   });
 
   const onSubmit: SubmitHandler<CreateSchoolFormField> = (data) => {
@@ -147,27 +149,21 @@ export default function CreateSchoolForm() {
           </div>
         </div>
 
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-[var(--foreground)]">
-            {t("root.dashboard.schoolForm.fields.logoUrl.label")}
-          </label>
-          <Input
-            {...register("logoUrl")}
-            type="url"
-            inputMode="url"
-            placeholder={t("root.dashboard.schoolForm.fields.logoUrl.placeholder")}
-            aria-invalid={Boolean(errors.logoUrl)}
-          />
-          {errors.logoUrl ? (
-            <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">
-              {errors.logoUrl.message}
-            </p>
-          ) : (
-            <p className="mt-1.5 text-xs text-[var(--muted-foreground)]">
-              {t("root.dashboard.schoolForm.fields.logoUrl.help")}
-            </p>
+        <Controller
+          control={control}
+          name="logo"
+          render={({ field, fieldState }) => (
+            <ImagePicker
+              label={t("root.dashboard.schoolForm.fields.logo.label")}
+              hint={t("root.dashboard.schoolForm.fields.logo.hint")}
+              chooseLabel={t("root.dashboard.schoolForm.fields.logo.choose")}
+              replaceLabel={t("root.dashboard.schoolForm.fields.logo.replace")}
+              removeLabel={t("root.dashboard.schoolForm.fields.logo.remove")}
+              onChange={(file) => field.onChange(file ?? undefined)}
+              errorMessage={fieldState.error?.message ?? null}
+            />
           )}
-        </div>
+        />
 
         {errors.root && (
           <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800/50 dark:bg-red-900/20 dark:text-red-400">

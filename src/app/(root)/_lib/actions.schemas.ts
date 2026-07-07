@@ -6,14 +6,51 @@ import { z } from "zod";
  * actions and the client forms/react-hook-form resolvers can import them.
  */
 
-/** Mirrors the backend `CreateClassDto` limits. */
+const IMAGE_MIME_TYPES = ["image/png", "image/jpeg", "image/webp"] as const;
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+/**
+ * Reusable image-file validator for logos and class pictures.
+ * `File` is a global in Node 20+ (Next.js requirement) and in every browser.
+ */
+export const imageFileSchema = z
+  .instanceof(File, { message: "Please choose an image file." })
+  .refine((file) => file.size > 0, "Please choose an image file.")
+  .refine(
+    (file) => (IMAGE_MIME_TYPES as readonly string[]).includes(file.type),
+    "Only PNG, JPEG, or WebP images are allowed.",
+  )
+  .refine(
+    (file) => file.size <= MAX_IMAGE_BYTES,
+    "Image must be under 5 MB.",
+  );
+
+/** Mirrors the backend `CreateClassDto` limits; `gradeLevel` removed per plan. */
 export const createClassSchema = z.object({
   name: z.string().trim().min(1).max(120),
-  gradeLevel: z.string().trim().max(80).optional(),
   description: z.string().trim().max(500).optional(),
+  picture: imageFileSchema.optional(),
 });
 
 export type CreateClassInput = z.infer<typeof createClassSchema>;
+
+/** `PATCH /classes/:id` payload. Any subset of fields may be changed. */
+export const updateClassSchema = z.object({
+  classId: z.string().min(1),
+  name: z.string().trim().min(1).max(120).optional(),
+  description: z.string().trim().max(500).optional(),
+  isActive: z.boolean().optional(),
+  picture: imageFileSchema.optional(),
+  removePicture: z.boolean().optional(),
+});
+
+export type UpdateClassInput = z.infer<typeof updateClassSchema>;
+
+export const deleteClassSchema = z.object({
+  classId: z.string().min(1),
+});
+
+export type DeleteClassInput = z.infer<typeof deleteClassSchema>;
 
 export const inviteTeacherSchema = z.object({
   email: z.string().trim().toLowerCase().email("Enter a valid email address"),
@@ -26,12 +63,8 @@ export const updateSchoolSchema = z.object({
   description: z.string().trim().max(500).optional(),
   country: z.string().trim().max(80).optional(),
   city: z.string().trim().max(80).optional(),
-  logoUrl: z
-    .string()
-    .trim()
-    .max(500)
-    .refine((value) => !value || URL.canParse(value), "Enter a valid URL")
-    .optional(),
+  logo: imageFileSchema.optional(),
+  removeLogo: z.boolean().optional(),
 });
 
 export type UpdateSchoolInput = z.infer<typeof updateSchoolSchema>;

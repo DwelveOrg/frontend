@@ -3,14 +3,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { useEffect, useMemo, useState } from "react";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Dialog as DialogPrimitive } from "radix-ui";
 import { toast } from "react-toastify";
 
 import Dialog from "@/app/(root)/_components/Dialog";
 import { updateSchoolSchema, type UpdateSchoolInput } from "@/app/(root)/_lib/actions.schemas";
+import ImagePicker from "@/components/Custom/ImagePicker";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/textarea";
@@ -36,6 +37,7 @@ export default function EditSchoolDialog({
   const { t } = useTranslation();
   const router = useRouter();
   const updateSchool = useUpdateSchoolMutation();
+  const [removeLogo, setRemoveLogo] = useState(false);
 
   const defaultValues = useMemo(
     () => ({
@@ -43,15 +45,16 @@ export default function EditSchoolDialog({
       description: school.description ?? "",
       country: school.country ?? "",
       city: school.city ?? "",
-      logoUrl: school.logoUrl ?? "",
     }),
-    [school.name, school.description, school.country, school.city, school.logoUrl],
+    [school.name, school.description, school.country, school.city],
   );
 
   const {
     register,
     handleSubmit,
     reset,
+    control,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<UpdateSchoolInput>({
     resolver: zodResolver(updateSchoolSchema),
@@ -61,25 +64,32 @@ export default function EditSchoolDialog({
   useEffect(() => {
     if (open) {
       reset(defaultValues);
+      setRemoveLogo(false);
     }
   }, [defaultValues, open, reset]);
 
   const close = (value: boolean) => {
     onOpenChange(value);
-    if (!value) reset(defaultValues);
+    if (!value) {
+      reset(defaultValues);
+      setRemoveLogo(false);
+    }
   };
 
   const onSubmit: SubmitHandler<UpdateSchoolInput> = (data) => {
-    updateSchool.mutate(data, {
-      onSuccess: (updated) => {
-        toast.success(t("root.schoolPage.edit.success", { name: updated.name }));
-        close(false);
-        router.refresh();
+    updateSchool.mutate(
+      { ...data, removeLogo: removeLogo || undefined },
+      {
+        onSuccess: (updated) => {
+          toast.success(t("root.schoolPage.edit.success", { name: updated.name }));
+          close(false);
+          router.refresh();
+        },
+        onError: (error) => {
+          toast.error(error instanceof Error ? error.message : t("root.schoolPage.edit.error"));
+        },
       },
-      onError: (error) => {
-        toast.error(error instanceof Error ? error.message : t("root.schoolPage.edit.error"));
-      },
-    });
+    );
   };
 
   const isBusy = isSubmitting || updateSchool.isPending;
@@ -145,21 +155,32 @@ export default function EditSchoolDialog({
           </div>
         </div>
 
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-[var(--foreground)]">
-            {t("root.schoolPage.edit.logoLabel")}
-          </label>
-          <Input
-            {...register("logoUrl")}
-            placeholder={t("root.schoolPage.edit.logoPlaceholder")}
-            aria-invalid={Boolean(errors.logoUrl)}
-          />
-          {errors.logoUrl ? (
-            <p className="mt-1.5 text-xs text-[var(--destructive)]">
-              {t("root.schoolPage.edit.logoError")}
-            </p>
-          ) : null}
-        </div>
+        <Controller
+          control={control}
+          name="logo"
+          render={({ field, fieldState }) => (
+            <ImagePicker
+              label={t("root.schoolPage.edit.logoLabel")}
+              hint={t("root.schoolPage.edit.logoHint")}
+              currentUrl={removeLogo ? null : school.logoUrl ?? null}
+              chooseLabel={t("root.schoolPage.edit.logoChoose")}
+              replaceLabel={t("root.schoolPage.edit.logoReplace")}
+              removeLabel={t("root.schoolPage.edit.logoRemove")}
+              onChange={(file) => {
+                field.onChange(file ?? undefined);
+                if (file) {
+                  setRemoveLogo(false);
+                  setValue("removeLogo", undefined);
+                }
+              }}
+              onRemove={() => {
+                field.onChange(undefined);
+                setRemoveLogo(true);
+              }}
+              errorMessage={fieldState.error?.message ?? null}
+            />
+          )}
+        />
 
         <div className="flex items-center justify-end gap-3 pt-1">
           <DialogPrimitive.Close asChild>

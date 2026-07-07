@@ -1,9 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { SchoolRole } from "@/app/(authentication)/_types/auth";
+import { Button } from "@/components/ui/Button";
 import Empty from "../../_components/ui/Empty";
+import CreateClassDialog from "../../school/_components/CreateClassDialog";
 import { classFilterLabelKeys, classFilters } from "../_constants";
 import type { ClassFilter, ClassItem } from "../_types";
 import ClassGrid from "./ClassGrid";
@@ -29,6 +32,9 @@ function subtitleKeyForRole(role: SchoolRole | null): string {
 export default function ClassesView({ items, role }: ClassesViewProps) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<ClassFilter>("all");
+  const [createOpen, setCreateOpen] = useState(false);
+
+  const isAdmin = role === "ADMIN";
 
   const visible = useMemo(
     () => (filter === "all" ? items : items.filter((item) => item.status === filter)),
@@ -37,13 +43,23 @@ export default function ClassesView({ items, role }: ClassesViewProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <header>
-        <h1 className="text-2xl font-bold text-[var(--foreground)]">{t("root.classes.title")}</h1>
-        <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-          {items.length > 0
-            ? t(subtitleKeyForRole(role), { count: items.length })
-            : t("root.classes.subtitleEmpty")}
-        </p>
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-[var(--foreground)]">
+            {t("root.classes.title")}
+          </h1>
+          <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+            {items.length > 0
+              ? t(subtitleKeyForRole(role), { count: items.length })
+              : t("root.classes.subtitleEmpty")}
+          </p>
+        </div>
+        {isAdmin ? (
+          <Button size="lg" onClick={() => setCreateOpen(true)}>
+            <Plus className="h-4 w-4" />
+            {t("root.schoolPage.actions.createClass")}
+          </Button>
+        ) : null}
       </header>
 
       {items.length > 0 ? (
@@ -74,7 +90,7 @@ export default function ClassesView({ items, role }: ClassesViewProps) {
           </div>
 
           {visible.length > 0 ? (
-            <ClassGrid key={filter} items={visible} />
+            <ClassGrid key={filter} items={visible} isAdmin={isAdmin} />
           ) : (
             <Empty
               title={t("root.classes.empty.title")}
@@ -88,6 +104,10 @@ export default function ClassesView({ items, role }: ClassesViewProps) {
           description={t("root.classes.noneDescription")}
         />
       )}
+
+      {isAdmin ? (
+        <CreateClassDialog open={createOpen} onOpenChange={setCreateOpen} />
+      ) : null}
     </div>
   );
 }

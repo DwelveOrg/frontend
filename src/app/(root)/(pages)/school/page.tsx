@@ -3,9 +3,10 @@ import { getUser } from "../../_utils/getUser";
 import { getSchool } from "../../_utils/getSchool";
 import { getSchoolMembers } from "../../_utils/getSchoolMembers";
 import { getClasses } from "../../_utils/getClasses";
+import { getStudents } from "../../_utils/getStudents";
 import { toClassCardItem } from "../groups/_lib/mapClass";
 import SchoolProfileHeader from "./_components/SchoolProfileHeader";
-import SchoolClassesSection from "./_components/SchoolClassesSection";
+import SchoolTabsSection from "./_components/SchoolTabsSection";
 
 export default async function Page() {
   const user = await getUser();
@@ -23,9 +24,12 @@ export default async function Page() {
   const isAdmin = currentUserRole === "ADMIN";
   const location = [school.city, school.country].filter(Boolean).join(", ") || null;
 
-  const [classes, schoolMembers] = await Promise.all([
+  // Backend gates `GET /students` to ADMIN, so only fire it for admins per
+  // `docs/features/students-page-contract.md`.
+  const [classes, schoolMembers, students] = await Promise.all([
     getClasses(),
     user?.schoolId ? getSchoolMembers(user.schoolId) : null,
+    isAdmin ? getStudents() : Promise.resolve([]),
   ]);
   const items = classes.map((item) => toClassCardItem(item, user?.memberId));
 
@@ -47,7 +51,7 @@ export default async function Page() {
         studentJoinCode={school.studentJoinCode}
       />
 
-      <SchoolClassesSection items={items} isAdmin={isAdmin} />
+      <SchoolTabsSection classItems={items} students={students} isAdmin={isAdmin} />
     </section>
   );
 }

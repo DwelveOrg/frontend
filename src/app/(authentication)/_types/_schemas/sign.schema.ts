@@ -19,6 +19,21 @@ export const regularSignupSchema = z.object({
 
 export type RegularSignupFormField = z.infer<typeof regularSignupSchema>;
 
+const SCHOOL_LOGO_MIME_TYPES = ["image/png", "image/jpeg", "image/webp"] as const;
+const SCHOOL_LOGO_MAX_BYTES = 5 * 1024 * 1024;
+
+const schoolLogoFileSchema = z
+  .instanceof(File, { message: "Please choose an image file." })
+  .refine((file) => file.size > 0, "Please choose an image file.")
+  .refine(
+    (file) => (SCHOOL_LOGO_MIME_TYPES as readonly string[]).includes(file.type),
+    "Only PNG, JPEG, or WebP images are allowed.",
+  )
+  .refine(
+    (file) => file.size <= SCHOOL_LOGO_MAX_BYTES,
+    "Image must be under 5 MB.",
+  );
+
 export const createSchoolSchema = z.object({
   name: z
     .string()
@@ -28,19 +43,7 @@ export const createSchoolSchema = z.object({
   description: z.string().trim().max(500, "Description must be at most 500 characters.").optional(),
   country: z.string().trim().max(80, "Country must be at most 80 characters.").optional(),
   city: z.string().trim().max(80, "City must be at most 80 characters.").optional(),
-  logoUrl: z
-    .string()
-    .trim()
-    .max(500, "Logo URL must be at most 500 characters.")
-    .url("Enter a full URL including https://")
-    // Only allow web URLs — blocks javascript:/data: and other schemes from
-    // ever being stored and later rendered as an image source.
-    .refine(
-      (value) => /^https?:\/\//i.test(value),
-      "Logo URL must start with http:// or https://",
-    )
-    .optional()
-    .or(z.literal("")),
+  logo: schoolLogoFileSchema.optional(),
 });
 
 export type CreateSchoolFormField = z.infer<typeof createSchoolSchema>;

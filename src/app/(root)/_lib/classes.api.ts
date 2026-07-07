@@ -17,25 +17,52 @@ type BackendRequester = <TSchema extends z.ZodTypeAny>(
   init: BackendRequestInit<TSchema>,
 ) => Promise<z.infer<TSchema>>;
 
-export type CreateClassRequestBody = {
-  name: string;
-  gradeLevel?: string;
-  description?: string;
-};
-
 /** `GET /classes` - backend returns only classes the caller may see. */
 export function getClassesRequest(requestJson: BackendRequester = authedBackendJson) {
   return requestJson("/classes", { responseSchema: classesResponseSchema });
 }
 
-/** `POST /classes` - ADMIN only (enforced by the backend RolesGuard). */
+/** `GET /classes/:id` - one class, visible to the caller. */
+export function getClassRequest(
+  classId: string,
+  requestJson: BackendRequester = authedBackendJson,
+) {
+  return requestJson(`/classes/${classId}`, {
+    responseSchema: classDetailResponseSchema,
+  });
+}
+
+/** `POST /classes` - ADMIN only. Accepts multipart/form-data with optional picture. */
 export function createClassRequest(
-  body: CreateClassRequestBody,
+  body: FormData,
   requestJson: BackendRequester = authedBackendJson,
 ) {
   return requestJson("/classes", {
     method: "POST",
     body,
     responseSchema: classDetailResponseSchema,
+  });
+}
+
+/** `PATCH /classes/:id` - ADMIN only. Accepts multipart/form-data. */
+export function updateClassRequest(
+  classId: string,
+  body: FormData,
+  requestJson: BackendRequester = authedBackendJson,
+) {
+  return requestJson(`/classes/${classId}`, {
+    method: "PATCH",
+    body,
+    responseSchema: classDetailResponseSchema,
+  });
+}
+
+/** `DELETE /classes/:id` - ADMIN only. Soft-deletes the class. */
+export function deleteClassRequest(
+  classId: string,
+  requestJson: BackendRequester = authedBackendJson,
+) {
+  return requestJson(`/classes/${classId}`, {
+    method: "DELETE",
   });
 }
