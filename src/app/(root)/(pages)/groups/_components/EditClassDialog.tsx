@@ -61,7 +61,6 @@ export default function EditClassDialog({
   useEffect(() => {
     if (open) {
       reset(defaultValues);
-      setRemovePicture(false);
     }
   }, [defaultValues, open, reset]);
 
