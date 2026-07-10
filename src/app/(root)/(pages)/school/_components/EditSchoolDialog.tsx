@@ -64,7 +64,6 @@ export default function EditSchoolDialog({
   useEffect(() => {
     if (open) {
       reset(defaultValues);
-      setRemoveLogo(false);
     }
   }, [defaultValues, open, reset]);
 

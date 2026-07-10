@@ -19,7 +19,10 @@ docs/
   features/
     school-membership.md
     notifications.md
+    password-auth-settings.md
+    profile-page-contract.md
     classes.md
+    students-page-contract.md
     landing.md
     redis-backend-integration.md
   planning/
@@ -38,7 +41,7 @@ docs/
 5. `architecture/SECURITY.md`
 6. `api/API_ROUTES.md`
 7. `design/design-system.md`
-7. Feature docs as needed.
+8. Feature docs as needed.
 
 ## Documentation Rules
 

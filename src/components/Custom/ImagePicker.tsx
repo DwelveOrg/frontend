@@ -51,20 +51,18 @@ export default function ImagePicker({
 }: ImagePickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
   const [removed, setRemoved] = useState(false);
 
-  useEffect(() => {
-    if (!file) {
-      setPreviewUrl(null);
-      return;
-    }
-
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
-    return () => URL.revokeObjectURL(url);
+  const previewUrl = useMemo(() => {
+    if (!file) return null;
+    return URL.createObjectURL(file);
   }, [file]);
+
+  useEffect(() => {
+    if (!previewUrl) return;
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
 
   const displayedUrl = useMemo(() => {
     if (previewUrl) return previewUrl;
@@ -103,7 +101,6 @@ export default function ImagePicker({
 
   const handleRemove = () => {
     setFile(null);
-    setPreviewUrl(null);
     onChange(null);
     if (inputRef.current) {
       inputRef.current.value = "";

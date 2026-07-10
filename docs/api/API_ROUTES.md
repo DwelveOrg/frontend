@@ -35,8 +35,11 @@ call the backend URL directly.
 POST /auth/signup
 POST /auth/login
 POST /auth/google
+POST /auth/forgot-password
+POST /auth/reset-password
 POST /auth/refresh
 POST /auth/logout
+POST /auth/logout-all
 POST /auth/select-school
 GET  /auth/me
 GET  /auth/me/schools
@@ -51,6 +54,31 @@ src/app/(authentication)/_lib/api.schemas.ts
 ```
 
 Signup creates only a normal global user account. It must not send role fields.
+Manual signup and login require a password. Google auth does not require a
+Dwelve password and may connect to an existing account with the same verified
+email when accepted by the backend.
+
+## Profile
+
+Profile routes require authentication.
+
+```txt
+GET    /profile
+PATCH  /profile
+PATCH  /profile/avatar
+PATCH  /profile/school-profile
+POST   /profile/change-password
+GET    /profile/sessions
+DELETE /profile/sessions/:sessionId
+```
+
+`GET /profile` returns `account.authMethods.password` and
+`account.authMethods.google`. Use those booleans to render settings auth UI.
+
+`POST /profile/change-password` requires `newPassword`. If the user already has
+a password, send and verify `currentPassword`. If the user does not have a
+password yet, such as a Google-only user, send only `newPassword`. Successful
+responses return fresh tokens that must replace the existing encrypted session.
 
 ## Schools
 

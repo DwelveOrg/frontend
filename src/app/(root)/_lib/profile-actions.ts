@@ -25,6 +25,7 @@ import {
 import {
   changePasswordSchema,
   revokeSessionSchema,
+  setPasswordSchema,
   updateFullNameSchema,
   updateSchoolProfileSchema,
 } from "./profile.schemas.forms";
@@ -122,6 +123,28 @@ export const updateSchoolProfileAction = actionClient
     }
   });
 
+/**
+ * A password setup/change rotates refresh tokens — write the new pair straight
+ * into the session so subsequent requests use it instead of the revoked one.
+ * Identity fields are preserved from the current cookie.
+ */
+async function writeRotatedTokens(tokens: { accessToken: string; refreshToken: string }) {
+  const session = await getSession();
+  if (!session?.userId) return;
+
+  await createSession({
+    userId: session.userId,
+    email: session.email,
+    fullName: session.fullName,
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+    schoolId: session.schoolId,
+    memberId: session.memberId,
+    schoolRole: session.schoolRole,
+    membershipCount: session.membershipCount ?? 0,
+  });
+}
+
 export const changePasswordAction = actionClient
   .inputSchema(changePasswordSchema)
   .action(async ({ parsedInput }) => {
@@ -134,23 +157,32 @@ export const changePasswordAction = actionClient
         authedBackendJson,
       );
 
-      // Password change rotates refresh tokens — write them straight into the
-      // session so subsequent requests use the new pair instead of the revoked
-      // one. Identity fields are preserved from the current cookie.
-      const session = await getSession();
-      if (session?.userId) {
-        await createSession({
-          userId: session.userId,
-          email: session.email,
-          fullName: session.fullName,
-          accessToken: response.tokens.accessToken,
-          refreshToken: response.tokens.refreshToken,
-          schoolId: session.schoolId,
-          memberId: session.memberId,
-          schoolRole: session.schoolRole,
-          membershipCount: session.membershipCount ?? 0,
-        });
-      }
+      await writeRotatedTokens(response.tokens);
+      revalidatePath("/profile");
+
+      return { success: response.success };
+    } catch (error) {
+      throw new ActionError(getActionError(error, INVALID_PASSWORD_ERROR));
+    }
+  });
+
+/**
+ * First-time password setup for accounts without a password (e.g. Google-only
+ * users). Sends only `newPassword`; the backend accepts this when
+ * `authMethods.password === false`. Revalidates `/profile` so the panel flips
+ * from "Set password" to "Change password" once a password exists.
+ */
+export const setPasswordAction = actionClient
+  .inputSchema(setPasswordSchema)
+  .action(async ({ parsedInput }) => {
+    try {
+      const response = await changePasswordRequest(
+        { newPassword: parsedInput.newPassword },
+        authedBackendJson,
+      );
+
+      await writeRotatedTokens(response.tokens);
+      revalidatePath("/profile");
 
       return { success: response.success };
     } catch (error) {
