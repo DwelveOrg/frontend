@@ -44,6 +44,11 @@ Rules:
 ## User Input
 
 - Forms must use `react-hook-form` plus Zod schemas.
+- Manual login and signup forms must require password input before submit.
+- Google auth must remain passwordless from the frontend user's perspective.
+- Password setup/change forms must never log or persist password field values.
+- Use `GET /profile` `account.authMethods.password` to decide whether
+  `currentPassword` is required.
 - Never render raw HTML from backend strings or notification data.
 - Keep URL fields restricted to safe web protocols when they may later render as
   image or link sources.

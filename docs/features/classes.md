@@ -49,8 +49,25 @@ including `email`, `teacherProfileId`, and `studentProfileId`, are admin-only.
 - Still rely on the backend to enforce permissions.
 - Use `teacherProfileId` and `studentProfileId`, not `userId`, when assigning
   teachers/students to classes.
+- Do not send or render the removed `gradeLevel` field.
+- School logos use the `logo` multipart field.
+- Class pictures use the `picture` multipart field.
+- Accept only PNG, JPEG, and WebP image uploads.
+- Store and render backend-returned `logoUrl` and `pictureUrl`; do not send
+  user-entered external image URLs.
 - Add all visible copy to `en`, `ru`, and `uz` catalogs.
 - Validate all backend class responses with Zod before rendering.
+
+## UI Surfaces
+
+- `/groups` is the class directory.
+- `/groups/[classId]` is the class detail page.
+- Admins can see create, edit, delete, teacher assignment, and student
+  assignment controls.
+- Teachers and students see read-only class surfaces unless a later backend
+  contract grants mutation permissions.
+- Add test/add exam controls must stay coming-soon until exam frontend
+  mutations are wired.
 
 ## Related Docs
 

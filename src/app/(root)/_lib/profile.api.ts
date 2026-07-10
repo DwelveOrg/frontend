@@ -71,14 +71,25 @@ export function updateSchoolProfileRequest(
   });
 }
 
-/** `POST /profile/change-password` — returns fresh tokens; older refreshes are revoked. */
+/**
+ * `POST /profile/change-password` — returns fresh tokens; older refreshes are
+ * revoked. `currentPassword` is omitted for first-time password setup on accounts
+ * without a password yet (e.g. Google-only users); see `profile-page-contract.md`.
+ */
 export function changePasswordRequest(
-  body: { currentPassword: string; newPassword: string },
+  body: { currentPassword?: string; newPassword: string },
   requestJson: BackendRequester = authedBackendJson,
 ) {
+  const payload: { currentPassword?: string; newPassword: string } = {
+    newPassword: body.newPassword,
+  };
+  if (body.currentPassword !== undefined) {
+    payload.currentPassword = body.currentPassword;
+  }
+
   return requestJson("/profile/change-password", {
     method: "POST",
-    body,
+    body: payload,
     responseSchema: changePasswordResponseSchema,
   });
 }

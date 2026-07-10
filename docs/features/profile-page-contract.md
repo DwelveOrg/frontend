@@ -216,9 +216,19 @@ admins. Response is the full `GET /profile` payload.
 POST /profile/change-password
 ```
 
+For users who already have password login enabled:
+
 ```json
 {
   "currentPassword": "old-password",
+  "newPassword": "new-password"
+}
+```
+
+For users without an existing password, such as Google-only accounts:
+
+```json
+{
   "newPassword": "new-password"
 }
 ```
@@ -275,6 +285,8 @@ If `revokedCurrent` is `true`, clear local tokens and route to login.
 ## UI Rules
 
 - Do not display role selection on the profile page.
+- Use `account.authMethods.password` to choose between `Set password` and
+  `Change password` UI.
 - Do not expose password hashes, token hashes, invite tokens, or raw refresh
   tokens.
 - Email editing is not supported in v1. Show email as read-only.
@@ -287,7 +299,7 @@ If `revokedCurrent` is `true`, clear local tokens and route to login.
 ## Error Handling
 
 ```txt
-400 invalid DTO, invalid file, no mutation fields, unsupported role-profile field
+400 invalid DTO, invalid file, no mutation fields, unsupported role-profile field, missing current password
 401 expired/invalid auth or wrong current password
 403 missing/invalid selected school context
 404 session not found

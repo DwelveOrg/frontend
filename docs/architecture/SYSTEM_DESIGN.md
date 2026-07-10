@@ -17,6 +17,10 @@ src/app/(root)             authenticated app shell and dashboard pages
 - Render trilingual UI in English, Russian, and Uzbek Latin.
 - Keep auth sessions in encrypted httpOnly cookies.
 - Route unauthenticated users away from protected pages.
+- Keep manual email auth password-required while keeping Google auth
+  passwordless.
+- Let settings/profile render password setup or password change from backend
+  `authMethods` signals.
 - Use server-side backend requests for private API calls.
 - Validate backend payloads before UI code depends on them.
 - Keep app-shell data such as notification counts synchronized with React Query.

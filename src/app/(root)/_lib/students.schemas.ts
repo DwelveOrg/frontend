@@ -14,7 +14,6 @@ export const studentClassAssignmentSchema = z
     assignmentId: z.string(),
     classId: z.string(),
     name: z.string(),
-    gradeLevel: z.string().nullable().optional(),
     isActive: z.boolean(),
   })
   .passthrough();

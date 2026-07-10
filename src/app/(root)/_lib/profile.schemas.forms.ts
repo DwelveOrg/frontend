@@ -21,7 +21,7 @@ export type UpdateSchoolProfileInput = z.infer<typeof updateSchoolProfileSchema>
 export const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(1),
-    newPassword: z.string().min(8).max(128),
+    newPassword: z.string().min(8).max(72),
     confirmPassword: z.string().min(1),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -29,6 +29,22 @@ export const changePasswordSchema = z
     message: "Passwords do not match.",
   });
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
+/**
+ * First-time password setup for accounts without a password yet (e.g. Google-only
+ * users, `authMethods.password === false`). No `currentPassword` — the backend
+ * accepts just `newPassword` for these accounts.
+ */
+export const setPasswordSchema = z
+  .object({
+    newPassword: z.string().min(8).max(72),
+    confirmPassword: z.string().min(1),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match.",
+  });
+export type SetPasswordInput = z.infer<typeof setPasswordSchema>;
 
 export const revokeSessionSchema = z.object({
   sessionId: z.string().min(1),
