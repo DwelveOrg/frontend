@@ -58,6 +58,25 @@ export const inviteTeacherSchema = z.object({
 
 export type InviteTeacherInput = z.infer<typeof inviteTeacherSchema>;
 
+/**
+ * `DELETE /schools/:schoolId`. The schoolId is read from the trusted session in
+ * the action, so this only needs to satisfy the safe-action input boundary.
+ */
+export const deleteSchoolSchema = z.object({});
+
+export type DeleteSchoolInput = z.infer<typeof deleteSchoolSchema>;
+
+/**
+ * `DELETE /students/:studentId`. `studentId` is the `StudentProfile.id`. This is
+ * a school-level removal, distinct from the class-level `removeStudentSchema`
+ * in `enrollment.schemas.ts`.
+ */
+export const removeSchoolStudentSchema = z.object({
+  studentId: z.string().min(1),
+});
+
+export type RemoveSchoolStudentInput = z.infer<typeof removeSchoolStudentSchema>;
+
 export const updateSchoolSchema = z.object({
   name: z.string().trim().min(1).max(120),
   description: z.string().trim().max(500).optional(),

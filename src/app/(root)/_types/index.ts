@@ -12,6 +12,8 @@ export interface NotificationItem {
   createdAt: string;
   readAt?: string | null;
   unread: boolean;
+  /** Backend-assigned category (drives the tint and the category filter). */
+  category?: NotificationCategory;
 }
 
 /**
@@ -29,14 +31,13 @@ export type NotificationInvitationData = {
 /** Read-state filter sent to the backend as the `tab` query param. */
 export type NotificationTab = "all" | "unread";
 
-/** Client-side category derived from a notification's `type`. */
+/** Notification category (backend-assigned; the frontend also derives it as a fallback). */
 export type NotificationCategory = "system" | "payments" | "invitations";
 
 /**
- * The active filter pill on the notifications page. `all`/`unread` are backed by
- * the `tab` query param; the category filters run client-side over the `all`
- * result set (see docs/features/notifications.md for the intended
- * server-side `category` param).
+ * The active filter pill on the notifications page. `all`/`unread` map to the
+ * `tab` query param; `system`/`payments`/`invitations` map to the backend
+ * `category` query param (server-side filtering).
  */
 export type NotificationFilter = NotificationTab | NotificationCategory;
 

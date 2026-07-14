@@ -13,26 +13,30 @@ type DiscoverClassesViewProps = {
   schoolId: string | undefined;
 };
 
-const PAGE_SIZE = 20;
-
-/** Student-facing class discovery with search and incremental loading. */
+/** Student-facing class list with client-side search over `GET /classes`. */
 export default function DiscoverClassesView({ schoolId }: DiscoverClassesViewProps) {
   const { t } = useTranslation();
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
 
-  // Debounce the search so we don't refetch on every keystroke.
+  // Debounce so filtering doesn't churn on every keystroke.
   useEffect(() => {
-    const id = window.setTimeout(() => setSearch(searchInput.trim()), 350);
+    const id = window.setTimeout(() => setSearch(searchInput.trim()), 250);
     return () => window.clearTimeout(id);
   }, [searchInput]);
 
-  const query = useDiscoverClasses({ schoolId, search, limit: PAGE_SIZE });
+  const query = useDiscoverClasses({ schoolId });
 
-  const classes = useMemo(
-    () => query.data?.pages.flatMap((page) => page.classes) ?? [],
-    [query.data?.pages],
-  );
+  const classes = useMemo(() => {
+    const all = query.data?.classes ?? [];
+    const q = search.toLowerCase();
+    if (!q) return all;
+    return all.filter(
+      (item) =>
+        item.name.toLowerCase().includes(q) ||
+        (item.teacher?.name ?? "").toLowerCase().includes(q),
+    );
+  }, [query.data?.classes, search]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -90,28 +94,11 @@ export default function DiscoverClassesView({ schoolId }: DiscoverClassesViewPro
           }
         />
       ) : (
-        <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {classes.map((item) => (
-              <DiscoverClassCard key={item.id} item={item} schoolId={schoolId} />
-            ))}
-          </div>
-
-          {query.hasNextPage ? (
-            <div className="flex justify-center pt-2">
-              <button
-                type="button"
-                onClick={() => void query.fetchNextPage()}
-                disabled={query.isFetchingNextPage}
-                className="cursor-pointer rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {query.isFetchingNextPage
-                  ? t("root.enrollment.loading")
-                  : t("root.enrollment.loadMore")}
-              </button>
-            </div>
-          ) : null}
-        </>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {classes.map((item) => (
+            <DiscoverClassCard key={item.id} item={item} schoolId={schoolId} />
+          ))}
+        </div>
       )}
     </div>
   );

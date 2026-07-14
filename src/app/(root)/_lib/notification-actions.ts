@@ -6,6 +6,7 @@ import {
 } from "@/app/(authentication)/_lib/backend";
 import type {
   InvitationResponse,
+  NotificationCategory,
   NotificationStatusResponse,
   NotificationsListResponse,
   NotificationTab,
@@ -17,6 +18,7 @@ import {
 
 type ListNotificationsInput = {
   tab?: NotificationTab;
+  category?: NotificationCategory;
   page?: number;
   limit?: number;
 };
@@ -26,6 +28,8 @@ function buildNotificationsQuery(input: ListNotificationsInput = {}) {
     tab: input.tab ?? "all",
     page: input.page ?? 1,
     limit: input.limit ?? 10,
+    // Only sent when a category tab is active; the backend filters server-side.
+    ...(input.category ? { category: input.category } : {}),
   };
 }
 

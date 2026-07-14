@@ -11,7 +11,7 @@ import {
   approveEnrollmentAction,
   assignStudentAction,
   cancelJoinRequestAction,
-  discoverClassesAction,
+  getStudentClassesAction,
   getStudentOverviewAction,
   listClassJoinRequestsAction,
   listMyClassRequestsAction,
@@ -46,22 +46,16 @@ export function useStudentOverview(schoolId: string | undefined) {
 
 export function useDiscoverClasses({
   schoolId,
-  search,
-  limit = 20,
   enabled = true,
 }: {
   schoolId: string | undefined;
-  search: string;
-  limit?: number;
   enabled?: boolean;
 }) {
-  return useInfiniteQuery({
-    queryKey: queryKeys.enrollment.discover(schoolId ?? "", { search, limit }),
-    queryFn: ({ pageParam }) =>
-      discoverClassesAction({ schoolId: schoolId as string, search, page: pageParam, limit }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) =>
-      lastPage.meta.hasMore ? lastPage.meta.page + 1 : undefined,
+  // `GET /classes` returns the whole student class list in one shot (no server
+  // pagination or search), so this is a plain query; the view filters locally.
+  return useQuery({
+    queryKey: queryKeys.enrollment.discover(schoolId ?? ""),
+    queryFn: () => getStudentClassesAction(),
     enabled: Boolean(schoolId) && enabled,
   });
 }

@@ -4,24 +4,32 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 /**
- * Hero centerpiece: a violet "brand book" (the Dwelve open-book mark, in 3D) at
- * the core, orbited by a small constellation of drafted-question cards and
- * glowing data nodes, each tethered to the book by a thin light thread. It reads
- * as "one source of knowledge → tests and insight radiating out of it" in a
- * single glance, and leans on the brand mark itself rather than a literal
- * document-to-cards diagram.
+ * Hero centerpiece: "Graded, instantly."
+ *
+ * A crisp exam sheet floats at the core. A luminous violet scan-line sweeps down
+ * it — automated grading passing over the paper — dropping a green check onto each
+ * question row in its wake, then a "Graded" pill. From the sheet's right edge a 3D
+ * performance chart rises: bars grow from the base, a glowing trend ribbon arcs up
+ * to a green apex chevron, and a "92%" grade token settles beside a "Class average"
+ * caption. A soft constellation of violet nodes and faint threads ties sheet → chart.
+ *
+ * The whole thing loops as one self-contained micro-story — submit → auto-grade →
+ * performance rises — so it reads in a single glance and leans on the product's own
+ * promise (grade the moment students submit) rather than a literal document diagram.
  *
  * Built in raw three.js (no R3F) so it stays a single lazy chunk; mounted via
  * `next/dynamic({ ssr: false })` from the hero so it never blocks first paint.
- * Card/page labels are drawn onto the surfaces themselves (canvas textures) so
- * the words live *on* the model and tilt with it. The canvas is transparent; a
- * CSS glow behind it (in MainPage) supplies depth and is the graceful fallback
- * if WebGL is unavailable.
+ * Text lives *on* the surfaces (canvas textures) so labels tilt with the model. The
+ * canvas is transparent; a CSS glow behind it (in MainPage) supplies depth and is
+ * the graceful fallback when WebGL is unavailable or motion is reduced — in which
+ * case the scene paints one settled "graded" frame instead of animating.
  */
 
-const VIOLET = 0x6a4ff0;
-const VIOLET_LIGHT = 0x8e78ff;
-const VIOLET_DEEP = 0x5739d6;
+// Brand palette — strictly the design-system violet/ink/success tokens.
+const VIOLET = 0x6a4ff0; // --primary
+const VIOLET_LIGHT = 0x8e78ff; // --brand-violet-300
+const VIOLET_BRIGHT = 0x9b80ff; // violet-400, for glow lines
+const VIOLET_DEEP = 0x5739d6; // --primary-hover
 const SUCCESS = 0x16b981;
 const LINE = 0xd7dcf2;
 const CARD_SURFACE = 0xf7f8ff;
@@ -31,9 +39,22 @@ const PAGE_SURFACE = 0xffffff;
 const WHITE_CSS = "#FFFFFF";
 const INK_CSS = "#0F1430";
 const VIOLET_CSS = "#6A4FF0";
-const VIOLET_SOFT_CSS = "#EFEBFF";
 const VIOLET_DEEP_CSS = "#4B36C9";
 const SUCCESS_CSS = "#0A8F61";
+
+// --- Easing -----------------------------------------------------------------
+const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+const easeOutCubic = (t: number) => 1 - Math.pow(1 - clamp01(t), 3);
+const easeInOutCubic = (t: number) => {
+  const x = clamp01(t);
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+};
+const easeOutBack = (t: number) => {
+  const x = clamp01(t);
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+};
 
 /** Draws crisp text onto a card/page face. Provided by the component (it needs
  *  the renderer's anisotropy + the page font), passed into the builders. */
@@ -119,7 +140,7 @@ function surfaceMaterial(color: number): THREE.MeshStandardMaterial {
   return new THREE.MeshStandardMaterial({ color, roughness: 0.55, metalness: 0.05 });
 }
 
-/** A small content bar (header pill, text line, accent dot) sitting on a face. */
+/** A small content bar (text line, accent pill) sitting on a face. */
 function addBar(
   parent: THREE.Object3D,
   w: number,
@@ -129,7 +150,7 @@ function addBar(
   y: number,
   z: number,
   emissive = false,
-): void {
+): THREE.Mesh {
   const mat = new THREE.MeshStandardMaterial({
     color,
     roughness: 0.5,
@@ -140,171 +161,308 @@ function addBar(
   const mesh = new THREE.Mesh(roundedPanelGeometry(w, h, Math.min(w, h) / 2, 0.015), mat);
   mesh.position.set(x, y, z);
   parent.add(mesh);
+  return mesh;
 }
 
-type CardOptions = {
-  w: number;
-  h: number;
-  accent?: number;
-  /** Draw an "approved" check badge in the corner. */
-  approved?: boolean;
-  title?: string;
-  titleBackground?: string;
+/** White rounded badge carrying a green ✓, drawn from two bars. Returned as a
+ *  group so callers can pop it in by scaling from 0. */
+function makeCheckBadge(size: number): THREE.Group {
+  const g = new THREE.Group();
+  const badge = new THREE.Mesh(roundedPanelGeometry(size, size, size * 0.32, 0.05), surfaceMaterial(PAGE_SURFACE));
+  g.add(badge);
+  const s = size;
+  addBar(badge, s * 0.42, s * 0.15, SUCCESS, -s * 0.05, -s * 0.07, 0.05, true).rotation.z = Math.PI * 0.32;
+  addBar(badge, s * 0.24, s * 0.15, SUCCESS, s * 0.16, s * 0.02, 0.05, true).rotation.z = -Math.PI * 0.28;
+  return g;
+}
+
+type SheetLabels = { quiz: string; graded: string };
+
+type SheetRefs = {
+  group: THREE.Group;
+  /** Front-face local Z of the sheet, for placing the scan-line just above it. */
+  faceZ: number;
+  /** Green check badge per question row (scaled 0→1 as grading passes). */
+  checks: THREE.Group[];
+  /** Each row's local Y, so the scan crossing it triggers that row's check. */
+  rowY: number[];
+  scanTop: number;
+  scanBottom: number;
+  /** The sweeping grading line (an emissive plane). */
+  scan: THREE.Mesh;
+  scanMat: THREE.MeshBasicMaterial;
+  /** "Graded" confirmation pill, revealed after the sweep completes. */
+  graded: THREE.Group;
 };
 
-/** A floating orbit card: accent dot, a real title pill, two text lines. */
-function makeOrbitCard(
-  { w, h, accent = VIOLET, approved = false, title, titleBackground = VIOLET_CSS }: CardOptions,
-  addLabel: AddLabel,
-): THREE.Group {
+/** The hero exam sheet: header pill, question rows (marker + text line), a
+ *  sweeping scan-line, per-row check badges, and a "Graded" pill. */
+function makeExamSheet(addLabel: AddLabel, labels: SheetLabels): SheetRefs {
   const group = new THREE.Group();
-  const depth = 0.12;
-  const body = new THREE.Mesh(roundedPanelGeometry(w, h, 0.16, depth), surfaceMaterial(CARD_SURFACE));
+  const W = 2.5;
+  const H = 3.25;
+  const depth = 0.14;
+
+  // Paper body + a violet left edge (the brand "spine" of the sheet).
+  const body = new THREE.Mesh(roundedPanelGeometry(W, H, 0.18, depth), surfaceMaterial(CARD_SURFACE));
   group.add(body);
-
-  const faceZ = depth / 2 + 0.03;
-  const padX = 0.22;
-  const innerW = w - padX * 2;
-
-  addBar(group, 0.14, 0.14, accent, -w / 2 + padX + 0.07, h / 2 - 0.3, faceZ, true);
-  if (title) {
-    addLabel(group, title, {
-      x: -w / 2 + padX + 0.3,
-      y: h / 2 - 0.3,
-      z: faceZ + 0.008,
-      height: 0.3,
-      maxWidth: innerW - 0.3,
-      color: WHITE_CSS,
-      weight: 800,
-      background: titleBackground,
-      borderColor: "rgba(255,255,255,0.62)",
-      paddingX: 28,
-      paddingY: 11,
-      textStrokeColor: "rgba(15,20,48,0.18)",
-      textStrokeWidth: 3,
-    });
-  }
-
-  addBar(group, innerW, 0.09, LINE, 0, -h * 0.02, faceZ);
-  addBar(group, innerW * 0.62, 0.09, LINE, -innerW * 0.19, -h * 0.02 - 0.24, faceZ);
-
-  if (approved) {
-    const badge = new THREE.Mesh(roundedPanelGeometry(0.36, 0.36, 0.18, 0.05), surfaceMaterial(0xffffff));
-    badge.position.set(w / 2 - 0.3, -h / 2 + 0.3, faceZ);
-    group.add(badge);
-    addBar(badge, 0.16, 0.055, SUCCESS, -0.02, -0.025, 0.05, true);
-    addBar(badge, 0.09, 0.055, SUCCESS, 0.06, 0.005, 0.05, true);
-  }
-
-  return group;
-}
-
-/** The central brand mark: an open book (two violet-edged pages on a spine). */
-function makeBook(addLabel: AddLabel, headerText: string): THREE.Group {
-  const book = new THREE.Group();
-  const pageW = 1.65;
-  const pageH = 2.1;
-  const pageD = 0.08;
-  const open = 0.44; // radians each page opens toward the camera
-
-  const buildPage = (side: 1 | -1) => {
-    const pivot = new THREE.Group();
-    const page = new THREE.Mesh(
-      roundedPanelGeometry(pageW, pageH, 0.1, pageD),
-      surfaceMaterial(side < 0 ? PAGE_SURFACE : CARD_SURFACE),
-    );
-    page.position.x = (side * pageW) / 2;
-    pivot.add(page);
-    // Violet cover sits a touch behind + larger, so the brand colour frames the page edge.
-    const cover = new THREE.Mesh(
-      roundedPanelGeometry(pageW + 0.16, pageH + 0.16, 0.12, pageD * 1.1),
-      surfaceMaterial(VIOLET),
-    );
-    cover.position.set((side * pageW) / 2, 0, -pageD * 0.85);
-    pivot.add(cover);
-    pivot.rotation.y = side * open;
-    return { pivot, page };
-  };
-
-  const left = buildPage(-1);
-  const right = buildPage(1);
-  book.add(left.pivot, right.pivot);
-
-  const spine = new THREE.Mesh(
-    roundedPanelGeometry(0.18, pageH + 0.12, 0.08, 0.18),
+  const edge = new THREE.Mesh(
+    roundedPanelGeometry(0.16, H - 0.24, 0.08, depth * 0.9),
     new THREE.MeshStandardMaterial({
-      color: VIOLET_DEEP,
+      color: VIOLET,
       roughness: 0.4,
       metalness: 0.1,
       emissive: new THREE.Color(VIOLET),
       emissiveIntensity: 0.25,
     }),
   );
-  spine.position.set(0, 0, -0.04);
-  book.add(spine);
+  edge.position.set(-W / 2 + 0.16, 0, 0.01);
+  group.add(edge);
 
-  const faceZ = pageD / 2 + 0.03;
-  const padX = 0.26;
-  const innerW = pageW - padX * 2;
+  const faceZ = depth / 2 + 0.03;
+  const padX = 0.42; // clears the violet edge
+  const innerW = W - padX - 0.34;
 
-  // Left page: real header (the "Lesson PDF" label) + paragraph lines.
-  if (headerText) {
-    addLabel(left.page, headerText, {
-      x: -pageW / 2 + padX,
-      y: pageH / 2 - 0.42,
-      z: faceZ + 0.008,
-      height: 0.32,
-      maxWidth: innerW,
-      color: WHITE_CSS,
-      weight: 800,
-      background: VIOLET_CSS,
-      borderColor: VIOLET_SOFT_CSS,
-      paddingX: 30,
-      paddingY: 11,
-      textStrokeColor: "rgba(15,20,48,0.22)",
-      textStrokeWidth: 3,
-    });
-  } else {
-    addBar(left.page, innerW * 0.6, 0.14, VIOLET, -innerW * 0.2, pageH / 2 - 0.4, faceZ, true);
+  // Header pill — "Weekly quiz".
+  addLabel(group, labels.quiz, {
+    x: -W / 2 + padX,
+    y: H / 2 - 0.44,
+    z: faceZ + 0.008,
+    height: 0.34,
+    maxWidth: innerW,
+    color: WHITE_CSS,
+    weight: 800,
+    background: VIOLET_CSS,
+    borderColor: "rgba(255,255,255,0.6)",
+    paddingX: 30,
+    paddingY: 11,
+    textStrokeColor: "rgba(15,20,48,0.2)",
+    textStrokeWidth: 3,
+  });
+
+  // Question rows: a status marker on the left + a "question" text line.
+  const rows = 5;
+  const rowTop = H / 2 - 1.15;
+  const rowGap = 0.46;
+  const checks: THREE.Group[] = [];
+  const rowY: number[] = [];
+  const markerX = -W / 2 + padX + 0.02;
+  for (let i = 0; i < rows; i++) {
+    const y = rowTop - i * rowGap;
+    rowY.push(y);
+
+    // Pending marker (faint ring) always visible under the check.
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(0.09, 0.13, 24),
+      new THREE.MeshBasicMaterial({ color: LINE, transparent: true, opacity: 0.9 }),
+    );
+    ring.position.set(markerX, y, faceZ);
+    group.add(ring);
+
+    // Question text lines (two, second shorter — reads as wrapped copy).
+    const lineX = markerX + 0.34;
+    const lineW = innerW - 0.4;
+    addBar(group, lineW, 0.085, LINE, lineX + lineW / 2 - 0.02, y + 0.09, faceZ);
+    const lineW2 = lineW * (i % 2 === 0 ? 0.66 : 0.82);
+    addBar(group, lineW2, 0.085, LINE, lineX + lineW2 / 2 - 0.02, y - 0.09, faceZ);
+
+    // Green check badge popped in over the ring as grading passes the row.
+    const check = makeCheckBadge(0.3);
+    check.position.set(markerX, y, faceZ + 0.03);
+    check.scale.setScalar(0);
+    group.add(check);
+    checks.push(check);
   }
-  for (let i = 0; i < 5; i++) {
-    const lw = i % 3 === 2 ? innerW * 0.55 : innerW;
-    addBar(left.page, lw, 0.08, LINE, -(innerW - lw) / 2, pageH / 2 - 0.95 - i * 0.26, faceZ);
-  }
 
-  // Right page: paragraph lines + a settled "graded" check.
-  for (let i = 0; i < 5; i++) {
-    const lw = i % 4 === 3 ? innerW * 0.5 : innerW;
-    addBar(right.page, lw, 0.08, LINE, -(innerW - lw) / 2, pageH / 2 - 0.5 - i * 0.26, faceZ);
-  }
-  const badge = new THREE.Mesh(roundedPanelGeometry(0.4, 0.4, 0.2, 0.05), surfaceMaterial(0xffffff));
-  badge.position.set(pageW / 2 - 0.34, -pageH / 2 + 0.36, faceZ);
-  right.page.add(badge);
-  addBar(badge, 0.17, 0.06, SUCCESS, -0.02, -0.03, 0.05, true);
-  addBar(badge, 0.1, 0.06, SUCCESS, 0.06, 0.0, 0.05, true);
+  // Sweeping scan-line — a thin emissive plane spanning the paper width.
+  const scanBottom = rowY[rows - 1] - 0.3;
+  const scanTop = H / 2 - 0.78;
+  const scanMat = new THREE.MeshBasicMaterial({
+    color: VIOLET_BRIGHT,
+    transparent: true,
+    opacity: 0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    toneMapped: false,
+  });
+  const scan = new THREE.Mesh(new THREE.PlaneGeometry(W - 0.34, 0.14), scanMat);
+  scan.position.set(0.08, scanTop, faceZ + 0.06);
+  scan.visible = false;
+  group.add(scan);
 
-  return book;
+  // "Graded" pill — settles at the bottom once the sweep finishes.
+  const graded = new THREE.Group();
+  graded.position.set(-W / 2 + padX + 0.02, -H / 2 + 0.44, faceZ + 0.02);
+  addLabel(graded, labels.graded, {
+    x: 0,
+    y: 0,
+    z: 0.01,
+    height: 0.3,
+    maxWidth: innerW,
+    color: WHITE_CSS,
+    weight: 800,
+    background: SUCCESS_CSS,
+    borderColor: "rgba(255,255,255,0.55)",
+    paddingX: 30,
+    paddingY: 10,
+    anchor: "left",
+  });
+  graded.scale.setScalar(0);
+  group.add(graded);
+
+  return { group, faceZ, checks, rowY, scanTop, scanBottom, scan, scanMat, graded };
 }
 
-type HeroLabels = { document: string; draft: string; ready: string; editable?: string };
+type Bar = { group: THREE.Group; fullH: number; mat: THREE.MeshStandardMaterial; baseEmissive: number };
+
+type ChartRefs = {
+  group: THREE.Group;
+  bars: Bar[];
+  ribbonMat: THREE.MeshBasicMaterial;
+  apex: THREE.Group;
+  baseY: number;
+};
+
+/** The performance chart rising beside the sheet: bars, a glowing trend ribbon,
+ *  and a green upward apex chevron. */
+function makePerfChart(): ChartRefs {
+  const group = new THREE.Group();
+  const bars: Bar[] = [];
+  const heights = [0.62, 0.98, 0.82, 1.28, 1.72];
+  const colors = [VIOLET_LIGHT, VIOLET, VIOLET_LIGHT, VIOLET, VIOLET_DEEP];
+  const emissives = [0.22, 0.3, 0.24, 0.34, 0.55];
+  const barW = 0.3;
+  const gap = 0.14;
+  const baseY = -1.4;
+  const startX = 0;
+
+  const tops: THREE.Vector3[] = [];
+  for (let i = 0; i < heights.length; i++) {
+    const fullH = heights[i];
+    const x = startX + i * (barW + gap);
+    const holder = new THREE.Group();
+    holder.position.set(x, baseY, 0);
+    const mat = new THREE.MeshStandardMaterial({
+      color: colors[i],
+      roughness: 0.42,
+      metalness: 0.12,
+      emissive: new THREE.Color(colors[i]),
+      emissiveIntensity: emissives[i],
+    });
+    const mesh = new THREE.Mesh(roundedPanelGeometry(barW, fullH, 0.06, 0.16), mat);
+    mesh.position.y = fullH / 2;
+    holder.add(mesh);
+    holder.scale.y = 0.05;
+    group.add(holder);
+    bars.push({ group: holder, fullH, mat, baseEmissive: emissives[i] });
+    tops.push(new THREE.Vector3(x, baseY + fullH + 0.05, 0.12));
+  }
+
+  // Trend ribbon: rides the bar tops then lifts to the apex — an "up and to the
+  // right" glow line. A thin tube reads as a luminous thread over the chart.
+  const lastX = startX + (heights.length - 1) * (barW + gap);
+  const apexPos = new THREE.Vector3(lastX + 0.46, baseY + heights[heights.length - 1] + 0.52, 0.14);
+  const curvePts = [new THREE.Vector3(startX - 0.28, baseY + 0.34, 0.12), ...tops, apexPos];
+  const curve = new THREE.CatmullRomCurve3(curvePts, false, "catmullrom", 0.4);
+  const ribbonMat = new THREE.MeshBasicMaterial({
+    color: VIOLET_BRIGHT,
+    transparent: true,
+    opacity: 0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    toneMapped: false,
+  });
+  const ribbon = new THREE.Mesh(new THREE.TubeGeometry(curve, 56, 0.03, 7, false), ribbonMat);
+  group.add(ribbon);
+
+  // Apex chevron — a small green "up" arrow marking the positive trend.
+  const apex = new THREE.Group();
+  apex.position.copy(apexPos);
+  const chevron = new THREE.Shape();
+  chevron.moveTo(0, 0.17);
+  chevron.lineTo(0.17, -0.1);
+  chevron.lineTo(0.06, -0.1);
+  chevron.lineTo(0, 0.02);
+  chevron.lineTo(-0.06, -0.1);
+  chevron.lineTo(-0.17, -0.1);
+  chevron.closePath();
+  const chevronGeo = new THREE.ExtrudeGeometry(chevron, {
+    depth: 0.06,
+    bevelEnabled: true,
+    bevelThickness: 0.015,
+    bevelSize: 0.015,
+    bevelSegments: 1,
+    steps: 1,
+  });
+  chevronGeo.center();
+  const apexMesh = new THREE.Mesh(
+    chevronGeo,
+    new THREE.MeshStandardMaterial({
+      color: SUCCESS,
+      roughness: 0.35,
+      metalness: 0.1,
+      emissive: new THREE.Color(SUCCESS),
+      emissiveIntensity: 0.6,
+    }),
+  );
+  apex.add(apexMesh);
+  apex.scale.setScalar(0);
+  group.add(apex);
+
+  return { group, bars, ribbonMat, apex, baseY };
+}
+
+/** A rounded token carrying centred text (the grade "92%" and the caption). */
+function makeToken(
+  addLabel: AddLabel,
+  text: string,
+  opts: {
+    height: number;
+    surface: number;
+    textColor: string;
+    background?: string;
+    weight?: number;
+    emissive?: boolean;
+  },
+): THREE.Group {
+  const g = new THREE.Group();
+  addLabel(g, text, {
+    x: 0,
+    y: 0,
+    z: 0.02,
+    height: opts.height,
+    maxWidth: 4,
+    color: opts.textColor,
+    weight: opts.weight ?? 800,
+    anchor: "center",
+    background: opts.background,
+    borderColor: opts.background ? "rgba(255,255,255,0.5)" : undefined,
+    paddingX: 34,
+    paddingY: 14,
+    textStrokeColor: opts.background ? "rgba(15,20,48,0.18)" : undefined,
+    textStrokeWidth: opts.background ? 3 : 0,
+  });
+  g.scale.setScalar(0);
+  return g;
+}
+
+type HeroLabels = { quiz: string; graded: string; average: string };
 
 export default function HeroScene({ className, labels }: { className?: string; labels?: HeroLabels }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Primitive deps (not the object) so the scene only rebuilds when the text
   // actually changes — e.g. a language switch — not on every parent re-render.
-  const documentLabel = labels?.document ?? "";
-  const draftLabel = labels?.draft ?? "";
-  const readyLabel = labels?.ready ?? "";
-  const editableLabel = labels?.editable ?? "";
+  const quizLabel = labels?.quiz ?? "";
+  const gradedLabel = labels?.graded ?? "";
+  const averageLabel = labels?.average ?? "";
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let renderer: THREE.WebGLRenderer;
     try {
@@ -332,10 +490,10 @@ export default function HeroScene({ className, labels }: { className?: string; l
 
     // Lighting: soft ambient fill + a key light for form + a violet rim for brand glow.
     scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-    const key = new THREE.DirectionalLight(0xffffff, 1.5);
+    const key = new THREE.DirectionalLight(0xffffff, 1.7);
     key.position.set(3, 4, 6);
     scene.add(key);
-    const rim = new THREE.PointLight(VIOLET_LIGHT, 14, 30);
+    const rim = new THREE.PointLight(VIOLET_LIGHT, 17, 30);
     rim.position.set(-4, -1.5, 3);
     scene.add(rim);
     const topViolet = new THREE.DirectionalLight(VIOLET_LIGHT, 0.5);
@@ -439,43 +597,53 @@ export default function HeroScene({ className, labels }: { className?: string; l
     scene.add(root);
 
     // --- Composition -----------------------------------------------------------
-    // The brand book at the core (its own group so it can sway independently),
-    // then question cards + data nodes scattered in the front hemisphere, each
-    // tethered to the book by a light thread. Cards stay camera-facing so their
-    // labels read; the whole thing bobs and pulses rather than spinning, so text
-    // never turns away.
+    // The exam sheet sits left-of-centre (its own group so it can bob and tilt
+    // independently), the performance chart rises off its right edge, and a grade
+    // token + caption settle at the chart's apex. Everything faces the camera so
+    // labels read; the whole rig sways rather than spins, so text never turns away.
+    const sheet = makeExamSheet(addLabel, { quiz: quizLabel, graded: gradedLabel });
     const core = new THREE.Group();
+    core.position.set(-0.78, -0.05, 0);
+    core.rotation.set(-0.06, 0.16, 0);
+    core.add(sheet.group);
     root.add(core);
-    const baseBookTiltX = -0.1;
-    core.rotation.set(baseBookTiltX, 0, 0);
-    core.add(makeBook(addLabel, documentLabel));
 
-    type Floater = { mesh: THREE.Group; baseX: number; baseY: number; phase: number; amp: number; drift: number };
-    const cards: Floater[] = [];
-    const cardDefs = [
-      { x: -1.95, y: 1.0, z: 0.7, w: 1.5, h: 0.92, title: draftLabel, bg: VIOLET_CSS, accent: VIOLET, phase: 1.2, amp: 0.12, drift: 0.06, approved: false },
-      { x: 2.05, y: 0.12, z: 0.85, w: 1.46, h: 0.9, title: editableLabel, bg: VIOLET_DEEP_CSS, accent: VIOLET_LIGHT, phase: 2.7, amp: 0.1, drift: 0.05, approved: false },
-      { x: -1.4, y: -1.5, z: 0.95, w: 1.5, h: 0.9, title: readyLabel, bg: SUCCESS_CSS, accent: VIOLET, phase: 0.4, amp: 0.13, drift: 0.07, approved: true },
-    ];
-    for (const d of cardDefs) {
-      const card = makeOrbitCard(
-        { w: d.w, h: d.h, title: d.title, titleBackground: d.bg, accent: d.accent, approved: !!d.approved },
-        addLabel,
-      );
-      card.position.set(d.x, d.y, d.z);
-      card.rotation.set(0.06, d.x > 0 ? -0.22 : 0.22, 0);
-      root.add(card);
-      cards.push({ mesh: card, baseX: d.x, baseY: d.y, phase: d.phase, amp: d.amp, drift: d.drift });
-    }
+    const chart = makePerfChart();
+    chart.group.position.set(1.18, 0.02, 0.2);
+    chart.group.rotation.set(-0.05, -0.12, 0);
+    root.add(chart.group);
 
+    // Grade token ("92%") near the apex + a "Class average" caption below it.
+    const gradeToken = makeToken(addLabel, "92%", {
+      height: 0.5,
+      surface: VIOLET,
+      textColor: WHITE_CSS,
+      background: VIOLET_CSS,
+      weight: 800,
+    });
+    gradeToken.position.set(2.32, 1.62, 0.35);
+    root.add(gradeToken);
+
+    const caption = makeToken(addLabel, averageLabel, {
+      height: 0.24,
+      surface: PAGE_SURFACE,
+      textColor: VIOLET_DEEP_CSS,
+      background: WHITE_CSS,
+      weight: 700,
+    });
+    caption.position.set(1.86, 1.18, 0.34);
+    root.add(caption);
+
+    // Ambient data nodes — a soft violet constellation for depth + the "whole
+    // class" read (many submissions feeding one performance picture).
     type Node = { mesh: THREE.Mesh; mat: THREE.MeshStandardMaterial; phase: number };
     const nodes: Node[] = [];
     const nodeDefs = [
-      { x: 1.5, y: 1.65, z: 0.4, r: 0.13, c: VIOLET },
-      { x: -2.5, y: -0.25, z: 0.3, r: 0.1, c: VIOLET_LIGHT },
-      { x: 2.55, y: -1.35, z: 0.5, r: 0.12, c: VIOLET_LIGHT },
-      { x: -0.5, y: 2.1, z: 0.5, r: 0.09, c: VIOLET },
-      { x: 0.85, y: -2.05, z: 0.4, r: 0.11, c: VIOLET_LIGHT },
+      { x: -0.4, y: 2.15, z: 0.3, r: 0.11, c: VIOLET },
+      { x: -2.55, y: 1.15, z: 0.2, r: 0.13, c: VIOLET_LIGHT },
+      { x: -2.35, y: -1.55, z: 0.35, r: 0.1, c: VIOLET_LIGHT },
+      { x: 0.5, y: -2.05, z: 0.3, r: 0.12, c: VIOLET },
+      { x: 2.75, y: -0.5, z: 0.25, r: 0.1, c: VIOLET_LIGHT },
     ];
     for (const d of nodeDefs) {
       const mat = new THREE.MeshStandardMaterial({
@@ -485,18 +653,17 @@ export default function HeroScene({ className, labels }: { className?: string; l
         emissive: new THREE.Color(d.c),
         emissiveIntensity: 0.7,
       });
-      const mesh = new THREE.Mesh(new THREE.SphereGeometry(d.r, 24, 24), mat);
+      const mesh = new THREE.Mesh(new THREE.SphereGeometry(d.r, 20, 20), mat);
       mesh.position.set(d.x, d.y, d.z);
       root.add(mesh);
       nodes.push({ mesh, mat, phase: d.x * 1.7 + d.y });
     }
 
-    // Light threads: book core → each card + a few nodes. Geometry is rewritten
-    // each frame so the lines track the bobbing cards (cheap — ~6 two-point lines).
-    type Thread = { posAttr: THREE.BufferAttribute; to: THREE.Object3D };
+    // Faint threads: sheet edge → chart base + a couple of nodes → the network.
+    // Geometry is rewritten each frame so lines track the bobbing sheet (cheap).
+    type Thread = { posAttr: THREE.BufferAttribute; from: THREE.Object3D; to: THREE.Object3D; fromOffset: THREE.Vector3 };
     const threads: Thread[] = [];
-    const threadFrom = new THREE.Vector3(0, 0, 0.12);
-    const makeThread = (toObj: THREE.Object3D, opacity: number) => {
+    const makeThread = (from: THREE.Object3D, to: THREE.Object3D, fromOffset: THREE.Vector3, opacity: number) => {
       const geo = new THREE.BufferGeometry();
       const posAttr = new THREE.BufferAttribute(new Float32Array(6), 3);
       geo.setAttribute("position", posAttr);
@@ -505,26 +672,30 @@ export default function HeroScene({ className, labels }: { className?: string; l
         new THREE.LineBasicMaterial({ color: VIOLET_LIGHT, transparent: true, opacity }),
       );
       root.add(line);
-      threads.push({ posAttr, to: toObj });
+      threads.push({ posAttr, from, to, fromOffset });
     };
-    cards.forEach((c) => makeThread(c.mesh, 0.34));
-    [nodes[0], nodes[1], nodes[2]].forEach((n) => makeThread(n.mesh, 0.24));
+    makeThread(core, chart.group, new THREE.Vector3(1.1, -0.4, 0.2), 0.32);
+    makeThread(core, nodes[1].mesh, new THREE.Vector3(-1.0, 1.2, 0.1), 0.22);
+    makeThread(core, nodes[3].mesh, new THREE.Vector3(0.3, -1.5, 0.1), 0.2);
 
+    const tmpFrom = new THREE.Vector3();
+    const tmpTo = new THREE.Vector3();
     const updateThreads = () => {
       for (const th of threads) {
         const arr = th.posAttr.array as Float32Array;
-        arr[0] = threadFrom.x;
-        arr[1] = threadFrom.y;
-        arr[2] = threadFrom.z;
-        arr[3] = th.to.position.x;
-        arr[4] = th.to.position.y;
-        arr[5] = th.to.position.z;
+        tmpFrom.copy(th.fromOffset).applyMatrix4(th.from.matrix);
+        tmpTo.copy(th.to.position);
+        arr[0] = tmpFrom.x;
+        arr[1] = tmpFrom.y;
+        arr[2] = tmpFrom.z;
+        arr[3] = tmpTo.x;
+        arr[4] = tmpTo.y;
+        arr[5] = tmpTo.z;
         th.posAttr.needsUpdate = true;
       }
     };
-    updateThreads();
 
-    const baseRotY = -0.12;
+    const baseRotY = -0.1;
     const baseRotX = 0.05;
     root.rotation.set(baseRotX, baseRotY, 0);
 
@@ -542,11 +713,7 @@ export default function HeroScene({ className, labels }: { className?: string; l
       const corner = new THREE.Vector3();
       let maxNdc = 0;
       for (let i = 0; i < 8; i++) {
-        corner.set(
-          i & 1 ? box.max.x : box.min.x,
-          i & 2 ? box.max.y : box.min.y,
-          i & 4 ? box.max.z : box.min.z,
-        );
+        corner.set(i & 1 ? box.max.x : box.min.x, i & 2 ? box.max.y : box.min.y, i & 4 ? box.max.z : box.min.z);
         corner.project(camera);
         maxNdc = Math.max(maxNdc, Math.abs(corner.x), Math.abs(corner.y));
       }
@@ -554,7 +721,84 @@ export default function HeroScene({ className, labels }: { className?: string; l
       camera.aspect = prevAspect;
       camera.updateProjectionMatrix();
     };
-    fitToFrame(0.72);
+
+    // --- Grading cycle ---------------------------------------------------------
+    // One looping micro-story: the scan sweeps the sheet (checks pop in its wake),
+    // then "Graded" settles, the chart grows, and the grade token + caption reveal,
+    // hold, and reset. `applyCycle(p)` is a pure function of the loop phase p∈[0,1)
+    // so it is safe to evaluate at any fixed p for the static/reduced-motion frame.
+    const CYCLE = 8.4; // seconds
+    const SETTLED_P = 0.74; // the "fully graded" frame used when paused / reduced
+
+    const applyCycle = (p: number, t: number) => {
+      const inReset = p >= 0.9;
+      const resetT = inReset ? easeInOutCubic((p - 0.9) / 0.1) : 0;
+      const settle = 1 - resetT;
+
+      // Scan sweep (top → bottom).
+      const scanStart = 0.05;
+      const scanEnd = 0.44;
+      let scanNorm: number;
+      if (p < scanStart) scanNorm = 0;
+      else if (p > scanEnd) scanNorm = 1;
+      else scanNorm = easeInOutCubic((p - scanStart) / (scanEnd - scanStart));
+      const scanY = sheet.scanTop + (sheet.scanBottom - sheet.scanTop) * scanNorm;
+      const scanning = p >= scanStart && p <= scanEnd && !inReset;
+      sheet.scan.visible = scanning;
+      if (scanning) {
+        sheet.scan.position.y = scanY;
+        // Fade in at the top, out at the bottom of the sweep.
+        const edge = Math.min(scanNorm / 0.12, (1 - scanNorm) / 0.12, 1);
+        sheet.scanMat.opacity = 0.85 * clamp01(edge) * (0.8 + 0.2 * Math.sin(t * 9));
+      }
+
+      // Per-row checks pop in as the scan passes them.
+      for (let i = 0; i < sheet.checks.length; i++) {
+        const reveal = clamp01((sheet.rowY[i] - scanY) / 0.16);
+        const s = easeOutBack(reveal) * settle;
+        sheet.checks[i].scale.setScalar(Math.max(0, s));
+        sheet.checks[i].visible = s > 0.002;
+      }
+
+      // "Graded" pill after the sweep.
+      const gradedShow = easeOutBack((p - 0.48) / 0.06) * settle;
+      sheet.graded.scale.setScalar(Math.max(0, gradedShow));
+      sheet.graded.visible = gradedShow > 0.002;
+
+      // Chart bars grow from the base (slight left-to-right stagger + gentle breathing).
+      const barBase = clamp01((p - 0.48) / 0.2);
+      for (let i = 0; i < chart.bars.length; i++) {
+        const b = chart.bars[i];
+        const grow = easeOutCubic(clamp01(barBase * 1.18 - i * 0.06));
+        const breathe = 0.02 * Math.sin(t * 1.5 + i) * grow;
+        b.group.scale.y = Math.max(0.05, (0.05 + 0.95 * grow + breathe) * (1 - resetT * 0.95));
+        b.mat.emissiveIntensity = b.baseEmissive * (0.6 + 0.4 * grow);
+      }
+
+      // Trend ribbon fades in with the bars; apex chevron pops after.
+      chart.ribbonMat.opacity = 0.9 * easeOutCubic(clamp01((p - 0.5) / 0.2)) * settle;
+      const apexShow = easeOutBack((p - 0.62) / 0.06) * settle;
+      chart.apex.scale.setScalar(Math.max(0, apexShow));
+      chart.apex.visible = apexShow > 0.002;
+
+      // Grade token + caption settle last.
+      const tokenShow = easeOutBack((p - 0.6) / 0.07) * settle;
+      gradeToken.scale.setScalar(Math.max(0, tokenShow));
+      gradeToken.visible = tokenShow > 0.002;
+      const capShow = easeOutBack((p - 0.56) / 0.07) * settle;
+      caption.scale.setScalar(Math.max(0, capShow));
+      caption.visible = capShow > 0.002;
+    };
+
+    // Fit after content exists, then paint the settled frame so the hero is correct
+    // before any motion (and is the single frame under reduced motion / no WebGL).
+    // 0.87 fills more of the frame (a larger, more present centrepiece) while still
+    // leaving ~13% headroom for the pointer sway and float bob so nothing clips.
+    fitToFrame(0.87);
+    core.updateMatrix();
+    chart.group.updateMatrix();
+    applyCycle(SETTLED_P, SETTLED_P * CYCLE);
+    updateThreads();
 
     // True only while the hero is meaningfully on-screen (maintained by the
     // observer below). The pointer handler reads it so the model never tracks the
@@ -583,33 +827,44 @@ export default function HeroScene({ className, labels }: { className?: string; l
     if (!prefersReduced) window.addEventListener("pointermove", onPointerMove, { passive: true });
 
     const clock = new THREE.Clock();
-    let elapsed = 0; // own accumulator so pausing/resuming never jumps the motion
+    // Start the accumulator at the settled phase so the first animated frame flows
+    // out of the static frame (settled → reset → new sweep) with no jump on load.
+    let elapsed = SETTLED_P * CYCLE;
     let frame = 0;
     let running = false;
 
     const renderFrame = () => {
       elapsed += clock.getDelta();
       const t = elapsed;
+      const p = (elapsed % CYCLE) / CYCLE;
 
       const targetRotY = baseRotY + pointer.x * 0.18 + Math.sin(t * 0.25) * 0.04;
       const targetRotX = baseRotX + pointer.y * 0.12;
       root.rotation.y += (targetRotY - root.rotation.y) * 0.06;
       root.rotation.x += (targetRotX - root.rotation.x) * 0.06;
 
-      // Book gently sways so it has dimensionality without turning its back.
-      core.rotation.y = Math.sin(t * 0.35) * 0.16;
-      core.rotation.x = baseBookTiltX + Math.sin(t * 0.5) * 0.03;
+      // Sheet gently sways + bobs so it has dimensionality without turning away.
+      core.position.y = -0.05 + Math.sin(t * 0.7) * 0.06;
+      core.rotation.y = 0.16 + Math.sin(t * 0.32) * 0.05;
+      core.rotation.x = -0.06 + Math.sin(t * 0.5) * 0.025;
+      core.updateMatrix();
 
-      for (const c of cards) {
-        c.mesh.position.y = c.baseY + Math.sin(t * 0.8 + c.phase) * c.amp;
-        c.mesh.position.x = c.baseX + Math.cos(t * 0.5 + c.phase) * c.drift;
-        c.mesh.rotation.z = Math.sin(t * 0.6 + c.phase) * 0.05;
-      }
+      // Chart drifts on its own subtle bob.
+      chart.group.position.y = 0.02 + Math.sin(t * 0.6 + 1.5) * 0.05;
+      chart.group.updateMatrix();
+
+      // Grade token + caption float alongside the apex.
+      gradeToken.position.y = 1.62 + Math.sin(t * 0.8 + 0.6) * 0.07;
+      caption.position.y = 1.18 + Math.sin(t * 0.8 + 1.1) * 0.05;
+
+      applyCycle(p, t);
+
       for (const n of nodes) {
-        const p = 0.5 + 0.5 * Math.sin(t * 1.6 + n.phase);
-        n.mesh.scale.setScalar(0.85 + p * 0.4);
-        n.mat.emissiveIntensity = 0.5 + p * 0.7;
+        const pulse = 0.5 + 0.5 * Math.sin(t * 1.6 + n.phase);
+        n.mesh.scale.setScalar(0.85 + pulse * 0.4);
+        n.mat.emissiveIntensity = 0.5 + pulse * 0.7;
       }
+
       updateThreads();
 
       renderer.render(scene, camera);
@@ -689,7 +944,7 @@ export default function HeroScene({ className, labels }: { className?: string; l
         container.removeChild(renderer.domElement);
       }
     };
-  }, [documentLabel, draftLabel, readyLabel, editableLabel]);
+  }, [quizLabel, gradedLabel, averageLabel]);
 
   return <div ref={containerRef} className={className} aria-hidden="true" />;
 }

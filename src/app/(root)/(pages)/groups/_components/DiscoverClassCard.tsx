@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, Loader2, Lock, Users } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Clock, Loader2, Lock, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
@@ -160,6 +161,19 @@ export default function DiscoverClassCard({ item, schoolId }: DiscoverClassCardP
             {t("root.enrollment.discover.cancelRequest")}
           </Button>
         </div>
+      );
+    }
+
+    // Already has active access: let the student open the class instead of
+    // seeing a dead end. `canEnter` is the backend's authority for entry.
+    if (item.canEnter) {
+      return (
+        <Button asChild variant="outline" className="w-full">
+          <Link href={`/groups/${item.id}`}>
+            {t("root.enrollment.discover.open")}
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
       );
     }
 

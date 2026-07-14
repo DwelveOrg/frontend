@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { RelativeTime } from "@/components/Custom/RelativeTime";
 import { cn } from "@/lib/utils";
 import type { InvitationResponse, NotificationItem } from "@/app/(root)/_types";
-import { CATEGORY_TINT, getNotificationCategory, isPendingInvitation } from "../_lib/notifications";
+import { CATEGORY_TINT, categoryForItem, isPendingInvitation } from "../_lib/notifications";
 import { NotificationIcon } from "./NotificationIcon";
 
 type NotificationCardProps = {
@@ -25,7 +25,7 @@ export function NotificationCard({
 }: Readonly<NotificationCardProps>) {
   const { t } = useTranslation();
   const unread = item.unread;
-  const category = getNotificationCategory(item.type);
+  const category = categoryForItem(item);
   const showInvite = isPendingInvitation(item);
 
   return (

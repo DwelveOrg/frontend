@@ -385,6 +385,7 @@ translation: {
             edit: "Изменить",
             invite: "Пригласить",
             createClass: "Создать класс",
+            delete: "Удалить школу",
           },
           edit: {
             title: "Изменить школу",
@@ -407,6 +408,14 @@ translation: {
             cancel: "Отмена",
             success: "«{{name}}» обновлена",
             error: "Не удалось обновить школу. Попробуйте ещё раз.",
+          },
+          delete: {
+            title: "Удалить «{{name}}»?",
+            description:
+              "Школа будет деактивирована для всех: классы, списки и заявки (в ожидании и активные) будут удалены. Аккаунты участников не удаляются. Это действие необратимо.",
+            confirm: "Удалить школу",
+            cancel: "Отмена",
+            error: "Не удалось удалить школу. Попробуйте ещё раз.",
           },
           invite: {
             menuTeacher: "Пригласить учителя",
@@ -472,6 +481,20 @@ translation: {
               code: "Код",
               classes: "Классы",
               joined: "Присоединился",
+              actions: "Действия",
+            },
+            actions: {
+              menu: "Действия для {{name}}",
+              remove: "Удалить из школы",
+            },
+            remove: {
+              title: "Удалить {{name}}?",
+              description:
+                "Ученик будет удалён из этой школы и отчислен из всех её классов. Аккаунт не удаляется — ученик сможет вернуться по коду или приглашению. Это действие необратимо.",
+              confirm: "Удалить ученика",
+              cancel: "Отмена",
+              success: "{{name}} удалён(а) из школы",
+              error: "Не удалось удалить ученика. Попробуйте ещё раз.",
             },
           },
         },
@@ -554,6 +577,7 @@ translation: {
             subtitle: "Найдите классы вашей школы и отправьте заявку.",
             searchPlaceholder: "Поиск классов",
             requestToJoin: "Подать заявку",
+            open: "Открыть класс",
             requestPending: "Заявка отправлена",
             cancelRequest: "Отменить заявку",
             classFull: "Класс заполнен",
@@ -808,6 +832,78 @@ translation: {
               title: "С возвращением",
               description: "Вы успешно вошли в Dwelve.",
             },
+            schoolCreated: {
+              title: "Школа создана",
+              description: "Ваше новое рабочее пространство школы готово к настройке.",
+            },
+            schoolUpdated: {
+              title: "Школа обновлена",
+              description: "Данные профиля вашей школы были обновлены.",
+            },
+            schoolDeleted: {
+              title: "Школа удалена",
+              description: "Школа, к которой вы принадлежали, была удалена.",
+            },
+            schoolInvite: {
+              title: "Приглашение учителя",
+              description: "Вас пригласили присоединиться к школе как учитель.",
+            },
+            studentJoinedSchool: {
+              title: "Новый ученик",
+              description: "Ученик присоединился к вашей школе.",
+            },
+            teacherJoinedSchool: {
+              title: "Новый учитель",
+              description: "Учитель присоединился к вашей школе.",
+            },
+            studentRemovedFromSchool: {
+              title: "Ученик удалён",
+              description: "Ученик был удалён из вашей школы.",
+            },
+            classCreated: {
+              title: "Класс создан",
+              description: "В вашу школу добавлен новый класс.",
+            },
+            classUpdated: {
+              title: "Класс обновлён",
+              description: "Класс в вашей школе был обновлён.",
+            },
+            classDeleted: {
+              title: "Класс удалён",
+              description: "Класс был удалён из вашей школы.",
+            },
+            classJoinRequestCreated: {
+              title: "Новая заявка",
+              description: "Ученик подал заявку на вступление в класс, которым вы управляете.",
+            },
+            classJoinRequestCancelled: {
+              title: "Заявка отменена",
+              description: "Ученик отменил свою заявку на вступление в класс.",
+            },
+            classJoinRequestApproved: {
+              title: "Заявка одобрена",
+              description: "Ваша заявка на вступление в класс одобрена.",
+            },
+            classJoinRequestRejected: {
+              title: "Заявка отклонена",
+              description: "Ваша заявка на вступление в класс отклонена.",
+            },
+            studentAssignedToClass: {
+              title: "Добавлены в класс",
+              description: "Вас добавили в класс.",
+            },
+            studentRemovedFromClass: {
+              title: "Удалены из класса",
+              description: "Вас удалили из класса.",
+            },
+            teacherAssignedToClass: {
+              title: "Назначены в класс",
+              description: "Вас назначили преподавать класс.",
+            },
+            teacherRemovedFromClass: {
+              title: "Удалены из класса",
+              description: "Вас удалили из класса, который вы преподавали.",
+            },
             newMessage: {
               title: "Новое сообщение",
               description: "Вы получили новое сообщение от Джона.",
@@ -927,11 +1023,10 @@ translation: {
             progress: "Отслеживание прогресса",
           },
           scene: {
-            alt: "Карточки вопросов, формируемые из учебного документа",
-            tagDocument: "Учебный PDF",
-            tagDraft: "AI-черновик",
-            tagReady: "Готово к проверке",
-            tagEditable: "Редактируемые вопросы",
+            alt: "Экзаменационный лист проверяется автоматически, из него растёт график успеваемости класса",
+            quiz: "Еженедельный тест",
+            graded: "Проверено",
+            average: "Средний балл",
           },
         },
         ai: {

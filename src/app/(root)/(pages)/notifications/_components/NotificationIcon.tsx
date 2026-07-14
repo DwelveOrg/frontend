@@ -4,6 +4,7 @@ import {
   CreditCard,
   GraduationCap,
   NotebookPen,
+  School,
   Sparkles,
   TriangleAlert,
   Users,
@@ -31,6 +32,7 @@ export function NotificationIcon({ type, className }: Readonly<NotificationIconP
   if (/deadline|reminder|alert|warning|due/.test(value)) {
     return <TriangleAlert className={className} />;
   }
+  if (/school/.test(value)) return <School className={className} />;
   if (/schedule|calendar|class|room/.test(value)) return <CalendarClock className={className} />;
   if (/greeting|welcome|login|signup/.test(value)) return <Sparkles className={className} />;
   return <Bell className={className} />;

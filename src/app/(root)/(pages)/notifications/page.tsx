@@ -2,10 +2,12 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Empty from "../_components/ui/Empty";
 import type {
   InvitationResponse,
+  NotificationCategory,
   NotificationFilter,
   NotificationItem,
   NotificationTab,
@@ -22,13 +24,14 @@ import { NotificationDetailsDialog } from "./_components/NotificationDetailsDial
 import { NotificationSection } from "./_components/NotificationSection";
 import { NotificationTabs } from "./_components/NotificationTabs";
 import { NotificationsHeader } from "./_components/NotificationsHeader";
-import { getNotificationCategory, groupNotificationsByDate } from "./_lib/notifications";
+import { groupNotificationsByDate, resolveNotificationHref } from "./_lib/notifications";
 
 const PAGE_SIZE = 10;
-const CATEGORY_FILTERS: NotificationFilter[] = ["system", "payments", "invitations"];
+const CATEGORY_FILTERS: NotificationCategory[] = ["system", "payments", "invitations"];
 
 const Page = () => {
   const { i18n, t } = useTranslation();
+  const router = useRouter();
   const reduce = useReducedMotion();
 
   const [activeFilter, setActiveFilter] = useState<NotificationFilter>("all");
@@ -41,10 +44,13 @@ const Page = () => {
     () => new Map(),
   );
 
-  // Category filters run client-side over the `all` result set, so they share
-  // its query cache; only Unread uses a distinct backend `tab`.
+  // `all`/`unread` map to the backend `tab`; the category pills map to the
+  // backend `category` param (server-side filtering) — each its own query cache.
   const tab: NotificationTab = activeFilter === "unread" ? "unread" : "all";
-  const notificationsQuery = useNotificationsList({ tab, limit: PAGE_SIZE });
+  const category = CATEGORY_FILTERS.includes(activeFilter as NotificationCategory)
+    ? (activeFilter as NotificationCategory)
+    : undefined;
+  const notificationsQuery = useNotificationsList({ tab, category, limit: PAGE_SIZE });
   const statusQuery = useNotificationStatus();
 
   const markReadMutation = useMarkNotificationReadMutation();
@@ -82,13 +88,9 @@ const Page = () => {
     () =>
       allItems.filter((item) => {
         if (optimisticallyDeletedIds.has(item.id)) return false;
+        // Category filtering is server-side now; only the optimistic unread
+        // filter stays client-side so read items leave the Unread tab at once.
         if (activeFilter === "unread" && !item.unread) return false;
-        if (
-          CATEGORY_FILTERS.includes(activeFilter) &&
-          getNotificationCategory(item.type) !== activeFilter
-        ) {
-          return false;
-        }
         return true;
       }),
     [activeFilter, allItems, optimisticallyDeletedIds],
@@ -117,14 +119,23 @@ const Page = () => {
 
   const handleOpenNotification = useCallback(
     (item: NotificationItem) => {
+      if (item.unread) markReadOptimistic(item.id);
+
+      // Deep-link to the related entity when one exists; otherwise fall back to
+      // the read-only details dialog (e.g. greetings, resolved invitations).
+      const href = resolveNotificationHref(item);
+      if (href) {
+        router.push(href);
+        return;
+      }
+
       setSelectedNotification({
         ...item,
         unread: false,
         readAt: item.readAt ?? new Date().toISOString(),
       });
-      if (item.unread) markReadOptimistic(item.id);
     },
-    [markReadOptimistic],
+    [markReadOptimistic, router],
   );
 
   const handleMarkRead = useCallback(

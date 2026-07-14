@@ -4,7 +4,7 @@ import { useEffect, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle, Mail, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
@@ -52,7 +52,8 @@ export function AccountDetailsForm({ account }: Readonly<AccountDetailsFormProps
     });
   });
 
-  const isDirty = form.watch("fullName").trim() !== account.fullName.trim();
+  const fullName = useWatch({ control: form.control, name: "fullName" });
+  const isDirty = (fullName ?? "").trim() !== account.fullName.trim();
   const isBusy = isPending || form.formState.isSubmitting;
 
   return (

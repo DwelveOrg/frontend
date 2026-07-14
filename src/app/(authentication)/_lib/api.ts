@@ -225,3 +225,17 @@ export function createTeacherInviteRequest(
     responseSchema: teacherInviteResponseSchema,
   });
 }
+
+/**
+ * `DELETE /schools/:schoolId` (ADMIN, selected-school context). Marks the school
+ * inactive and cascades roster/enrollment removal on the backend. The UI does
+ * not consume the response body, so no response schema is attached.
+ */
+export function deleteSchoolRequest(
+  schoolId: string,
+  requestJson: BackendRequester = backendJson,
+) {
+  return requestJson(`/schools/${schoolId}`, {
+    method: "DELETE",
+  });
+}

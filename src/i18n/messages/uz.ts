@@ -385,6 +385,7 @@ translation: {
             edit: "Tahrirlash",
             invite: "Taklif qilish",
             createClass: "Sinf yaratish",
+            delete: "Maktabni o'chirish",
           },
           edit: {
             title: "Maktabni tahrirlash",
@@ -407,6 +408,14 @@ translation: {
             cancel: "Bekor qilish",
             success: "«{{name}}» yangilandi",
             error: "Maktabni yangilab bo'lmadi. Qayta urinib ko'ring.",
+          },
+          delete: {
+            title: "«{{name}}» o'chirilsinmi?",
+            description:
+              "Bu maktabni hamma uchun o'chiradi: sinflar, ro'yxatlar va (kutilayotgan yoki faol) so'rovlar o'chiriladi. A'zolarning hisoblari o'chirilmaydi. Buni qaytarib bo'lmaydi.",
+            confirm: "Maktabni o'chirish",
+            cancel: "Bekor qilish",
+            error: "Maktabni o'chirib bo'lmadi. Qayta urinib ko'ring.",
           },
           invite: {
             menuTeacher: "O'qituvchini taklif qilish",
@@ -470,6 +479,20 @@ translation: {
               code: "Kod",
               classes: "Sinflar",
               joined: "Qo'shilgan",
+              actions: "Amallar",
+            },
+            actions: {
+              menu: "{{name}} uchun amallar",
+              remove: "Maktabdan chiqarish",
+            },
+            remove: {
+              title: "{{name}} chiqarilsinmi?",
+              description:
+                "O'quvchi ushbu maktabdan chiqariladi va uning barcha sinflaridan o'chiriladi. Hisob o'chirilmaydi — o'quvchi kod yoki taklif orqali qayta qo'shilishi mumkin. Buni qaytarib bo'lmaydi.",
+              confirm: "O'quvchini chiqarish",
+              cancel: "Bekor qilish",
+              success: "{{name}} maktabdan chiqarildi",
+              error: "O'quvchini chiqarib bo'lmadi. Qayta urinib ko'ring.",
             },
           },
         },
@@ -552,6 +575,7 @@ translation: {
             subtitle: "Maktabingizdagi sinflarni toping va qo'shilish so'rovini yuboring.",
             searchPlaceholder: "Sinflarni qidirish",
             requestToJoin: "Qo'shilish so'rovi",
+            open: "Sinfni ochish",
             requestPending: "So'rov yuborildi",
             cancelRequest: "So'rovni bekor qilish",
             classFull: "Sinf to'lgan",
@@ -805,6 +829,78 @@ translation: {
               title: "Qaytganingiz bilan",
               description: "Dwelve hisobingizga muvaffaqiyatli kirdingiz.",
             },
+            schoolCreated: {
+              title: "Maktab yaratildi",
+              description: "Yangi maktab ish maydoningiz sozlashga tayyor.",
+            },
+            schoolUpdated: {
+              title: "Maktab yangilandi",
+              description: "Maktabingiz profili ma'lumotlari yangilandi.",
+            },
+            schoolDeleted: {
+              title: "Maktab o'chirildi",
+              description: "Siz a'zo bo'lgan maktab o'chirildi.",
+            },
+            schoolInvite: {
+              title: "O'qituvchi taklifi",
+              description: "Sizni maktabga o'qituvchi sifatida taklif qilishdi.",
+            },
+            studentJoinedSchool: {
+              title: "Yangi o'quvchi",
+              description: "Maktabingizga o'quvchi qo'shildi.",
+            },
+            teacherJoinedSchool: {
+              title: "Yangi o'qituvchi",
+              description: "Maktabingizga o'qituvchi qo'shildi.",
+            },
+            studentRemovedFromSchool: {
+              title: "O'quvchi chiqarildi",
+              description: "O'quvchi maktabingizdan chiqarildi.",
+            },
+            classCreated: {
+              title: "Sinf yaratildi",
+              description: "Maktabingizga yangi sinf qo'shildi.",
+            },
+            classUpdated: {
+              title: "Sinf yangilandi",
+              description: "Maktabingizdagi sinf yangilandi.",
+            },
+            classDeleted: {
+              title: "Sinf o'chirildi",
+              description: "Sinf maktabingizdan o'chirildi.",
+            },
+            classJoinRequestCreated: {
+              title: "Yangi so'rov",
+              description: "O'quvchi siz boshqaradigan sinfga qo'shilish so'rovini yubordi.",
+            },
+            classJoinRequestCancelled: {
+              title: "So'rov bekor qilindi",
+              description: "O'quvchi sinfga qo'shilish so'rovini bekor qildi.",
+            },
+            classJoinRequestApproved: {
+              title: "So'rov tasdiqlandi",
+              description: "Sinfga qo'shilish so'rovingiz tasdiqlandi.",
+            },
+            classJoinRequestRejected: {
+              title: "So'rov rad etildi",
+              description: "Sinfga qo'shilish so'rovingiz rad etildi.",
+            },
+            studentAssignedToClass: {
+              title: "Sinfga qo'shildingiz",
+              description: "Sizni sinfga qo'shishdi.",
+            },
+            studentRemovedFromClass: {
+              title: "Sinfdan chiqarildingiz",
+              description: "Sizni sinfdan chiqarishdi.",
+            },
+            teacherAssignedToClass: {
+              title: "Sinfga tayinlandingiz",
+              description: "Sizni sinfga dars berishga tayinlashdi.",
+            },
+            teacherRemovedFromClass: {
+              title: "Sinfdan chiqarildingiz",
+              description: "Sizni dars bergan sinfingizdan chiqarishdi.",
+            },
             newMessage: {
               title: "Yangi xabar",
               description: "Siz Jondan yangi xabar oldingiz.",
@@ -924,11 +1020,10 @@ translation: {
             progress: "Rivojlanish kuzatuvi",
           },
           scene: {
-            alt: "Dars hujjatidan tuzilayotgan savol kartalari",
-            tagDocument: "Dars PDF",
-            tagDraft: "AI qoralama",
-            tagReady: "Ko'rib chiqishga tayyor",
-            tagEditable: "Tahrirlanadigan savollar",
+            alt: "Imtihon varagʻi avtomatik baholanmoqda va undan sinf koʻrsatkichlari grafigi oʻsib chiqmoqda",
+            quiz: "Haftalik test",
+            graded: "Baholandi",
+            average: "Sinf oʻrtachasi",
           },
         },
         ai: {

@@ -76,7 +76,7 @@ export const discoverTeacherSchema = z
   })
   .passthrough();
 
-/** One card in `GET /schools/:schoolId/classes/discover`. */
+/** One card in the student class list (`GET /classes`, STUDENT caller). */
 export const discoverableClassSchema = z
   .object({
     id: z.string(),
@@ -87,17 +87,24 @@ export const discoverableClassSchema = z
     enrollmentMode: enrollmentModeSchema,
     studentEnrollmentStatus: enrollmentStatusSchema.nullable().optional(),
     canRequest: z.boolean(),
+    // `canEnter` gates opening the class detail; the backend returns 403 on
+    // `GET /classes/:classId` when it is false, so the UI must not offer entry.
+    canEnter: z.boolean(),
     capacity: z.number().nullable().optional(),
     activeStudentCount: z.number(),
   })
   .passthrough();
 export type DiscoverableClass = z.infer<typeof discoverableClassSchema>;
 
-export const discoverClassesResponseSchema = z.object({
+/**
+ * `GET /classes` for a STUDENT returns every active class in the selected
+ * school as a flat list — no pagination envelope, no server-side search.
+ * Filtering happens client-side.
+ */
+export const studentClassesResponseSchema = z.object({
   classes: z.array(discoverableClassSchema),
-  meta: paginationMetaSchema,
 });
-export type DiscoverClassesResponse = z.infer<typeof discoverClassesResponseSchema>;
+export type StudentClassesResponse = z.infer<typeof studentClassesResponseSchema>;
 
 /* -------------------------------------------------------------------------- */
 /* Enrollments (student requests, class join-requests)                         */

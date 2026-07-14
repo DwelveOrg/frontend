@@ -12,6 +12,7 @@ export const backendNotificationItemSchema = z
     id: z.string(),
     schoolId: z.string().nullable().optional(),
     type: z.string(),
+    category: z.enum(["system", "payments", "invitations"]).optional(),
     titleKey: z.string(),
     bodyKey: z.string(),
     data: z
