@@ -1,11 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, MoreVertical, UserMinus } from "lucide-react";
 
 import { RelativeTime } from "@/components/Custom/RelativeTime";
 import type { StudentItem } from "@/app/(root)/_lib/students.schemas";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Empty from "../../_components/ui/Empty";
+import RemoveStudentDialog from "./RemoveStudentDialog";
 
 type SchoolStudentsTabProps = {
   students: StudentItem[];
@@ -18,6 +26,7 @@ type SchoolStudentsTabProps = {
  */
 export default function SchoolStudentsTab({ students }: SchoolStudentsTabProps) {
   const { t } = useTranslation();
+  const [removeTarget, setRemoveTarget] = useState<StudentItem | null>(null);
 
   if (students.length === 0) {
     return (
@@ -39,11 +48,18 @@ export default function SchoolStudentsTab({ students }: SchoolStudentsTabProps) 
               <th className="px-4 py-3">{t("root.schoolPage.students.columns.code")}</th>
               <th className="px-4 py-3">{t("root.schoolPage.students.columns.classes")}</th>
               <th className="px-4 py-3">{t("root.schoolPage.students.columns.joined")}</th>
+              <th className="px-4 py-3">
+                <span className="sr-only">{t("root.schoolPage.students.columns.actions")}</span>
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--border)]">
             {students.map((student) => (
-              <StudentRow key={student.memberId} student={student} />
+              <StudentRow
+                key={student.memberId}
+                student={student}
+                onRemove={setRemoveTarget}
+              />
             ))}
           </tbody>
         </table>
@@ -52,14 +68,66 @@ export default function SchoolStudentsTab({ students }: SchoolStudentsTabProps) 
       {/* Mobile: stacked cards. */}
       <ul className="divide-y divide-[var(--border)] md:hidden">
         {students.map((student) => (
-          <StudentCard key={student.memberId} student={student} />
+          <StudentCard
+            key={student.memberId}
+            student={student}
+            onRemove={setRemoveTarget}
+          />
         ))}
       </ul>
+
+      <RemoveStudentDialog
+        open={removeTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setRemoveTarget(null);
+        }}
+        studentId={removeTarget?.id ?? ""}
+        studentName={removeTarget?.fullName ?? ""}
+      />
     </div>
   );
 }
 
-function StudentRow({ student }: { student: StudentItem }) {
+function StudentActionsMenu({
+  student,
+  onRemove,
+}: {
+  student: StudentItem;
+  onRemove: (student: StudentItem) => void;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          aria-label={t("root.schoolPage.students.actions.menu", { name: student.fullName })}
+          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted-foreground)] transition hover:bg-[var(--muted)] hover:text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+        >
+          <MoreVertical className="h-4 w-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuItem
+          onSelect={() => onRemove(student)}
+          className="text-[var(--destructive)] focus:text-[var(--destructive)]"
+        >
+          <UserMinus className="h-4 w-4" />
+          {t("root.schoolPage.students.actions.remove")}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function StudentRow({
+  student,
+  onRemove,
+}: {
+  student: StudentItem;
+  onRemove: (student: StudentItem) => void;
+}) {
   const { t } = useTranslation();
   const classesText = summarizeClasses(student, t);
   const joinedAt = student.joinedAt ?? student.createdAt;
@@ -90,11 +158,20 @@ function StudentRow({ student }: { student: StudentItem }) {
       <td className="px-4 py-3 align-top text-[var(--muted-foreground)]">
         {joinedAt ? <RelativeTime date={joinedAt} /> : "—"}
       </td>
+      <td className="px-4 py-3 align-top text-right">
+        <StudentActionsMenu student={student} onRemove={onRemove} />
+      </td>
     </tr>
   );
 }
 
-function StudentCard({ student }: { student: StudentItem }) {
+function StudentCard({
+  student,
+  onRemove,
+}: {
+  student: StudentItem;
+  onRemove: (student: StudentItem) => void;
+}) {
   const { t } = useTranslation();
   const classesText = summarizeClasses(student, t);
   const joinedAt = student.joinedAt ?? student.createdAt;
@@ -103,7 +180,7 @@ function StudentCard({ student }: { student: StudentItem }) {
     <li className="flex flex-col gap-2 px-4 py-3">
       <div className="flex items-center gap-3">
         <Avatar name={student.fullName} />
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="truncate font-medium text-[var(--foreground)]">
             {student.fullName}
           </div>
@@ -111,6 +188,7 @@ function StudentCard({ student }: { student: StudentItem }) {
             {student.email}
           </div>
         </div>
+        <StudentActionsMenu student={student} onRemove={onRemove} />
       </div>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--muted-foreground)]">
         {student.studentCode ? (

@@ -9,14 +9,46 @@ const INVITATION_TYPES = /invit|join[_-]?request/i;
 const PAYMENT_TYPES = /payment|billing|fee|invoice|subscription/i;
 
 /**
- * Derives the category tab a notification belongs to from its `type`. Runs on
- * the client over the `all` result set; the backend is expected to eventually
- * accept a `category` query param (see docs/features/notifications.md).
+ * Derives a notification's category from its `type`. The backend now assigns a
+ * `category` on each item and filters by it server-side, so this is only a
+ * fallback for items that predate that field. Prefer {@link categoryForItem}.
  */
 export function getNotificationCategory(type: string): NotificationCategory {
   if (INVITATION_TYPES.test(type)) return "invitations";
   if (PAYMENT_TYPES.test(type)) return "payments";
   return "system";
+}
+
+/** Backend category when present, otherwise derived from the type. */
+export function categoryForItem(item: NotificationItem): NotificationCategory {
+  return item.category ?? getNotificationCategory(item.type);
+}
+
+/**
+ * Resolves the in-app destination for a notification from its `type` and the
+ * IDs carried in `data`. Deletions route to the parent list (the entity is
+ * gone); class join-requests route managers to the class requests page and
+ * students to their own requests. Returns `null` when there's no sensible
+ * target — the caller falls back to the details dialog.
+ */
+export function resolveNotificationHref(item: NotificationItem): string | null {
+  const type = item.type ?? "";
+  const data = (item.data ?? {}) as Record<string, unknown>;
+  const classId = typeof data.classId === "string" ? data.classId : null;
+
+  if (type === "CLASS_DELETED") return "/groups";
+  if (type === "SCHOOL_DELETED") return "/school";
+
+  if (type === "CLASS_JOIN_REQUEST_CREATED" && classId) {
+    return `/groups/${classId}/requests`;
+  }
+  if (type.startsWith("CLASS_JOIN_REQUEST_")) return "/groups/requests";
+
+  if (classId) return `/groups/${classId}`;
+
+  if (type.startsWith("SCHOOL_") || type.endsWith("_SCHOOL")) return "/school";
+
+  return null;
 }
 
 /** Icon container tint per category, driven by design tokens (never hard-coded hex). */
@@ -28,7 +60,7 @@ export const CATEGORY_TINT: Record<NotificationCategory, string> = {
 
 /** True when a notification is an unresolved invitation (renders Accept / Decline). */
 export function isPendingInvitation(item: NotificationItem): boolean {
-  if (getNotificationCategory(item.type) !== "invitations") return false;
+  if (categoryForItem(item) !== "invitations") return false;
   const status = (item.data as NotificationInvitationData | null | undefined)?.status;
   return status !== "accepted" && status !== "declined";
 }

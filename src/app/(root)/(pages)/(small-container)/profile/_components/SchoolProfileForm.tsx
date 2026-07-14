@@ -4,7 +4,7 @@ import { useEffect, useMemo, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GraduationCap, LoaderCircle, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
@@ -69,7 +69,7 @@ export function SchoolProfileForm({ selectedSchool }: Readonly<SchoolProfileForm
   });
 
   const isBusy = isPending || form.formState.isSubmitting;
-  const values = form.watch();
+  const values = useWatch({ control: form.control });
   const isDirty =
     (values.phone ?? "").trim() !== (defaults.phone ?? "").trim() ||
     (values.bio ?? "").trim() !== (defaults.bio ?? "").trim();

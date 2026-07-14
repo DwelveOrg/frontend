@@ -1,11 +1,12 @@
 import "server-only";
 
+import { decodeJwt } from "jose";
 import { z } from "zod";
 
 import type { BackendRequestInit } from "@/lib/api/backend";
 import { backendJson, BackendApiError, refreshTokensRequest } from "./api";
 import { createSession, getSession } from "./session";
-import type { SessionPayload } from "../_types/auth";
+import type { SchoolRole, SessionPayload } from "../_types/auth";
 
 /** Thrown when an authenticated request has no usable session / access token. */
 export class SessionExpiredError extends Error {
@@ -26,6 +27,7 @@ async function refreshAccessToken(current: SessionPayload) {
   }
 
   const tokens = await refreshTokensRequest(current.refreshToken);
+  const schoolContext = getSchoolContextFromAccessToken(tokens.accessToken);
 
   await createSession({
     userId: current.userId,
@@ -33,13 +35,39 @@ async function refreshAccessToken(current: SessionPayload) {
     fullName: current.fullName,
     accessToken: tokens.accessToken,
     refreshToken: tokens.refreshToken,
-    schoolId: current.schoolId,
-    memberId: current.memberId,
-    schoolRole: current.schoolRole,
+    schoolId: schoolContext.schoolId,
+    memberId: schoolContext.memberId,
+    schoolRole: schoolContext.schoolRole,
     membershipCount: current.membershipCount,
   });
 
   return tokens.accessToken;
+}
+
+function getSchoolContextFromAccessToken(
+  accessToken: string,
+): Pick<SessionPayload, "schoolId" | "memberId" | "schoolRole"> {
+  try {
+    const payload = decodeJwt(accessToken);
+    const schoolId = typeof payload.schoolId === "string" ? payload.schoolId : undefined;
+    const memberId = typeof payload.memberId === "string" ? payload.memberId : undefined;
+    const schoolRole: SchoolRole | undefined =
+      payload.schoolRole === "ADMIN" ||
+      payload.schoolRole === "TEACHER" ||
+      payload.schoolRole === "STUDENT"
+        ? payload.schoolRole
+        : undefined;
+
+    if (!schoolId || !memberId || !schoolRole) {
+      return {};
+    }
+
+    return { schoolId, memberId, schoolRole };
+  } catch {
+    // The backend only returns signed access tokens. If one cannot be decoded,
+    // keep the session conservative and require the normal authenticated flow.
+    return {};
+  }
 }
 
 function withAuthHeader<TSchema extends z.ZodTypeAny | undefined>(

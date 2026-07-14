@@ -7,7 +7,7 @@ import {
   approveEnrollmentRequest,
   cancelJoinRequestRequest,
   createJoinRequestRequest,
-  discoverClassesRequest,
+  getStudentClassesRequest,
   getStudentOverviewRequest,
   listClassJoinRequestsRequest,
   listMyEnrollmentsRequest,
@@ -18,11 +18,11 @@ import {
   approveEnrollmentSchema,
   assignStudentSchema,
   cancelJoinRequestSchema,
-  type DiscoverClassesResponse,
   type ListEnrollmentsResponse,
   rejectEnrollmentSchema,
   removeStudentSchema,
   requestJoinClassSchema,
+  type StudentClassesResponse,
   type StudentOverviewResponse,
 } from "./enrollment.schemas";
 
@@ -66,21 +66,8 @@ function mapEnrollmentError(error: unknown, fallback: string): string {
 /* Reads (called from React Query hooks)                                       */
 /* -------------------------------------------------------------------------- */
 
-type DiscoverInput = {
-  schoolId: string;
-  search?: string;
-  page?: number;
-  limit?: number;
-};
-
-export async function discoverClassesAction(
-  input: DiscoverInput,
-): Promise<DiscoverClassesResponse> {
-  return discoverClassesRequest(input.schoolId, {
-    search: input.search?.trim() || undefined,
-    page: input.page ?? 1,
-    limit: input.limit ?? 20,
-  });
+export async function getStudentClassesAction(): Promise<StudentClassesResponse> {
+  return getStudentClassesRequest();
 }
 
 export async function getStudentOverviewAction(

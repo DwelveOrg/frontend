@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, MapPin, Pencil, UserPlus } from "lucide-react";
+import { ChevronDown, MapPin, Pencil, Trash2, UserPlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { SchoolRole } from "@/app/(authentication)/_types/auth";
 import { Button } from "@/components/ui/Button";
@@ -14,6 +14,7 @@ import {
 import InviteTeacherDialog from "./InviteTeacherDialog";
 import AddStudentsDialog from "./AddStudentsDialog";
 import EditSchoolDialog from "./EditSchoolDialog";
+import DeleteSchoolDialog from "./DeleteSchoolDialog";
 
 type SchoolProfileHeaderProps = {
   name: string;
@@ -56,6 +57,7 @@ export default function SchoolProfileHeader({
   const [editOpen, setEditOpen] = useState(false);
   const [inviteTeacherOpen, setInviteTeacherOpen] = useState(false);
   const [addStudentsOpen, setAddStudentsOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const initial = name.charAt(0).toUpperCase() || "S";
 
@@ -139,6 +141,18 @@ export default function SchoolProfileHeader({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label={t("root.schoolPage.actions.delete")}
+              title={t("root.schoolPage.actions.delete")}
+              onClick={() => setDeleteOpen(true)}
+              className="text-[var(--muted-foreground)] hover:border-[color-mix(in_srgb,var(--destructive)_35%,transparent)] hover:text-[var(--destructive)]"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
         ) : role ? (
           <span className="inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--background)] px-3 py-1.5 text-xs font-medium text-[var(--muted-foreground)]">
@@ -159,6 +173,11 @@ export default function SchoolProfileHeader({
             open={addStudentsOpen}
             onOpenChange={setAddStudentsOpen}
             studentJoinCode={studentJoinCode}
+          />
+          <DeleteSchoolDialog
+            open={deleteOpen}
+            onOpenChange={setDeleteOpen}
+            schoolName={name}
           />
         </>
       ) : null}

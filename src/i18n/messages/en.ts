@@ -385,6 +385,7 @@ translation: {
             edit: "Edit",
             invite: "Invite",
             createClass: "Create class",
+            delete: "Delete school",
           },
           edit: {
             title: "Edit school",
@@ -407,6 +408,14 @@ translation: {
             cancel: "Cancel",
             success: "\"{{name}}\" updated",
             error: "Could not update the school. Please try again.",
+          },
+          delete: {
+            title: "Delete \"{{name}}\"?",
+            description:
+              "This deactivates the school for everyone: classes, rosters, and pending or active enrollments are removed. Member accounts are not deleted. This cannot be undone.",
+            confirm: "Delete school",
+            cancel: "Cancel",
+            error: "Could not delete the school. Please try again.",
           },
           invite: {
             menuTeacher: "Invite teacher",
@@ -470,6 +479,20 @@ translation: {
               code: "Code",
               classes: "Classes",
               joined: "Joined",
+              actions: "Actions",
+            },
+            actions: {
+              menu: "Actions for {{name}}",
+              remove: "Remove from school",
+            },
+            remove: {
+              title: "Remove {{name}}?",
+              description:
+                "This removes the student from this school and unenrolls them from all classes here. Their account is not deleted, and they can rejoin with a code or invite. This cannot be undone.",
+              confirm: "Remove student",
+              cancel: "Cancel",
+              success: "{{name}} removed from the school",
+              error: "Could not remove the student. Please try again.",
             },
           },
         },
@@ -552,6 +575,7 @@ translation: {
             subtitle: "Find and request to join classes at your school.",
             searchPlaceholder: "Search classes",
             requestToJoin: "Request to join",
+            open: "Open class",
             requestPending: "Request pending",
             cancelRequest: "Cancel request",
             classFull: "Class full",
@@ -805,6 +829,78 @@ translation: {
               title: "Welcome back",
               description: "You have successfully signed in to Dwelve.",
             },
+            schoolCreated: {
+              title: "School created",
+              description: "Your new school workspace is ready to set up.",
+            },
+            schoolUpdated: {
+              title: "School updated",
+              description: "Your school's profile details were updated.",
+            },
+            schoolDeleted: {
+              title: "School deleted",
+              description: "A school you belonged to has been deleted.",
+            },
+            schoolInvite: {
+              title: "Teacher invitation",
+              description: "You've been invited to join a school as a teacher.",
+            },
+            studentJoinedSchool: {
+              title: "New student",
+              description: "A student joined your school.",
+            },
+            teacherJoinedSchool: {
+              title: "New teacher",
+              description: "A teacher joined your school.",
+            },
+            studentRemovedFromSchool: {
+              title: "Student removed",
+              description: "A student was removed from your school.",
+            },
+            classCreated: {
+              title: "Class created",
+              description: "A new class was added to your school.",
+            },
+            classUpdated: {
+              title: "Class updated",
+              description: "A class in your school was updated.",
+            },
+            classDeleted: {
+              title: "Class deleted",
+              description: "A class was removed from your school.",
+            },
+            classJoinRequestCreated: {
+              title: "New join request",
+              description: "A student requested to join a class you manage.",
+            },
+            classJoinRequestCancelled: {
+              title: "Join request cancelled",
+              description: "A student cancelled their class join request.",
+            },
+            classJoinRequestApproved: {
+              title: "Request approved",
+              description: "Your request to join a class was approved.",
+            },
+            classJoinRequestRejected: {
+              title: "Request declined",
+              description: "Your request to join a class was declined.",
+            },
+            studentAssignedToClass: {
+              title: "Added to a class",
+              description: "You were added to a class.",
+            },
+            studentRemovedFromClass: {
+              title: "Removed from a class",
+              description: "You were removed from a class.",
+            },
+            teacherAssignedToClass: {
+              title: "Assigned to a class",
+              description: "You were assigned to teach a class.",
+            },
+            teacherRemovedFromClass: {
+              title: "Removed from a class",
+              description: "You were removed from a class you taught.",
+            },
             newMessage: {
               title: "New message",
               description: "You have received a new message from John.",
@@ -924,11 +1020,10 @@ translation: {
             progress: "Progress tracking",
           },
           scene: {
-            alt: "Floating question cards being drafted from a lesson document",
-            tagDocument: "Lesson PDF",
-            tagDraft: "AI draft",
-            tagReady: "Ready to review",
-            tagEditable: "Editable questions",
+            alt: "An exam sheet being graded automatically as a class performance chart rises from it",
+            quiz: "Weekly quiz",
+            graded: "Graded",
+            average: "Class average",
           },
         },
         ai: {

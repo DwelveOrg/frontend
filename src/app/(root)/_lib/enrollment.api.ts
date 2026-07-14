@@ -5,10 +5,10 @@ import type { z } from "zod";
 import type { BackendRequestInit } from "@/lib/api/backend";
 import { authedBackendJson } from "@/app/(authentication)/_lib/backend";
 import {
-  discoverClassesResponseSchema,
   enrollmentMutationResponseSchema,
   listEnrollmentsResponseSchema,
   myClassesResponseSchema,
+  studentClassesResponseSchema,
   studentOverviewResponseSchema,
 } from "./enrollment.schemas";
 
@@ -41,15 +41,16 @@ export function getStudentOverviewRequest(
   });
 }
 
-/** `GET /schools/:schoolId/classes/discover` - STUDENT discoverable classes. */
-export function discoverClassesRequest(
-  schoolId: string,
-  query: { search?: string; page?: number; limit?: number },
+/**
+ * `GET /classes` - the STUDENT-visible class list for the selected school.
+ * The selected school comes from the session JWT, so no path/query params are
+ * needed. Returns a flat list (no pagination); search is applied client-side.
+ */
+export function getStudentClassesRequest(
   requestJson: BackendRequester = authedBackendJson,
 ) {
-  return requestJson(`/schools/${schoolId}/classes/discover`, {
-    query,
-    responseSchema: discoverClassesResponseSchema,
+  return requestJson("/classes", {
+    responseSchema: studentClassesResponseSchema,
   });
 }
 

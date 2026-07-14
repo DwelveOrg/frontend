@@ -16,18 +16,17 @@ export const queryKeys = {
   notifications: {
     all: ["notifications"] as const,
     status: () => [...queryKeys.notifications.all, "status"] as const,
-    list: (tab: "all" | "unread", limit: number) =>
-      [...queryKeys.notifications.all, "list", tab, limit] as const,
+    list: (tab: "all" | "unread", limit: number, category?: string) =>
+      [...queryKeys.notifications.all, "list", tab, category ?? "all", limit] as const,
   },
   enrollment: {
     all: ["enrollment"] as const,
     overview: (schoolId: string) =>
       [...queryKeys.enrollment.all, "overview", schoolId] as const,
-    /** All discovery variants for a school (used for broad invalidation). */
+    /** The student class list for a school (`GET /classes`). */
     discoverAll: (schoolId: string) =>
       [...queryKeys.enrollment.all, "discover", schoolId] as const,
-    discover: (schoolId: string, filters: { search: string; limit: number }) =>
-      [...queryKeys.enrollment.discoverAll(schoolId), filters] as const,
+    discover: (schoolId: string) => queryKeys.enrollment.discoverAll(schoolId),
     myClasses: () => [...queryKeys.enrollment.all, "my-classes"] as const,
     myRequestsAll: () => [...queryKeys.enrollment.all, "my-requests"] as const,
     myRequests: (limit: number) =>

@@ -85,23 +85,28 @@ function MainPage() {
           </div>
         </motion.div>
 
-        {/* Right: 3D hero scene (PDF → drafted questions) */}
+        {/* Right: 3D hero scene (exam sheet → auto-graded → performance rises) */}
         <motion.div className="relative" {...fade(0.15)}>
-          <div className="relative mx-auto aspect-square w-full max-w-[540px] overflow-hidden sm:aspect-[5/4] lg:aspect-square">
-            {/* Brand glow / WebGL fallback backdrop */}
+          <div className="relative mx-auto aspect-square w-full max-w-[600px] overflow-hidden sm:aspect-[5/4] lg:aspect-square">
+            {/* Brand glow / WebGL fallback backdrop — two layers for depth: a soft
+                frame-wide violet fill under a brighter, concentrated core behind the
+                sheet + chart. Also the graceful fallback when WebGL is unavailable. */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 rounded-[36px] bg-[radial-gradient(60%_55%_at_50%_45%,rgba(123,97,255,0.22),transparent_72%)] dark:bg-[radial-gradient(60%_55%_at_50%_45%,rgba(142,120,255,0.30),transparent_72%)]"
+              className="pointer-events-none absolute inset-0 rounded-[36px] bg-[radial-gradient(92%_84%_at_50%_50%,rgba(123,97,255,0.12),transparent_74%)] dark:bg-[radial-gradient(92%_84%_at_50%_50%,rgba(142,120,255,0.20),transparent_74%)]"
             />
-            {/* Labels are drawn onto the 3D card faces themselves (see HeroScene),
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 rounded-[36px] bg-[radial-gradient(54%_48%_at_50%_44%,rgba(123,97,255,0.30),transparent_66%)] dark:bg-[radial-gradient(54%_48%_at_50%_44%,rgba(142,120,255,0.40),transparent_66%)]"
+            />
+            {/* Labels are drawn onto the 3D surfaces themselves (see HeroScene),
                 so the narrative reads as part of the model, not as floating tags. */}
             <HeroScene
               className="absolute inset-0 h-full w-full"
               labels={{
-                document: t("landing.main.scene.tagDocument"),
-                draft: t("landing.main.scene.tagDraft"),
-                ready: t("landing.main.scene.tagReady"),
-                editable: t("landing.main.scene.tagEditable"),
+                quiz: t("landing.main.scene.quiz"),
+                graded: t("landing.main.scene.graded"),
+                average: t("landing.main.scene.average"),
               }}
             />
             <span className="sr-only">{t("landing.main.scene.alt")}</span>

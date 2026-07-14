@@ -10,11 +10,16 @@ import {
   markNotificationReadAction,
   respondToInvitationAction,
 } from "@/app/(root)/_lib/notification-actions";
-import type { InvitationResponse, NotificationTab } from "@/app/(root)/_types";
+import type {
+  InvitationResponse,
+  NotificationCategory,
+  NotificationTab,
+} from "@/app/(root)/_types";
 import { queryKeys } from "@/lib/query/keys";
 
 type UseNotificationsListOptions = {
   tab: NotificationTab;
+  category?: NotificationCategory;
   limit?: number;
   enabled?: boolean;
 };
@@ -28,12 +33,14 @@ export function useNotificationStatus() {
 
 export function useNotificationsList({
   tab,
+  category,
   limit = 10,
   enabled = true,
 }: UseNotificationsListOptions) {
   return useInfiniteQuery({
-    queryKey: queryKeys.notifications.list(tab, limit),
-    queryFn: ({ pageParam }) => listNotificationsAction({ tab, limit, page: pageParam }),
+    queryKey: queryKeys.notifications.list(tab, limit, category),
+    queryFn: ({ pageParam }) =>
+      listNotificationsAction({ tab, category, limit, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) =>
       lastPage.meta.hasMore ? lastPage.meta.page + 1 : undefined,

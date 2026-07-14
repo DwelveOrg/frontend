@@ -24,3 +24,17 @@ type BackendRequester = <TSchema extends z.ZodTypeAny>(
 export function getStudentsRequest(requestJson: BackendRequester = authedBackendJson) {
   return requestJson("/students", { responseSchema: studentsResponseSchema });
 }
+
+/**
+ * `DELETE /students/:studentId` - ADMIN only. `studentId` is the
+ * `StudentProfile.id` (the roster item's `id`). Removes the student from the
+ * selected school (deactivates membership, clears class rosters, marks
+ * enrollments `REMOVED`) without deleting the global user account. The UI does
+ * not consume the response body, so no response schema is attached.
+ */
+export function removeStudentFromSchoolRequest(
+  studentId: string,
+  requestJson: BackendRequester = authedBackendJson,
+) {
+  return requestJson(`/students/${studentId}`, { method: "DELETE" });
+}
